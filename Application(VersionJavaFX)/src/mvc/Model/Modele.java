@@ -16,14 +16,6 @@ public class Modele extends Observable {
 
     double lastValue;
     boolean err = false;
-
-    /*
-        processus métiers :
-        - grille logique (tableau de booléens)
-        - au clique d'une case colorier la case
-
-
-     */
     
     public void calc(String expr) {
         StringBuffer input;

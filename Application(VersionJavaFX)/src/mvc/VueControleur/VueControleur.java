@@ -19,10 +19,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.scene.text.Text;
 import mvc.Model.Modele;
+import mvc.Model.Plateau;
 
 /**
  *
@@ -39,7 +41,7 @@ public class VueControleur extends Application {
     public void start(Stage primaryStage) {
         
         // initialisation du modèle que l'on souhaite utiliser
-        m = new Modele();
+        Plateau p = new Plateau(10,10);
         
         // gestion du placement (permet de palcer le champ Text affichage en haut, et GridPane gPane au centre)
         BorderPane border = new BorderPane();
@@ -56,18 +58,7 @@ public class VueControleur extends Application {
         affichage.setFill(Color.RED);
         border.setTop(affichage);
         
-        // la vue observe les "update" du modèle, et réalise les mises à jour graphiques
-        m.addObserver(new Observer() {
-            
-            @Override
-            public void update(Observable o, Object arg) {
-                if (!m.getErr()) {
-                    affichage.setText(m.getValue() + "");
-                } else {
-                    affichage.setText("Err");
-                }
-            }
-        });
+
         
         // on efface affichage lors du clic
         affichage.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -79,24 +70,48 @@ public class VueControleur extends Application {
             
         });
 
+        Rectangle[][] tab = new Rectangle[10][10];
+        // la vue observe les "update" du modèle, et réalise les mises à jour graphiques
+        p.addObserver(new Observer() {
+
+            @Override
+            public void update(Observable o, Object arg) {
+                for(int a = 0; a<10; a++)
+                    for(int b = 0; b<10; b++)
+                        if(p.getTest()[a][b] ==1)
+                            tab[a][b].setFill(Color.CHOCOLATE);
+            }
+        });
+
         // création des boutons et placement dans la grille
-        for(int i=0;i<=10;i++)
-            for(int j=0;j<=10;j++){
-                final Button button = new Button();
-                gPane.add(new Case(i,j),column++, row);
-                if (column > 10) {
-                    column = 0;
-                    row++;
-                }
+        for(int i=0;i<10;i++)
+            for(int j=0;j<10;j++){
+                //final Button button = new Button();
+                tab[i][j] = new Rectangle();
+                tab[i][j].setHeight(30);
+                tab[i][j].setWidth(30);
+                tab[i][j].setFill(Color.BLUE);
+                gPane.add(tab[i][j],i, j);
+
+                final int ii = i;
+                final int jj = j;
+
+                tab[i][j].setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        p.click(ii, jj);
+                    }
+                });
+
                 // un controleur (EventHandler) par bouton écoute et met à jour le champ affichage
-                button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                /*button.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
                     @Override
                     public void handle(MouseEvent event) { //changer couleur
 
                     }
 
-                });
+                });*/
 
             }
         
@@ -127,6 +142,8 @@ public class VueControleur extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
     }
+
+
 
     /**
      * @param args the command line arguments
