@@ -4,7 +4,7 @@ public class Case {
     private int x;
     private int y;
     private String couleur;
-    private int index;
+    private int index; //correspond à l'index de la pièce dans la liste de pièces, à -1 si la case n'apparteint a une pièce
 
     public Case(int x, int y, String coul, int i){
         this.x = x;

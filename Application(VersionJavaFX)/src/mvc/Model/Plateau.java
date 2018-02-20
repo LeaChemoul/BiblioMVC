@@ -1,5 +1,8 @@
 package mvc.Model;
 
+import com.sun.javafx.geom.Vec2d;
+
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Observable;
 
@@ -8,23 +11,24 @@ public class Plateau extends Observable {
     private int hauteur;
     private Case[][] plateau;
     private int[][] test;
-    private LinkedList<Piece> piecesPosees;
+    private ArrayList<Piece> piecesPosees;
     private Piece pieceCourante;
+    private ArrayList<Piece> piecesSuivantes;
+    private boolean isFull = false; //si on ne peut pas placer d'autres pièces
 
-    public Plateau(int l, int h){
+    public Plateau(int h,int l){
         this.largeur = l;
         this.hauteur = h;
-        this.piecesPosees = new LinkedList<>();
-        plateau = new Case[l][h];
-        test= new int[10][10];
+        this.piecesPosees = new ArrayList<>();
+        this.pieceCourante = new Piece();
+        plateau = new Case[h][l];
+        test= new int[hauteur][largeur];
 
-        for(int i=0;i<this.largeur;i++)
-            for(int j=0;j<this.hauteur;j++){
+        for(int i=0;i<this.hauteur;i++)
+            for(int j=0;j<this.largeur;j++){
                 plateau[i][j]= new Case(i,j,"BLANC",-1);
                 test[i][j] = 0;
             }
-
-
 
         plateau[9][0]= new Case(9,0,"JAUNE",-1);
         plateau[9][1]= new Case(9,1,"JAUNE",-1);
@@ -51,14 +55,34 @@ public class Plateau extends Observable {
 
     public void versBas(Piece piece){
 
+        setChanged();
+        notifyObservers();
     }
 
     public void versDroite(Piece piece){
 
+        setChanged();
+        notifyObservers();
     }
 
     public void versGauche(Piece piece){
 
+        setChanged();
+        notifyObservers();
+    }
+
+    public void newPiece(){
+        this.pieceCourante = new Piece();
+        Vec2d dimPiece = pieceCourante.getLargeurHateur();
+        int dimX = (int) dimPiece.x;
+        int dimY = (int) dimPiece.y;
+        int milieu = largeur/2;
+        int milieuPiece = dimX/2;
+        int restePiece = dimX - milieuPiece;
+
+
+        setChanged();
+        notifyObservers();
     }
 
 }
