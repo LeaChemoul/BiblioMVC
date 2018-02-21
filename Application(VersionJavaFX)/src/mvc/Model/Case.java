@@ -1,12 +1,19 @@
 package mvc.Model;
 
+
+import javafx.scene.paint.Color;
+
 public class Case {
     private int x;
     private int y;
-    private String couleur;
+    private Color couleur;
     private int index; //correspond à l'index de la pièce dans la liste de pièces, à -1 si la case n'apparteint a une pièce
 
-    public Case(int x, int y, String coul, int i){
+    public Case(){
+
+    }
+
+    public Case(int x, int y, Color coul, int i){
         this.x = x;
         this.y = y;
         this.couleur = coul;
@@ -30,11 +37,19 @@ public class Case {
         this.y = y;
     }
 
-    public String getCouleur() {
+    public Color getCouleur() {
         return couleur;
     }
 
-    public void setCouleur(String couleur) {
+    public void setCouleur(Color couleur) {
         this.couleur = couleur;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 }

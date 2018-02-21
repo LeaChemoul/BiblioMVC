@@ -1,12 +1,14 @@
 package mvc.Model;
 
 import com.sun.javafx.geom.Vec2d;
+import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Observable;
 
 public class Plateau extends Observable {
+    private PieceBuilder builder = new PieceBuilder();
     private int largeur;
     private int hauteur;
     private Case[][] plateau;
@@ -20,19 +22,14 @@ public class Plateau extends Observable {
         this.largeur = l;
         this.hauteur = h;
         this.piecesPosees = new ArrayList<>();
-        this.pieceCourante = new Piece();
         plateau = new Case[h][l];
         test= new int[hauteur][largeur];
 
         for(int i=0;i<this.hauteur;i++)
             for(int j=0;j<this.largeur;j++){
-                plateau[i][j]= new Case(i,j,"BLANC",-1);
+                plateau[i][j]= new Case(i,j, Color.rgb(255,255,255),-1);
                 test[i][j] = 0;
             }
-
-        plateau[9][0]= new Case(9,0,"JAUNE",-1);
-        plateau[9][1]= new Case(9,1,"JAUNE",-1);
-        plateau[9][2]= new Case(9,2,"JAUNE",-1);
     }
 
     /*public Piece findPiece(int i, int j){
@@ -40,6 +37,24 @@ public class Plateau extends Observable {
 
     }*/
 
+    public boolean poserPiece(Piece piece){
+        Case[][] temp = piece.getCases();
+        for(int i =0;i<8;i++)
+            for(int j = 0;j<8;j++)
+                if(temp[i][j] != null){
+                    int a = temp[i][j].getX();
+                    int b = temp[i][j].getY();
+                    if(plateau[a][b].getIndex() == -1){
+                        plateau[a][b] = temp[i][j];
+                        piecesPosees.add(piece);
+                        plateau[a][b].setIndex(piecesPosees.size());
+                    }
+                    else return false;
+                }
+        setChanged();
+        notifyObservers();
+        return true;
+    }
 
     public void click(int i, int j){
         test[i][j] = 1;
@@ -66,23 +81,42 @@ public class Plateau extends Observable {
     }
 
     public void versGauche(Piece piece){
-
         setChanged();
         notifyObservers();
     }
 
     public void newPiece(){
-        this.pieceCourante = new Piece();
-        Vec2d dimPiece = pieceCourante.getLargeurHateur();
-        int dimX = (int) dimPiece.x;
-        int dimY = (int) dimPiece.y;
-        int milieu = largeur/2;
-        int milieuPiece = dimX/2;
-        int restePiece = dimX - milieuPiece;
+        this.pieceCourante = builder.getITetris(hauteur/2-2,0);
+        if(!this.poserPiece(pieceCourante))
+            System.out.println("GAME OVER");
 
-
-        setChanged();
-        notifyObservers();
     }
+
+    public Case[][] getPlateau() {
+        return plateau;
+    }
+
+    public Piece getPieceCourante() {
+        return pieceCourante;
+    }
+
+    //pseudo code
+   /* public boolean descente(){
+        if(collision())
+            return true;
+        else{
+            //gérer la descente
+
+            //descendre piece
+            setChanged();
+            notifyObservers();
+            descente();
+        }
+    }*/
+
+    public boolean collision(){
+        return true;
+    }
+
 
 }

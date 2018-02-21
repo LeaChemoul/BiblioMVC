@@ -33,7 +33,7 @@ public class VueControleur extends Application{
         // initialisation du modèle que l'on souhaite utiliser
         Plateau p = new Plateau(hauteur,largeur);
         
-        // gestion du placement (permet de palcer le champ Text affichage en haut, et GridPane gPane au centre)
+        // gestion du placement (permet de placer le champ Text affichage en haut, et GridPane gPane au centre)
         BorderPane border = new BorderPane();
         
         // permet de placer les diffrents boutons dans une grille
@@ -47,13 +47,14 @@ public class VueControleur extends Application{
             public void update(Observable o, Object arg) {
                 for(int a = 0; a<hauteur; a++)
                     for(int b = 0; b<largeur; b++){
-                        switch(p.getTest()[a][b]){
+                        /*switch(p.getTest()[a][b]){
                             case 1 :
                                 tab[a][b].setFill(Color.CHOCOLATE);
                                 //changer l'accès au plateau test
                                 //mettre le vrai palteau plus tard
                                 //et tester dans le switch les vrais couleurs
-                        }
+                        }*/
+                        tab[a][b].setFill(p.getPlateau()[a][b].getCouleur());
                     }
             }
         });
@@ -73,7 +74,8 @@ public class VueControleur extends Application{
                 tab[i][j].setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent event) {
-                        p.click(ii, jj);
+                        p.newPiece();
+                        //p.click(ii, jj);
                     }
                 });
 
@@ -92,8 +94,10 @@ public class VueControleur extends Application{
                         }
                     }
                 });
+
             }
-        
+
+
         gPane.setGridLinesVisible(true);
         border.setCenter(gPane);
         Scene scene = new Scene(border, Color.LIGHTBLUE);
@@ -104,6 +108,13 @@ public class VueControleur extends Application{
     }
 
 
+    public EventHandler<KeyEvent> test = new EventHandler<KeyEvent>(){
+
+        @Override
+        public void handle(KeyEvent event) {
+            System.out.println("Pressed: " + event.getCode());
+        }
+    };
 
     /**
      * @param args the command line arguments
