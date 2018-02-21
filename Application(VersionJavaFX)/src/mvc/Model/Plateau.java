@@ -39,8 +39,8 @@ public class Plateau extends Observable {
 
     public boolean poserPiece(Piece piece){
         Case[][] temp = piece.getCases();
-        for(int i =0;i<8;i++)
-            for(int j = 0;j<8;j++)
+        for(int i =0;i<5;i++)
+            for(int j = 0;j<5;j++)
                 if(temp[i][j] != null){
                     int a = temp[i][j].getX();
                     int b = temp[i][j].getY();
