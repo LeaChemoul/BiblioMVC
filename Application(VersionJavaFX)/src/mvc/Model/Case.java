@@ -41,10 +41,6 @@ public class Case {
         return couleur;
     }
 
-    public void setCouleur(Color couleur) {
-        this.couleur = couleur;
-    }
-
     public int getIndex() {
         return index;
     }

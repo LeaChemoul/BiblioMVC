@@ -1,17 +1,15 @@
 package mvc.Model;
 
-import com.sun.javafx.geom.Vec2d;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.Observable;
 
 public class Plateau extends Observable {
     private PieceBuilder builder = new PieceBuilder();
     private int largeur;
     private int hauteur;
-    private Case[][] plateau;
+    private Case[][] tableauJeu;
     private int[][] test;
     private ArrayList<Piece> piecesPosees;
     private Piece pieceCourante;
@@ -22,12 +20,12 @@ public class Plateau extends Observable {
         this.largeur = l;
         this.hauteur = h;
         this.piecesPosees = new ArrayList<>();
-        plateau = new Case[h][l];
+        tableauJeu = new Case[h][l];
         test= new int[hauteur][largeur];
 
         for(int i=0;i<this.hauteur;i++)
             for(int j=0;j<this.largeur;j++){
-                plateau[i][j]= new Case(i,j, Color.rgb(255,255,255),-1);
+                tableauJeu[i][j]= new Case(i,j, Color.rgb(255,255,255),-1);
                 test[i][j] = 0;
             }
     }
@@ -39,15 +37,15 @@ public class Plateau extends Observable {
 
     public boolean poserPiece(Piece piece){
         Case[][] temp = piece.getCases();
+        piecesPosees.add(piece);
         for(int i =0;i<5;i++)
             for(int j = 0;j<5;j++)
                 if(temp[i][j] != null){
                     int a = temp[i][j].getX();
                     int b = temp[i][j].getY();
-                    if(plateau[a][b].getIndex() == -1){
-                        plateau[a][b] = temp[i][j];
-                        piecesPosees.add(piece);
-                        plateau[a][b].setIndex(piecesPosees.size());
+                    if(tableauJeu[a][b].getIndex() == -1){
+                        tableauJeu[a][b] = temp[i][j];
+                        tableauJeu[a][b].setIndex(piecesPosees.size());
                     }
                     else return false;
                 }
@@ -89,15 +87,39 @@ public class Plateau extends Observable {
         this.pieceCourante = builder.getITetris(hauteur/2-2,0);
         if(!this.poserPiece(pieceCourante))
             System.out.println("GAME OVER");
-
+            this.descendre();
+            this.pieceCourante = null;
+        this.pieceCourante = builder.getOTetris(hauteur/2-2,0);
+        if(!this.poserPiece(pieceCourante))
+            System.out.println("GAME OVER");
     }
 
-    public Case[][] getPlateau() {
-        return plateau;
+    public void descendre(){
+        boolean enCours = true;
+        while(enCours){
+            enCours = pieceCourante.mouvement(this,Direction.DOWN);
+            setChanged();
+            notifyObservers();
+                /*try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }*/
+        }
+    }
+
+    public Case[][] getTableauJeu(){
+        return tableauJeu;
     }
 
     public Piece getPieceCourante() {
         return pieceCourante;
+    }
+
+    public void modifierPlateau(int i, int j, Case case1){
+        this.tableauJeu[i][j] = case1;
+        setChanged();
+        notifyObservers();
     }
 
     //pseudo code
@@ -118,5 +140,11 @@ public class Plateau extends Observable {
         return true;
     }
 
+    public int getLargeur() {
+        return largeur;
+    }
 
+    public int getHauteur() {
+        return hauteur;
+    }
 }

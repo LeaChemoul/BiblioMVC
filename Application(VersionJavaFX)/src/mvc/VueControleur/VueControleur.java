@@ -16,22 +16,19 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import mvc.Model.Direction;
 import mvc.Model.Plateau;
 
-/**
- *
- * @author freder
- */
 public class VueControleur extends Application{
 
-    private int hauteur = 10;
-    private int largeur = 20;
+    private int largeur = 10;
+    private int hauteur = 20;
 
     @Override
     public void start(Stage primaryStage) {
         
         // initialisation du modèle que l'on souhaite utiliser
-        Plateau p = new Plateau(hauteur,largeur);
+        Plateau p = new Plateau(largeur, hauteur);
         
         // gestion du placement (permet de placer le champ Text affichage en haut, et GridPane gPane au centre)
         BorderPane border = new BorderPane();
@@ -39,29 +36,21 @@ public class VueControleur extends Application{
         // permet de placer les diffrents boutons dans une grille
         GridPane gPane = new GridPane();
 
-        Rectangle[][] tab = new Rectangle[hauteur][largeur];
+        Rectangle[][] tab = new Rectangle[largeur][hauteur];
         // la vue observe les "update" du modèle, et réalise les mises à jour graphiques
         p.addObserver(new Observer() {
-
             @Override
             public void update(Observable o, Object arg) {
-                for(int a = 0; a<hauteur; a++)
-                    for(int b = 0; b<largeur; b++){
-                        /*switch(p.getTest()[a][b]){
-                            case 1 :
-                                tab[a][b].setFill(Color.CHOCOLATE);
-                                //changer l'accès au plateau test
-                                //mettre le vrai palteau plus tard
-                                //et tester dans le switch les vrais couleurs
-                        }*/
-                        tab[a][b].setFill(p.getPlateau()[a][b].getCouleur());
+                for(int a = 0; a< largeur; a++)
+                    for(int b = 0; b< hauteur; b++){
+                        tab[a][b].setFill(p.getTableauJeu()[a][b].getCouleur());
                     }
             }
         });
 
         // création des boutons et placement dans la grille
-        for(int i=0;i<hauteur;i++)
-            for(int j=0;j<largeur;j++){
+        for(int i = 0; i< largeur; i++)
+            for(int j = 0; j< hauteur; j++){
                 tab[i][j] = new Rectangle();
                 tab[i][j].setHeight(30);
                 tab[i][j].setWidth(30);
@@ -74,8 +63,9 @@ public class VueControleur extends Application{
                 tab[i][j].setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent event) {
-                        p.newPiece();
-                        //p.click(ii, jj);
+                        if(p.getPieceCourante() == null)
+                            p.newPiece();
+                            //p.click(ii, jj);
                     }
                 });
 
