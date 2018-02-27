@@ -8,7 +8,7 @@ public class PieceBuilder {
     public final static int YMAX = 5;
 
     public Piece getOTetris(int x,int y){
-        Color couleur = Color.rgb(157,108,142);
+        Color couleur = Color.rgb(157,108,142); //mettre une couleur random
         String nom = "OTetris";
         Case[][] cases = new Case[XMAX][8];
         for(int i=0;i<XMAX;i++)

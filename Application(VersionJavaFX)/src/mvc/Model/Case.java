@@ -7,11 +7,7 @@ public class Case {
     private int x;
     private int y;
     private Color couleur;
-    private int index; //correspond à l'index de la pièce dans la liste de pièces, à -1 si la case n'apparteint a une pièce
-
-    public Case(){
-
-    }
+    private int index; //correspond à l'index de la pièce dans la liste de pièces, à -1 si la case n'appartient pas a une pièce
 
     public Case(int x, int y, Color coul, int i){
         this.x = x;
@@ -19,7 +15,6 @@ public class Case {
         this.couleur = coul;
         this.index = i;
     }
-
 
     public int getX() {
         return x;

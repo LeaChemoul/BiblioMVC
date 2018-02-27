@@ -20,7 +20,14 @@ public class Piece {
         return cases;
     }
 
-    public boolean mouvement(Plateau p, Direction direction){
+
+    /**
+     *
+     * @param p le plateau sur lequel on souhaite effectuer le déplacement de la pièce en question
+     * @param direction Enum qui prend la veleur RIGHT, DOWN ou LEFT
+     * @return
+     */
+    public boolean mouvement(Plateau p, Direction direction){ //Il reste a tester les collisions avec une autre pièce !!
         for(int i = PieceBuilder.XMAX-1;i>=0;i--)
             for(int j = PieceBuilder.YMAX - 1;j>=0;j--) {
                 if(cases[i][j] != null){
@@ -39,6 +46,5 @@ public class Piece {
                 }
             }
         return true;
-
     }
 }
