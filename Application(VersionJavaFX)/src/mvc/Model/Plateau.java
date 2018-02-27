@@ -36,21 +36,7 @@ public class Plateau extends Observable {
     }*/
 
     public boolean poserPiece(Piece piece){
-        Case[][] temp = piece.getCases();
-        piecesPosees.add(piece);
-        for(int i =0;i<5;i++)
-            for(int j = 0;j<5;j++)
-                if(temp[i][j] != null){
-                    int a = temp[i][j].getX();
-                    int b = temp[i][j].getY();
-                    if(tableauJeu[a][b].getIndex() == -1){
-                        tableauJeu[a][b] = temp[i][j];
-                        tableauJeu[a][b].setIndex(piecesPosees.size());
-                    }
-                    else return false;
-                }
-        setChanged();
-        notifyObservers();
+
         return true;
     }
 
@@ -66,6 +52,10 @@ public class Plateau extends Observable {
         return test;
     }
 
+    public void rotationPiece(){
+        //mettrea jour etat rotation pièce
+    }
+
     public void versBas(Piece piece){
 
         setChanged();
@@ -73,7 +63,6 @@ public class Plateau extends Observable {
     }
 
     public void versDroite(Piece piece){
-
         setChanged();
         notifyObservers();
     }
@@ -84,28 +73,15 @@ public class Plateau extends Observable {
     }
 
     public void newPiece(){
-        this.pieceCourante = builder.getITetris(hauteur/2-2,0);
+        //this.pieceCourante = builder.getITetris(hauteur/2-2,0);
         if(!this.poserPiece(pieceCourante))
             System.out.println("GAME OVER");
             this.descendre();
             this.pieceCourante = null;
-        this.pieceCourante = builder.getOTetris(hauteur/2-2,0);
-        if(!this.poserPiece(pieceCourante))
-            System.out.println("GAME OVER");
     }
 
     public void descendre(){
-        boolean enCours = true;
-        while(enCours){
-            enCours = pieceCourante.mouvement(this,Direction.DOWN);
-            setChanged();
-            notifyObservers();
-                /*try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }*/
-        }
+
     }
 
     public Case[][] getTableauJeu(){
@@ -121,20 +97,6 @@ public class Plateau extends Observable {
         setChanged();
         notifyObservers();
     }
-
-    //pseudo code
-   /* public boolean descente(){
-        if(collision())
-            return true;
-        else{
-            //gérer la descente
-
-            //descendre piece
-            setChanged();
-            notifyObservers();
-            descente();
-        }
-    }*/
 
     public boolean collision(){
         return true;

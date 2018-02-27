@@ -41,6 +41,9 @@ public class VueControleur extends Application{
         p.addObserver(new Observer() {
             @Override
             public void update(Observable o, Object arg) {
+
+                //System.out.println("test");
+
                 for(int a = 0; a< largeur; a++)
                     for(int b = 0; b< hauteur; b++){
                         tab[a][b].setFill(p.getTableauJeu()[a][b].getCouleur());
@@ -64,8 +67,8 @@ public class VueControleur extends Application{
                     @Override
                     public void handle(MouseEvent event) {
                         if(p.getPieceCourante() == null)
-                            p.newPiece();
-                            //p.click(ii, jj);
+                            //p.newPiece();
+                            p.click(ii, jj);
                     }
                 });
 
