@@ -15,10 +15,14 @@ public class PieceBuilder {
 
     public void addPiece (String name, int n, int m, Color couleur, int vitesseChute, Vec2d[] tabV ) {
 
-        //TODO : Meilleur nom pour tabV.
         int[][] matricePiece = new int[n][m];
 
         //---- ON REMPLIT MATRICE PIECE
+
+        /* TODO : A LIRE
+            Ici j'ai pris la convention 0 = case vide. Je peux passer à null = case vide si vous préférez,
+            faudra juste modifier quelques bouts du codes.
+         */
 
         //On initialise les cases vides à 0 (Utile? Ou les laisser à Null ?)
         for ( int i = 0; i < n; i++) {
@@ -36,9 +40,9 @@ public class PieceBuilder {
                 return;
             }
 
-            //TODO : Fonction COULEUR TO INT. On met 1 par défaut pour l'instant.
+            //TODO : Fonction COULEUR TO INT pour attribuer des int à une couleur. On met 1 par défaut pour l'instant.
             matricePiece[(int)Coor.x][(int)Coor.y] = 1;
-                //NOTE : VEC2D est un couple de double. Est-ce une bonne idée pour des coordonnées par case ? Cast obligatoire !
+                //TODO : A LIRE ----  VEC2D est un couple de double. Est-ce une bonne idée pour des coordonnées par case ? ( Cast obligatoire ! )
         }
 
         //TODO : Calcul pivot à partir des coordonnées. Pivot = 0,0 par défaut.
@@ -47,7 +51,7 @@ public class PieceBuilder {
         //On génère la pièce et on l'ajoute à notre liste de piece.
         Piece piece = new Piece(name, couleur, vitesseChute, matricePiece , pivot );
         if ( listePieces.containsKey(name) )
-            System.out.println("Une pièce associé à la clé \'"+name+"\' existait déjà, elle a été écrasé par la nouvelle.");
+            System.out.println("Une pièce nommée \'"+name+"\' existait déjà, elle a été écrasé par la nouvelle pièce générée.");
         listePieces.put(name, piece);
 
     }
@@ -69,15 +73,26 @@ public class PieceBuilder {
         listePieces.clear();
     }
 
-    //TODO : A renommer avec un meilleur nom ?
-    public Piece[] recupererListe() {
+    /**
+     * Renvoie un tableau de Piece construit à partir de toutes les pieces contenus dans la HashMap listePieces.
+     * C'est ce format qu'on utilisera pour manipuler nos pieces.
+     * @return
+     */
+    public Piece[] exporterListe() {
 
-        //On renvoie un tableau crée à partir de la HashMap du builder, vu qu'on manipulera pas une HashMap mais un array de
-        //Piece dans le reste du code.
-        return (Piece[])listePieces.values().toArray();
+        return listePieces.values().toArray( new Piece[listePieces.size()] );
 
     }
 
+    //Méthodes booléenes
+    public boolean listeIsEmpty() {
+        return listePieces.isEmpty();
+    }
+    public boolean listeContains(String name) {
+        return listePieces.containsKey(name);
+    }
+
+    //Méthodes d'affichage
 
     public void afficherPiece(String name) {
 
@@ -97,34 +112,54 @@ public class PieceBuilder {
         int n = matricePiece.length;
         int m = matricePiece[0].length;
 
+        System.out.println("Dimensions : "+n+"*"+m);
+
+        //Ligne bordure au sommet.
+        System.out.print("  -");
+        for ( int j = 0; j < m; j++ )
+            System.out.print("---");
+        System.out.println("-");
+
         for ( int i = 0; i < n; i++ ) {
+
+            System.out.print("  |");
             for (int j = 0; j < m; j++) {
 
                 //Si la case est égale à 0, elle est vide. (Convention actuelle. A CHANGER ?)
                 if ( matricePiece[i][j] != 0 )
-                    System.out.print("X");
+                    System.out.print(" X ");
                 else
-                    System.out.print(" ");
+                    System.out.print("   ");
 
             }
-            System.out.println(); //retour chariot.
+            System.out.println("|");
         }
 
+        //Ligne bordure au pied.
+        System.out.print("  -");
+        for ( int j = 0; j < m; j++ )
+            System.out.print("---");
+        System.out.println("-");
+
+        /* TYPE DE RENDU :
+            -------
+            |     |
+            |  X  |
+            | XXX |
+            -------
+         */
+
         //On affiche sa couleur
-            //TODO : INT TO COULEUR. On met RED par défaut.
-        Color coul = Color.RED;
-        System.out.println("Couleur de la piece : "+ coul.toString() );
+            //TODO : Créer un COLOR TO STRING. Pour l'instant getCouleur() et getCouleur().toString() renvoie tout les deux un code hexadecimal dégeulasse.
+        System.out.println("Couleur de la piece : "+ piece.getCouleur() );
 
         //On affiche sa vitesse de chute.
-            //TODO : Getter getVitesse();
-        int vitesse = 0; // piece.getVitesse();
-        System.out.println("Vitesse de chute de la piece : " + vitesse );
+        System.out.println("Vitesse de chute de la piece : " + piece.getVitesseChute() );
 
         //On affiche son pivot.
-            //TODO : Getter getPivot();
-        Vec2d pivot = new Vec2d(0, 0); // piece.getPivot();
-        System.out.println("Coordonnées du pivot : " + pivot );
+        System.out.println("Coordonnées du pivot : " + piece.getPivot() );
 
+        System.out.println("---------------");
     }
 
     public void afficherPieces() {
@@ -135,6 +170,7 @@ public class PieceBuilder {
             return;
         }
 
+        System.out.println("----- Liste des Pieces -----");
         //Pour chaque piece de listePiece, on affiche la piece.
         listePieces.forEach( (name, piece) -> {
             afficherPiece(name);
@@ -143,7 +179,19 @@ public class PieceBuilder {
 
     //Accesseurs
 
-    //TODO : Faire les getters/setters de Piece pour pouvoir modifier Couleur/Vitesse/ect... à travers cette méthode.
+    //TODO : Faire tout les getters/setters de Piece pour pouvoir modifier les attributs Couleur/Vitesse/(ect...) d'une piece à travers cette méthode.
+    public Piece getPiece(String name) {
+
+        //Si la pièce est dans la liste.
+        if ( listePieces.containsKey(name) )
+            return listePieces.get(name);
+
+        //TODO : Raise erreur ?
+        System.out.println("ERREUR : Il n'y a aucune piece avec ce nom dans la liste des pièces !");
+        return null;
+    }
+
+    //Permet de récupérer la HashMap, pas très utile normalement.
     public HashMap<String, Piece> getListePiece() {
         return listePieces;
     }

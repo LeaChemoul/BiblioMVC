@@ -24,6 +24,17 @@ public class Piece {
         return cases;
     }
 
+    public int getVitesseChute() {
+        return vitesseChute;
+    }
+
+    public Vec2d getPivot() {
+        return pivot;
+    }
+    public Color getCouleur() {
+        return couleur;
+
+    }
     public void fission(){
 
     }
