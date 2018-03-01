@@ -83,7 +83,6 @@ public class Plateau extends Observable {
         notifyObservers();
     }
 
-
     public int[][] getTest() {
         return test;
     }
@@ -119,25 +118,25 @@ public class Plateau extends Observable {
         notifyObservers();
     }
 
-    public void deplacer(Direction direction){
+    public void deplacer(Direction direction, Piece piece){
         setChanged();
         notifyObservers();
     }
 
     public void versBas(Piece piece){
-        this.deplacer(Direction.DOWN);
+        this.deplacer(Direction.DOWN, piece);
     }
 
     public void versDroite(Piece piece){
-        this.deplacer(Direction.RIGHT);
+        this.deplacer(Direction.RIGHT, piece);
     }
 
     public void versGauche(Piece piece){
-        this.deplacer(Direction.LEFT);
+        this.deplacer(Direction.LEFT, piece);
     }
 
     public void versHaut(Piece piece){
-        this.deplacer(Direction.UP);
+        this.deplacer(Direction.UP, piece);
     }
 
     public Case[][] getTableauJeu(){
@@ -146,12 +145,6 @@ public class Plateau extends Observable {
 
     public Piece getPieceCourante() {
         return pieceCourante;
-    }
-
-    public void modifierPlateau(int i, int j, Case case1){
-        this.tableauJeu[i][j] = case1;
-        setChanged();
-        notifyObservers();
     }
 
     public boolean collision(){
