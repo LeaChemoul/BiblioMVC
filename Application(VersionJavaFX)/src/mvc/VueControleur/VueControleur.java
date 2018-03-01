@@ -46,7 +46,8 @@ public class VueControleur extends Application{
 
                 for(int a = 0; a< largeur; a++)
                     for(int b = 0; b< hauteur; b++){
-                        tab[a][b].setFill(p.getTableauJeu()[a][b].getCouleur());
+                        if(p.getTableauJeu()[a][b] != null)
+                            tab[a][b].setFill(p.getTableauJeu()[a][b].getCouleur());
                     }
             }
         });
@@ -67,7 +68,7 @@ public class VueControleur extends Application{
                     @Override
                     public void handle(MouseEvent event) {
                         if(p.getPieceCourante() == null)
-                            //p.newPiece();
+                            p.newPiece();
                             p.click(ii, jj);
                     }
                 });

@@ -31,20 +31,24 @@ public class PieceBuilder {
             }
         }
         //Pour chaque coordonnées dans tabV, on définit un bout de piece dans le tableau à ses coordoonnée.
-        for ( Vec2d Coor : tabV ) {
+        if(tabV != null)
+            for ( Vec2d Coor : tabV ) {
 
-            //Gestion erreur (inBound)
-            if ( Coor.x >= n || Coor.x < 0 || Coor.y >= m || Coor.y < 0 ) {
-                //TODO : Raise erreur ? Si on tombe dans ce cas là fonction s'arrête.
-                System.out.println("ERREUR coordonnées non valides ! ( Négative ou supérieur à la taille de la case ) : " + Coor.toString() );
-                return;
+                //Gestion erreur (inBound)
+                if ( Coor.x >= n || Coor.x < 0 || Coor.y >= m || Coor.y < 0 ) {
+                    //TODO : Raise erreur ? Si on tombe dans ce cas là fonction s'arrête.
+                    System.out.println("ERREUR coordonnées non valides ! ( Négative ou supérieur à la taille de la case ) : " + Coor.toString() );
+                    return;
+                }
+
+                //TODO : Fonction COULEUR TO INT pour attribuer des int à une couleur. On met 1 par défaut pour l'instant.
+                matricePiece[(int)Coor.x][(int)Coor.y] = 1;
+                    //TODO : A LIRE ----  VEC2D est un couple de double. Est-ce une bonne idée pour des coordonnées par case ? ( Cast obligatoire ! )
             }
-
-            //TODO : Fonction COULEUR TO INT pour attribuer des int à une couleur. On met 1 par défaut pour l'instant.
-            matricePiece[(int)Coor.x][(int)Coor.y] = 1;
-                //TODO : A LIRE ----  VEC2D est un couple de double. Est-ce une bonne idée pour des coordonnées par case ? ( Cast obligatoire ! )
+        else{
+            //TODO : generer pièce aléatoire
+            //Voir Léa pour son idée d'algo récursif
         }
-
         //TODO : Calcul pivot à partir des coordonnées. Pivot = 0,0 par défaut.
         Vec2d pivot = new Vec2d(0d, 0d);
 
