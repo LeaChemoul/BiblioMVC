@@ -29,8 +29,6 @@ public class VueControleur extends Application{
         
         // initialisation du modèle que l'on souhaite utiliser
         Plateau p = new Plateau(largeur, hauteur);
-        
-        // gestion du placement (permet de placer le champ Text affichage en haut, et GridPane gPane au centre)
         BorderPane border = new BorderPane();
         
         // permet de placer les diffrents boutons dans une grille
@@ -48,6 +46,8 @@ public class VueControleur extends Application{
                     for(int b = 0; b< hauteur; b++){
                         if(p.getTableauJeu()[a][b] != null)
                             tab[a][b].setFill(p.getTableauJeu()[a][b].getCouleur());
+                        else
+                            tab[a][b].setFill(Color.WHITE);
                     }
             }
         });
@@ -67,35 +67,48 @@ public class VueControleur extends Application{
                 tab[i][j].setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent event) {
-                        if(p.getPieceCourante() == null)
+                        if(p.getPieceCourante() == null){
                             p.newPiece();
-                            p.click(ii, jj);
+                            p.versDroite(p.getPieceCourante());
+                        }
+
+                        p.click(ii, jj);
                     }
                 });
-
-                tab[i][j].setOnKeyPressed(new EventHandler<KeyEvent>(){
-                    @Override
-                    public void handle(KeyEvent ke){
-                        System.out.println("Pressed: " + ke.getCode());
-                        if (ke.getCode().equals(KeyCode.LEFT)) {
-                            //bouger à gauche la pièce courante du plateau si possible
-                        }
-                        if (ke.getCode().equals(KeyCode.RIGHT)) {
-                            //bouger à droite la pièce courante du plateau si possible
-                        }
-                        if (ke.getCode().equals(KeyCode.DOWN)) {
-                            //descendre la pièce courante du plateau si possible
-                        }
-                    }
-                });
-
             }
 
-
         gPane.setGridLinesVisible(true);
+
         border.setCenter(gPane);
-        Scene scene = new Scene(border, Color.LIGHTBLUE);
-        
+        Scene scene = new Scene(border, Color.WHITE);
+
+        scene.setOnKeyPressed(new EventHandler<KeyEvent>(){
+            @Override
+            public void handle(KeyEvent ke){
+                System.out.println("Pressed: " + ke.getCode());
+                if (ke.getCode().equals(KeyCode.UP)) {
+                    if(p.getPieceCourante() != null)
+                            p.versHaut(p.getPieceCourante());
+                    //bouger à gauche la pièce courante du plateau si possible
+                }
+                if (ke.getCode().equals(KeyCode.LEFT)) {
+                    if(p.getPieceCourante() != null)
+                        p.versGauche(p.getPieceCourante());
+                    //bouger à gauche la pièce courante du plateau si possible
+                }
+                if (ke.getCode().equals(KeyCode.RIGHT)) {
+                    if(p.getPieceCourante() != null)
+                        p.versDroite(p.getPieceCourante());
+                    //bouger à droite la pièce courante du plateau si possible
+                }
+                if (ke.getCode().equals(KeyCode.DOWN)) {
+                    if(p.getPieceCourante() != null)
+                        p.versBas(p.getPieceCourante());
+                    //descendre la pièce courante du plateau si possible
+                }
+            }
+        });
+
         primaryStage.setTitle("Jeu Plateau");
         primaryStage.setScene(scene);
         primaryStage.show();

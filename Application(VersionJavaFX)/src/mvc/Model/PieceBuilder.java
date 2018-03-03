@@ -13,7 +13,7 @@ public class PieceBuilder {
         listePieces = new HashMap<>();
     }
 
-    public void addPiece (String name, int n, int m, Color couleur, int vitesseChute, Vec2d[] tabV ) {
+    public void addPiece (String name, int n, int m, Color couleur, int vitesseChute, Vec2d[] tabV) {
 
         int[][] matricePiece = new int[n][m];
 
@@ -54,6 +54,8 @@ public class PieceBuilder {
 
         //On génère la pièce et on l'ajoute à notre liste de piece.
         Piece piece = new Piece(name, couleur, vitesseChute, matricePiece , pivot );
+        if(tabV != null)
+            piece.setTaille(tabV.length);
         if ( listePieces.containsKey(name) )
             System.out.println("Une pièce nommée \'"+name+"\' existait déjà, elle a été écrasé par la nouvelle pièce générée.");
         listePieces.put(name, piece);

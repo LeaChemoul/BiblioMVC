@@ -32,9 +32,9 @@ public class Plateau extends Observable {
     }
 
     /**
-     * Pose une piède donnée à une coordonée (x,y) de notre plateau
+     * Pose une pièce donnée à une coordonée (x,y) de notre plateau
      * Lorsque l'on pose notre pièce on veille a bien la démarrer à l'endroit (i,j)
-     * On gère bien les collisions
+     * On gère bien les collisions.
      * @param piece
      * @param i
      * @param j
@@ -45,21 +45,25 @@ public class Plateau extends Observable {
         ArrayList<Vec2d> positionsPlateau = new ArrayList<>();
         boolean pieceTrouvee = false;
         int decalageY = 0;
+        int nbrCasesParcourues = 0;
         //cette variable permet de décaler notre pièce à (i,j) au cas ou elle n'est definie
         // par ex que à une coordonnée (3,2) sur un palteau (4,4)
         for(int x=0; x<piece.getCases().length;x++){
             pieceTrouvee = false;
             int decalageX = 0;
             for (int y = 0; y < piece.getCases().length; y++) {
-                if(i+x < tableauJeu.length && j+y < tableauJeu.length && tableauJeu[i+y][j+x] == null)         //On teste les collisions
+                if(i+y >= 0 && j+x >= 0 && i+y < this.getHauteur() && j+x < this.getLargeur()
+                        && tableauJeu[i+y][j+x] == null  && nbrCasesParcourues<=piece.getTaille())         //On teste les collisions
                 {
+                    //TODO regler le problèmeeeeeee !!!!!!!!! :( lorsqu'on va a droite ou en bas on dépasse la limite
                     if (piece.getCases()[x][y] == 1){
                         positionsPlateau.add(new Vec2d(i + y -decalageX, j + x - decalageY));
                         pieceTrouvee = true;
+                        nbrCasesParcourues ++;
                     }
                 }
                 else{
-                    System.out.println("La place est occupée");
+                    System.out.println("La place est occupée ou en dehors du plateau");
                     return false;
                 }
                 if(!pieceTrouvee)
@@ -104,7 +108,7 @@ public class Plateau extends Observable {
         this.pieceCourante = builder.getPiece("test");
         this.piecesPosees.add(pieceCourante);
         this.poserPiecePlateau(pieceCourante,0,0);
-        Vec2d[] listeVect2 = new Vec2d[4];
+        /*Vec2d[] listeVect2 = new Vec2d[4];
         listeVect2[0] = new Vec2d(2,2);
         listeVect2[1] = new Vec2d(1,1);
         listeVect2[2] = new Vec2d(1,2);
@@ -113,12 +117,17 @@ public class Plateau extends Observable {
         builder.afficherPiece("test2");
         this.pieceCourante = builder.getPiece("test2");
         this.piecesPosees.add(pieceCourante);
-        this.poserPiecePlateau(pieceCourante, 1,1);
+        this.poserPiecePlateau(pieceCourante, 0,1); //collision
+        this.poserPiecePlateau(pieceCourante, 1,1);*/
         setChanged();
         notifyObservers();
     }
 
     public void deplacer(Direction direction, Piece piece){
+        //tester si la place est occupée avant de bouger
+        Vec2d position = effacerPiecePlateau(piece);
+        if(position != null)
+            this.poserPiecePlateau(piece,(int) position.x + direction.x, (int) position.y +direction.y);
         setChanged();
         notifyObservers();
     }
@@ -137,6 +146,29 @@ public class Plateau extends Observable {
 
     public void versHaut(Piece piece){
         this.deplacer(Direction.UP, piece);
+    }
+
+    /**
+     * Efface une pièce mais retourne la position ou elle était.
+     * @param piece
+     * @return
+     */
+    public Vec2d effacerPiecePlateau(Piece piece){
+        int index = this.piecesPosees.indexOf(piece);
+        Vec2d position = null;
+        boolean trouve = false;
+        for (int i = 0; i < this.hauteur; i++) {
+            for (int j = 0; j < this.largeur; j++) {
+                if(this.tableauJeu[i][j] != null && this.tableauJeu[i][j].getIndex() == index){
+                    if(!trouve){
+                        position = new Vec2d(i,j);
+                        trouve = true;
+                    }
+                    tableauJeu[i][j] = null;
+                }
+            }
+        }
+        return position;
     }
 
     public Case[][] getTableauJeu(){

@@ -6,6 +6,7 @@ import javafx.scene.paint.Color;
 
 public class Piece {
     private  String nom;
+    private int taille;
     private Color couleur;
     private int vitesseChute;
     private Vec2d pivot;
@@ -36,11 +37,20 @@ public class Piece {
     public Color getCouleur() {
         return couleur;
     }
+
+    public int getTaille(){
+        return this.taille;
+    }
+
     public void fission(){
 
     }
 
     public void rotation(){
 
+    }
+
+    public void setTaille(int taille) {
+        this.taille = taille;
     }
 }
