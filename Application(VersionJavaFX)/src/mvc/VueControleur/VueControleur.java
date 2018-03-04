@@ -69,10 +69,7 @@ public class VueControleur extends Application{
                     public void handle(MouseEvent event) {
                         if(p.getPieceCourante() == null){
                             p.newPiece();
-                            p.versDroite(p.getPieceCourante());
                         }
-
-                        p.click(ii, jj);
                     }
                 });
             }
@@ -104,6 +101,8 @@ public class VueControleur extends Application{
                 if (ke.getCode().equals(KeyCode.DOWN)) {
                     if(p.getPieceCourante() != null)
                         p.versBas(p.getPieceCourante());
+                    //TODO ici test de la descente, automatqiue : synchroniser l'affichage
+                    //p.descente(p.getPieceCourante());
                     //descendre la pièce courante du plateau si possible
                 }
             }
