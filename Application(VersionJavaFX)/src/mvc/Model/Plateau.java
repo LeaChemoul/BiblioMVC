@@ -3,6 +3,7 @@ package mvc.Model;
 import com.sun.javafx.geom.Vec2d;
 import javafx.scene.paint.Color;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Observable;
 
@@ -125,9 +126,13 @@ public class Plateau extends Observable {
 
     public void deplacer(Direction direction, Piece piece){
         //tester si la place est occupée avant de bouger
-        Vec2d position = effacerPiecePlateau(piece);
-        if(position != null)
-            this.poserPiecePlateau(piece,(int) position.x + direction.x, (int) position.y +direction.y);
+        ArrayList<Vec2d> positions = occurencesPiecesPlateau(piece);
+        if(positions != null){
+            if(!collision(positions, direction,this.piecesPosees.indexOf(piece))){
+                effacerPiecePlateau(positions);
+                this.poserPiecePlateau(piece,(int) positions.get(0).x + direction.x, (int) positions.get(0).y +direction.y);
+            }
+        }
         setChanged();
         notifyObservers();
     }
@@ -153,22 +158,33 @@ public class Plateau extends Observable {
      * @param piece
      * @return
      */
-    public Vec2d effacerPiecePlateau(Piece piece){
+    public ArrayList<Vec2d> occurencesPiecesPlateau(Piece piece){
         int index = this.piecesPosees.indexOf(piece);
-        Vec2d position = null;
-        boolean trouve = false;
+        ArrayList<Vec2d> positions = new ArrayList<>();
         for (int i = 0; i < this.hauteur; i++) {
             for (int j = 0; j < this.largeur; j++) {
                 if(this.tableauJeu[i][j] != null && this.tableauJeu[i][j].getIndex() == index){
-                    if(!trouve){
-                        position = new Vec2d(i,j);
-                        trouve = true;
-                    }
-                    tableauJeu[i][j] = null;
+                    positions.add(new Vec2d(i,j));
                 }
             }
         }
-        return position;
+        return positions;
+    }
+
+    public boolean collision(ArrayList<Vec2d> occurences, Direction dir, int index){
+        for (Vec2d occurence : occurences){
+            int a = (int) occurence.x + dir.x;
+            int b = (int) occurence.y + dir.y;
+            if (a<0 || a>=this.largeur || b< 0 || b>=this.hauteur || (this.getTableauJeu()[a][b] != null && this.getTableauJeu()[a][b].getIndex() != index ))
+                return true;
+        }
+        return false;
+    }
+
+    public void effacerPiecePlateau(ArrayList<Vec2d> occurences){
+        for (Vec2d occurence : occurences) {
+            this.getTableauJeu()[(int) occurence.x][(int) occurence.y] = null;
+        }
     }
 
     public Case[][] getTableauJeu(){
@@ -179,9 +195,6 @@ public class Plateau extends Observable {
         return pieceCourante;
     }
 
-    public boolean collision(){
-        return true;
-    }
 
     public int getLargeur() {
         return largeur;
