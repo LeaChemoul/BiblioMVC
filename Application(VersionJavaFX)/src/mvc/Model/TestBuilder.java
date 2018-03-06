@@ -13,7 +13,6 @@ public class TestBuilder {
         System.out.println("    TEST - Affichage d'une liste vide :");
         builder.afficherPieces();
 
-
         System.out.println("    TEST - Remplissage de la liste du Builder avec deux nouvelles pieces + Affichage toute une liste");
         Vec2d[] listeCoor = new Vec2d[] { new Vec2d(0, 1), new Vec2d(0, 2), new Vec2d(0, 3), new Vec2d(0, 0) };
         builder.addPiece("Barre", 4, 4, Color.GREEN, listeCoor);
@@ -48,8 +47,36 @@ public class TestBuilder {
         else
             System.out.println("La liste n'est pas vide!");
 
+
+        listeCoor = new Vec2d[] { new Vec2d(0, 1), new Vec2d(1, 0), new Vec2d(1, 1), new Vec2d(2, 0) };
+        builder.addPiece("Zigzag1", 3, 3, Color.RED, listeCoor);
+        listeCoor = new Vec2d[] { new Vec2d(0, 0), new Vec2d(1, 0), new Vec2d(2, 0), new Vec2d(3, 0) };
+        builder.addPiece("Barre", 4, 4, Color.RED, listeCoor);
+
         System.out.println("    TEST - Exporter liste (Fonctionne si aucun message d'erreur) ");
         Piece[] listeDesPieces = builder.exporterListe();
+
+        builder.afficherPieces();
+        System.out.println("    TEST - Rotation droite ");
+        listeDesPieces[0].Rotation(Direction.RIGHT);
+        listeDesPieces[0].afficherPiece();
+        System.out.println("    TEST - Rotation droite ");
+        listeDesPieces[0].Rotation(Direction.RIGHT);
+        listeDesPieces[0].afficherPiece();
+        System.out.println("    TEST - Rotation gauche ");
+        listeDesPieces[0].Rotation(Direction.LEFT);
+        listeDesPieces[0].afficherPiece();
+
+
+        System.out.println("    TEST - Rotation gauche ");
+        listeDesPieces[1].Rotation(Direction.LEFT);
+        listeDesPieces[1].afficherPiece();
+        System.out.println("    TEST - Rotation gauche ");
+        listeDesPieces[1].Rotation(Direction.LEFT);
+        listeDesPieces[1].afficherPiece();
+        System.out.println("    TEST - Rotation vide (droite) ");
+        listeDesPieces[1].Rotation(Direction.UP);
+        listeDesPieces[1].afficherPiece();
 
 
     }

@@ -23,6 +23,58 @@ public class Piece {
     }
 
 
+    public void Rotation(Direction sens){ // tourne une pièce p de 90 degrés dans le sens horaire "h" ou le sens trigonométrique "t"
+        int[][] m = getCases(); // On récupère la matrice locale de la pièce
+        int l = m.length -1; // longueur de la matrice, celle-ci est carrée
+        for (int i = 0; i <= l/2; i++){ // On se déplace de la couronne extérieure à la couronne intérieur
+            for (int j = i; j < l-i; j++){ // on prend les cases à tourner 4 par 4 dans la couronne
+                // coordonnées des cases de la couronne
+                int c1 = m[i][j];
+                int c2 = m[j][l-i];
+                int c3 = m[l-i][l-j];
+                int c4 = m[l-j][i];
+                switch (sens){
+                    case LEFT : // sens trigonométrique
+                        m[l-j][i] = c1;
+                        m[i][j] = c2;
+                        m[j][l-i] = c3;
+                        m[l-i][l-j] = c4;
+                        break;
+                    case RIGHT : // sens horaire (par défaut si choix non valide)
+                    default :
+                        m[j][l-i] = c1;
+                        m[l-i][l-j] = c2;
+                        m[l-j][i] = c3;
+                        m[i][j] = c4;
+                        break;
+                }
+
+            }
+        }
+    }
+
+
+    public void fission(){
+
+    }
+
+
+    public void calculPivot() {
+        pivot = new Vec2d(0,0);
+        int nbCases = 0;
+        for (int i = 0; i < cases.length-1; i++) {
+            for (int j = 0; j < cases.length-1; j++) {
+                if ( cases[i][j] != 0 ) {
+                    nbCases++;
+                    pivot.x += i + 0.5;
+                    pivot.y += j + 0.5;
+                }
+            }
+        }
+        pivot.x /= nbCases;
+        pivot.y /= nbCases;
+    }
+
     public void afficherPiece() {
 
         //On affiche le nom de la pièce.
@@ -84,6 +136,7 @@ public class Piece {
         System.out.println("---------------");
     }
 
+
     //Accesseurs
     public int[][] getCases() {
         return cases;
@@ -103,14 +156,6 @@ public class Piece {
 
     public int getTaille(){
         return this.taille;
-    }
-
-    public void fission(){
-
-    }
-
-    public void rotation(){
-
     }
 
     public void setTaille(int taille) {
