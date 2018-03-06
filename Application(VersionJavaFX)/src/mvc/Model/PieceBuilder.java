@@ -60,6 +60,28 @@ public class PieceBuilder {
 
     }
 
+    public void addPiece (String name, Color couleur, int vitesseChute, Vec2d[] tabV) {
+
+        //boolean colGaucheVide = true;
+        //boolean ligBottomVide = true;
+        int maxX = 0;
+        int maxY = 0;
+        //On cherche la taille de matrice nécessaire pour acceuillir la pièce.
+
+        //On cherche les maximums x et y
+        for ( Vec2d Coor : tabV ) {
+            if ( Coor.x > maxX )
+                maxX = (int)Coor.x;
+            if ( Coor.y > maxY )
+                maxY = (int)Coor.y;
+        }
+
+        int tMat = Math.max(maxX, maxY) + 1;
+
+        addPiece(name, tMat, tMat, couleur, vitesseChute, tabV);
+
+    }
+
     //Surcharges de addPiece() pour entrer moins de valeur
     //TODO : Se mettre d'accord sur des valeurs de Couleur et vitesseChute par défaut, ici RED et 0.
     public void addPiece (String name, int n, int m, Vec2d[] tabV ) {
@@ -67,6 +89,9 @@ public class PieceBuilder {
     }
     public void addPiece (String name, int n, int m, Color couleur, Vec2d[] tabV ) {
         addPiece(name, n, m, couleur, 0, tabV );
+    }
+    public void addPiece (String name, Color couleur, Vec2d[] tabV ) {
+        addPiece(name, couleur, 0, tabV );
     }
 
     public void removePiece (String name) {
