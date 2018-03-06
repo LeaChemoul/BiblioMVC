@@ -17,6 +17,9 @@ public class PieceBuilder {
 
         int[][] matricePiece = new int[n][m];
 
+        //Pivot de la piece = somme des x et y de ses cases divisés par le nombre de cases de la pièce.
+        Vec2d pivot = new Vec2d(0,0);
+
         //---- ON REMPLIT MATRICE PIECE
 
         /* TODO : A LIRE
@@ -34,6 +37,9 @@ public class PieceBuilder {
         if(tabV != null)
             for ( Vec2d Coor : tabV ) {
 
+                pivot.x += Coor.x+0.5;
+                pivot.y += Coor.y+0.5;
+
                 //Gestion erreur (inBound)
                 if ( Coor.x >= n || Coor.x < 0 || Coor.y >= m || Coor.y < 0 ) {
                     //TODO : Raise erreur ? Si on tombe dans ce cas là fonction s'arrête.
@@ -49,8 +55,10 @@ public class PieceBuilder {
             //TODO : generer pièce aléatoire
             //Voir Léa pour son idée d'algo récursif
         }
-        //TODO : Calcul pivot à partir des coordonnées. Pivot = 0,0 par défaut.
-        Vec2d pivot = new Vec2d(0d, 0d);
+
+        //Calcul pivot
+        pivot.x /= tabV.length;
+        pivot.y /= tabV.length;
 
         //On génère la pièce et on l'ajoute à notre liste de piece.
         Piece piece = new Piece(name, couleur, vitesseChute, matricePiece , pivot );
@@ -85,9 +93,7 @@ public class PieceBuilder {
      * @return
      */
     public Piece[] exporterListe() {
-
         return listePieces.values().toArray( new Piece[listePieces.size()] );
-
     }
 
     //Méthodes booléenes
@@ -101,7 +107,6 @@ public class PieceBuilder {
     //Méthodes d'affichage
 
     public void afficherPiece(String name) {
-
         Piece piece = listePieces.get(name);
 
         if (piece == null) { //La piece n'existe pas !
@@ -109,63 +114,7 @@ public class PieceBuilder {
             return;
         }
 
-        //On affiche le nom de la pièce.
-        System.out.println("Piece \'"+name+"\' : ");
-
-            //On récupère la matrice qui la compose.
-        int[][] matricePiece = piece.getCases();
-            //On récupère les dimensions de la pièce.
-        int n = matricePiece.length;
-        int m = matricePiece[0].length;
-
-        System.out.println("Dimensions : "+n+"*"+m);
-
-        //Ligne bordure au sommet.
-        System.out.print("  -");
-        for ( int j = 0; j < m; j++ )
-            System.out.print("---");
-        System.out.println("-");
-
-        for ( int i = 0; i < n; i++ ) {
-
-            System.out.print("  |");
-            for (int j = 0; j < m; j++) {
-
-                //Si la case est égale à 0, elle est vide. (Convention actuelle. A CHANGER ?)
-                if ( matricePiece[i][j] != 0 )
-                    System.out.print(" X ");
-                else
-                    System.out.print("   ");
-
-            }
-            System.out.println("|");
-        }
-
-        //Ligne bordure au pied.
-        System.out.print("  -");
-        for ( int j = 0; j < m; j++ )
-            System.out.print("---");
-        System.out.println("-");
-
-        /* TYPE DE RENDU :
-            -------
-            |     |
-            |  X  |
-            | XXX |
-            -------
-         */
-
-        //On affiche sa couleur
-            //TODO : Créer un COLOR TO STRING. Pour l'instant getCouleur() et getCouleur().toString() renvoie tout les deux un code hexadecimal dégeulasse.
-        System.out.println("Couleur de la piece : "+ piece.getCouleur() );
-
-        //On affiche sa vitesse de chute.
-        System.out.println("Vitesse de chute de la piece : " + piece.getVitesseChute() );
-
-        //On affiche son pivot.
-        System.out.println("Coordonnées du pivot : " + piece.getPivot() );
-
-        System.out.println("---------------");
+        piece.afficherPiece();
     }
 
     public void afficherPieces() {

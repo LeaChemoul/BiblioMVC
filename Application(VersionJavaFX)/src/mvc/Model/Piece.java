@@ -22,6 +22,69 @@ public class Piece {
         this.pivot = pivot;
     }
 
+
+    public void afficherPiece() {
+
+        //On affiche le nom de la pièce.
+        System.out.println("Piece \'"+nom+"\' : ");
+
+        //On récupère la matrice qui la compose.
+        int[][] matricePiece = getCases();
+        //On récupère les dimensions de la pièce.
+        int n = matricePiece.length;
+        int m = matricePiece[0].length;
+
+        System.out.println("Dimensions : "+n+"*"+m);
+
+        //Ligne bordure au sommet.
+        System.out.print("  -");
+        for ( int j = 0; j < m; j++ )
+            System.out.print("---");
+        System.out.println("-");
+
+        for ( int i = 0; i < n; i++ ) {
+
+            System.out.print("  |");
+            for (int j = 0; j < m; j++) {
+
+                //Si la case est égale à 0, elle est vide. (Convention actuelle. A CHANGER ?)
+                if ( matricePiece[i][j] != 0 )
+                    System.out.print(" X ");
+                else
+                    System.out.print("   ");
+
+            }
+            System.out.println("|");
+        }
+
+        //Ligne bordure au pied.
+        System.out.print("  -");
+        for ( int j = 0; j < m; j++ )
+            System.out.print("---");
+        System.out.println("-");
+
+        /* TYPE DE RENDU :
+            -------
+            |     |
+            |  X  |
+            | XXX |
+            -------
+         */
+
+        //On affiche sa couleur
+        //TODO : Créer un COLOR TO STRING. Pour l'instant getCouleur() et getCouleur().toString() renvoie tout les deux un code hexadecimal dégeulasse.
+        System.out.println("Couleur de la piece : "+ getCouleur() );
+
+        //On affiche sa vitesse de chute.
+        System.out.println("Vitesse de chute de la piece : " + getVitesseChute() );
+
+        //On affiche son pivot.
+        System.out.println("Coordonnées du pivot : " + getPivot() );
+
+        System.out.println("---------------");
+    }
+
+    //Accesseurs
     public int[][] getCases() {
         return cases;
     }
