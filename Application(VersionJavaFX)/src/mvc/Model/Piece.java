@@ -14,12 +14,12 @@ public class Piece {
     private int[][] cases;
     private int rotationState; // A voir : 0 si initial, 1 si tourné uen fosi droite, 2 si tourné 2 fois. Idem pour 3.
 
-    public Piece(String nom, Color couleur, int vitesse, int[][] cases, Vec2d pivot) {
+    public Piece(String nom, Color couleur, int vitesse, int[][] cases) {
         this.nom = nom;
         this.couleur = couleur;
         this.vitesseChute = vitesse;
         this.cases = cases;
-        this.pivot = pivot;
+        calculPivot();
     }
 
 
@@ -51,6 +51,7 @@ public class Piece {
 
             }
         }
+        calculPivot();
     }
 
 
@@ -62,8 +63,8 @@ public class Piece {
     public void calculPivot() {
         pivot = new Vec2d(0,0);
         int nbCases = 0;
-        for (int i = 0; i < cases.length-1; i++) {
-            for (int j = 0; j < cases.length-1; j++) {
+        for (int i = 0; i < cases.length; i++) {
+            for (int j = 0; j < cases[0].length; j++) {
                 if ( cases[i][j] != 0 ) {
                     nbCases++;
                     pivot.x += i + 0.5;
