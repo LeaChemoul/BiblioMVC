@@ -3,38 +3,36 @@ package mvc.VueControleur;
 
 import java.util.Observable;
 import java.util.Observer;
-import javafx.application.Application;
-
 import javafx.event.EventHandler;
-import javafx.scene.Scene;
-
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
+import javafx.geometry.Insets;
+import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.stage.Stage;
-import mvc.Model.Direction;
 import mvc.Model.Plateau;
 
-public class VueControleur extends Application{
+import javafx.scene.text.Text;
 
-    private int largeur = 10;
-    private int hauteur = 20;
+public class VueControleur extends BorderPane{
 
-    @Override
-    public void start(Stage primaryStage) {
+    private int largeur;
+    private int hauteur;
+    private Plateau p;
+    private Rectangle[][] tab;
+
+    public VueControleur(int a,int b) {
+        this.largeur = a;
+        this.hauteur = b;
         
         // initialisation du modèle que l'on souhaite utiliser
-        Plateau p = new Plateau(largeur, hauteur);
-        BorderPane border = new BorderPane();
-        
+        p = new Plateau(largeur, hauteur);
+
         // permet de placer les diffrents boutons dans une grille
         GridPane gPane = new GridPane();
 
-        Rectangle[][] tab = new Rectangle[largeur][hauteur];
+        tab = new Rectangle[largeur][hauteur];
         // la vue observe les "update" du modèle, et réalise les mises à jour graphiques
         p.addObserver(new Observer() {
             @Override
@@ -60,73 +58,44 @@ public class VueControleur extends Application{
                 tab[i][j].setWidth(30);
                 tab[i][j].setFill(Color.TRANSPARENT);
                 gPane.add(tab[i][j],i, j);
-
-                final int ii = i;
-                final int jj = j;
-
-                tab[i][j].setOnMouseClicked(new EventHandler<MouseEvent>() {
+                /*tab[i][j].setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent event) {
                         if(p.getPieceCourante() == null){
                             p.newPiece();
                         }
                     }
-                });
+                });*/
             }
 
+        //CENTER
         gPane.setGridLinesVisible(true);
+        this.setCenter(gPane);
+        this.setPadding(new Insets(10, 20, 10, 20));
 
-        border.setCenter(gPane);
-        Scene scene = new Scene(border, Color.WHITE);
+        //TOP
+        Text titre = new Text("Le super TETRIS");
+        this.setTop(titre);
 
-        scene.setOnKeyPressed(new EventHandler<KeyEvent>(){
-            @Override
-            public void handle(KeyEvent ke){
-                System.out.println("Pressed: " + ke.getCode());
-                if (ke.getCode().equals(KeyCode.UP)) {
-                    if(p.getPieceCourante() != null)
-                            p.versHaut(p.getPieceCourante());
-                    //bouger à gauche la pièce courante du plateau si possible
-                }
-                if (ke.getCode().equals(KeyCode.LEFT)) {
-                    if(p.getPieceCourante() != null)
-                        p.versGauche(p.getPieceCourante());
-                    //bouger à gauche la pièce courante du plateau si possible
-                }
-                if (ke.getCode().equals(KeyCode.RIGHT)) {
-                    if(p.getPieceCourante() != null)
-                        p.versDroite(p.getPieceCourante());
-                    //bouger à droite la pièce courante du plateau si possible
-                }
-                if (ke.getCode().equals(KeyCode.DOWN)) {
-                    if(p.getPieceCourante() != null)
-                        p.versBas(p.getPieceCourante());
-                    //TODO ici test de la descente, automatqiue : synchroniser l'affichage
-                    //p.descente(p.getPieceCourante());
-                    //descendre la pièce courante du plateau si possible
-                }
-            }
-        });
+        //RIGHT
+        Button startButton = new Button();
+        this.setRight(startButton);
 
-        primaryStage.setTitle("Jeu Plateau");
-        primaryStage.setScene(scene);
-        primaryStage.show();
     }
 
-
-    public EventHandler<KeyEvent> test = new EventHandler<KeyEvent>(){
-
-        @Override
-        public void handle(KeyEvent event) {
-            System.out.println("Pressed: " + event.getCode());
-        }
-    };
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        launch(args);
+    public Plateau getP() {
+        return p;
     }
 
+    public Rectangle[][] getTab() {
+        return tab;
+    }
+
+    public int getLargeur() {
+        return largeur;
+    }
+
+    public int getHauteur() {
+        return hauteur;
+    }
 }
