@@ -23,7 +23,6 @@ public class Piece {
     }
 
 
-
     public void afficherPiece() {
 
         //On affiche le nom de la pièce.
@@ -85,12 +84,6 @@ public class Piece {
         System.out.println("---------------");
     }
 
-    public void fission(){
-    }
-
-    public void rotation(){
-    }
-
     //Accesseurs
     public int[][] getCases() {
         return cases;
@@ -112,6 +105,13 @@ public class Piece {
         return this.taille;
     }
 
+    public void fission(){
+
+    }
+
+    public void rotation(){
+
+    }
 
     public void setTaille(int taille) {
         this.taille = taille;

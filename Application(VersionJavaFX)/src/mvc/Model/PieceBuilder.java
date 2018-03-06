@@ -17,6 +17,9 @@ public class PieceBuilder {
 
         int[][] matricePiece = new int[n][m];
 
+        //Pivot de la piece = somme des x et y de ses cases divisés par le nombre de cases de la pièce.
+        Vec2d pivot = new Vec2d(0,0);
+
         //---- ON REMPLIT MATRICE PIECE
 
         /* TODO : A LIRE
@@ -34,6 +37,9 @@ public class PieceBuilder {
         if(tabV != null)
             for ( Vec2d Coor : tabV ) {
 
+                pivot.x += Coor.x+0.5;
+                pivot.y += Coor.y+0.5;
+
                 //Gestion erreur (inBound)
                 if ( Coor.x >= n || Coor.x < 0 || Coor.y >= m || Coor.y < 0 ) {
                     //TODO : Raise erreur ? Si on tombe dans ce cas là fonction s'arrête.
@@ -49,8 +55,10 @@ public class PieceBuilder {
             //TODO : generer pièce aléatoire
             //Voir Léa pour son idée d'algo récursif
         }
-        //TODO : Calcul pivot à partir des coordonnées. Pivot = 0,0 par défaut.
-        Vec2d pivot = new Vec2d(0d, 0d);
+
+        //Calcul pivot
+        pivot.x /= tabV.length;
+        pivot.y /= tabV.length;
 
         //On génère la pièce et on l'ajoute à notre liste de piece.
         Piece piece = new Piece(name, couleur, vitesseChute, matricePiece , pivot );
@@ -108,7 +116,6 @@ public class PieceBuilder {
 
         piece.afficherPiece();
     }
-
 
     public void afficherPieces() {
 
