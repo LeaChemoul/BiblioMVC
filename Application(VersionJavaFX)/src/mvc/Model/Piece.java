@@ -25,8 +25,12 @@ public class Piece {
         calculPivot();
     }
 
-
-    public void Rotation(Direction sens){ // tourne une pièce p de 90 degrés dans le sens horaire "h" ou le sens trigonométrique "t"
+    /**
+     * Tourne une pièce de 90° degré dans sa matrice locale
+     * dans le sens trigonométrique (LEFT) ou horaire (RIGHT, ou par défaut) en fonction de la direction sens
+     * @param sens
+     */
+    public void Rotation(Direction sens){
         int[][] m = getCases(); // On récupère la matrice locale de la pièce
         int l = m.length -1; // longueur de la matrice, celle-ci est carrée
         for (int i = 0; i <= l/2; i++){ // On se déplace de la couronne extérieure à la couronne intérieur
@@ -153,7 +157,7 @@ public class Piece {
 
     /**
      * Translate toutes les cases de la pièce d'une case dans la matrice locale vers la direction donnée.
-     * @param dir Direction vers laquelle translater la pice
+     * @param dir Direction vers laquelle translater la piece
      */
     //Testé & Fonctionnelle.
     //Va servir à centrer les pièces.
