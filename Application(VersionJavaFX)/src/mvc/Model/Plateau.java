@@ -52,20 +52,24 @@ public class Plateau extends Observable {
      * @return
      */
     synchronized public boolean poserPiecePlateau(Piece piece,int i, int j){
+        //On parcours le plateau de jeu depuis la position (i,j) et les cases de la pièce simultanement.
         //On ajoutera à positionsPlateau les positions de notre plateau à remplir par notre pièce. Evite uen boucle supplémentaire.
-        ArrayList<Vec2d> positionsPlateau = new ArrayList<>();
+        ArrayList<Vec2d> positionsPlateau = new ArrayList<>(); // Les positions (x,y) du plateau où il faudra placer notre pièce
         int index = this.piecesPosees.indexOf(piece);
-        boolean pieceTrouvee = false;
+        boolean pieceTrouvee;
+        //cette variable permet de garder en mémoire combien de colonnes de Piece.cases nous avons parcourus avant de trouver la pièce : décalage
         int decalageX = 0;
+        int decalageY = 0;
         int nbrCasesParcourues = 0;
-        //cette variable permet de décaler notre pièce à (i,j) au cas ou elle n'est definie
-        // par ex que à une coordonnée (3,2) sur un plateau (4,4)
-        for(int x=0; x<piece.getCases().length;x++){
+        //on parcours le tableau de cases de notre pièce.
+        for(int x=0; x<piece.getCases().length;x++){ //Parcours des colonnes
             pieceTrouvee = false;
-            int decalageY = 0;
-            for (int y = 0; y < piece.getCases().length; y++) {
-                if(i+y >= 0 && j+x >= 0 && i+y-decalageY< this.getLargeur() && j+x-decalageX < this.getHauteur()
-                        && (tableauJeu[i+y-decalageY][j+x-decalageX] == null || (tableauJeu[i+y][j+x]!= null && tableauJeu[i+y][j+x].getIndex() == index))) //On teste les collisions
+            for (int y = 0; y < piece.getCases().length; y++) { //Parcours des lignes
+                if(i+y >= 0 && j+x >= 0
+                        && i+y-decalageY< this.getLargeur() && j+x-decalageX < this.getHauteur() //Si cela ne dépasses pas notre plateau de jeu
+                        //On teste les collisions
+                        && (tableauJeu[i+y-decalageY][j+x-decalageX] == null || //Ou la case est vide et on peut poser notre pièce.
+                                (tableauJeu[i+y][j+x]!= null && tableauJeu[i+y][j+x].getIndex() == index))) //Ou c'est une occurence de notre pièce (avant d'être bougée)
                 {
                     if (piece.getCases()[x][y] == 1){
                         positionsPlateau.add(new Vec2d(i + y -decalageY, j + x - decalageX));
@@ -80,12 +84,12 @@ public class Plateau extends Observable {
                     return false;
                 }
                 if(!pieceTrouvee)
-                    decalageY ++;
+                    decalageY ++; //On a toujours pas trouvé notre pièce on décale en ligne
             }
             if(!pieceTrouvee)
-                decalageX ++;
+                decalageX ++; //On a toujours pas trouvé notre pièce on décale en colonne
         }
-        for (Vec2d aPositionsPlateau : positionsPlateau) {
+        for (Vec2d aPositionsPlateau : positionsPlateau) { //On met à jour le plateau en y posant la pièce
             int ii = (int) aPositionsPlateau.x;
             int jj = (int) aPositionsPlateau.y;
             this.tableauJeu[ii][jj] = new Case(ii,jj, piece.getCouleur(),index);
@@ -93,24 +97,15 @@ public class Plateau extends Observable {
         return true;
     }
 
-    public void click(int i, int j){
-        test[i][j] = 1;
-
-        setChanged();
-        notifyObservers();
-    }
-
-    public int[][] getTest() {
-        return test;
-    }
-
     public void rotationPiece(){
         //mettre a jour etat rotation pièce
     }
 
-
+    /**
+     * On crée une nouvelle instance de pièce qu'on pose sur notre plateau de jeu.
+     */
     public void newPiece(){
-        //TEST de cération et d'affichage d'une pièce
+        //TEST de création et d'affichage d'une pièce
         Vec2d[] listeVect = new Vec2d[4];
         listeVect[0] = new Vec2d(2,2);
         listeVect[1] = new Vec2d(1,2);
@@ -137,15 +132,23 @@ public class Plateau extends Observable {
         notifyObservers();
     }
 
+    /**
+     * Prends en charge le déplacement d'une piece sur un plateau
+     * @param direction Enum qui determine si on la déplace en haut, a droite, à gauche ou en bas
+     * @param piece Piece à déplacer
+     * @param nbrDeplac Determine combien de fois on souhaite déplacer la pièce dans telle direction
+     */
     public void deplacer(Direction direction, Piece piece, int nbrDeplac){
         //tester si la place est occupée avant de bouger
-        int iter = 1;
+        int iter = 1; //L'itérateur qui va compter le nombea de déplacements réalisés.
         while(iter <= nbrDeplac){
-            ArrayList<Vec2d> positions = occurrencesPiecesPlateau(piece);
+            ArrayList<Vec2d> positions = occurrencesPiecesPlateau(piece); //Toutes les occurences de notre pièce donnée sur le plateau
             if(positions != null){
 
-                    if(!collision(positions, direction,this.piecesPosees.indexOf(piece))){
-                        effacerPiecePlateau(positions);
+                    if(!collision(positions, direction,this.piecesPosees.indexOf(piece))){ //Si nos positions ne génère pas de collisions
+                        effacerPiecePlateau(positions); //On éfface la pièce
+                        //On la pose aux nouvelle coordonnées.
+                        // On la place à partir de la position précédente auquel on a ajouté (0,-1) par exemple pour la descendre verticalement
                         this.poserPiecePlateau(piece,(int) positions.get(0).x + direction.x, (int) positions.get(0).y +direction.y);
                     }else{
                         break;
@@ -157,7 +160,7 @@ public class Plateau extends Observable {
         notifyObservers();
     }
 
-    public void descente(Piece piece){
+    public void descente(Piece piece){ //Descente jusqu'a la fin du plateau ou la rencontre d'ne autre pièce
         deplacer(Direction.DOWN, piece, this.getHauteur());
     }
 
@@ -178,8 +181,8 @@ public class Plateau extends Observable {
     }
 
     /**
-     * Efface une pièce mais retourne la position ou elle était.
-     * @param piece
+     * Retourne toutes les occurences (i,j) d'une pièce sur le plateau
+     * @param piece notre pièce
      * @return
      */
     public ArrayList<Vec2d> occurrencesPiecesPlateau(Piece piece){
@@ -218,7 +221,7 @@ public class Plateau extends Observable {
     //Méthodes relatives à PoolDePiece
     /*
         PoolDePiece va contenir les pièces générés à travers le Builder et qu'on va utiliser dans notre jeu. On veut pouvoir :
-        - Juste piocher une pièce aléatoirement sans la retire de la liste (cas Tetris)
+        - Juste piocher une pièce aléatoirement sans la retirer de la liste (cas Tetris)
         - Retirer des pièces (Cas Blokus. Possibilité d'avoir une liste de pièce nécessaire pour chaque joueur.)
         - Ajouter des pièces (autre jeux non couverts dans ceux que l'on doit créer.
      */
