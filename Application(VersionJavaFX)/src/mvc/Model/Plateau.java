@@ -7,14 +7,25 @@ import java.util.ArrayList;
 import java.util.Observable;
 
 public class Plateau extends Observable {
+
     private PieceBuilder builder = new PieceBuilder();
     private int hauteur;
     private int largeur;
     private Case[][] tableauJeu;
     private int[][] test;
+
+    //Liste des pièces présentes sur le plateau.
     private ArrayList<Piece> piecesPosees;
+
+    //Piece actuelle ( à déplacer ou poser )
     private Piece pieceCourante;
+
+    //Liste dans laquelle on va piocher les pièces avec lesquelles on va jouer.
+    private Piece[] PoolDePiece;
+
+    //Pas encore implémenté.
     private ArrayList<Piece> piecesSuivantes;
+    //Useless ?
     private boolean isFull = false; //si on ne peut pas placer d'autres pièces
 
     public Plateau(int h,int l){
@@ -130,7 +141,7 @@ public class Plateau extends Observable {
         //tester si la place est occupée avant de bouger
         int iter = 1;
         while(iter <= nbrDeplac){
-            ArrayList<Vec2d> positions = occurencesPiecesPlateau(piece);
+            ArrayList<Vec2d> positions = occurrencesPiecesPlateau(piece);
             if(positions != null){
 
                     if(!collision(positions, direction,this.piecesPosees.indexOf(piece))){
@@ -171,7 +182,7 @@ public class Plateau extends Observable {
      * @param piece
      * @return
      */
-    public ArrayList<Vec2d> occurencesPiecesPlateau(Piece piece){
+    public ArrayList<Vec2d> occurrencesPiecesPlateau(Piece piece){
         int index = this.piecesPosees.indexOf(piece);
         ArrayList<Vec2d> positions = new ArrayList<>();
         for (int i = 0; i < this.largeur; i++) {
@@ -184,25 +195,36 @@ public class Plateau extends Observable {
         return positions;
     }
 
-    public boolean collision(ArrayList<Vec2d> occurences, Direction dir, int index){
-        for (Vec2d occurence : occurences){
-            int a = (int) occurence.x + dir.x;
-            int b = (int) occurence.y + dir.y;
+    public boolean collision(ArrayList<Vec2d> occurrences, Direction dir, int index){
+        for (Vec2d occurrence : occurrences){
+            int a = (int) occurrence.x + dir.x;
+            int b = (int) occurrence.y + dir.y;
             if (a<0 || a>=this.largeur || b< 0 || b>=this.hauteur || (this.getTableauJeu()[a][b] != null && this.getTableauJeu()[a][b].getIndex() != index ))
                 return true;
         }
         return false;
     }
 
-    public void effacerPiecePlateau(ArrayList<Vec2d> occurences){
-        for (Vec2d occurence : occurences) {
-            this.getTableauJeu()[(int) occurence.x][(int) occurence.y] = null;
+    public void effacerPiecePlateau(ArrayList<Vec2d> occurrences){
+        for (Vec2d occurrence : occurrences) {
+            this.getTableauJeu()[(int) occurrence.x][(int) occurrence.y] = null;
         }
     }
 
     public void effacerLigne(){
 
     }
+
+    //Méthodes relatives à PoolDePiece
+    /*
+        PoolDePiece va contenir les pièces générés à travers le Builder et qu'on va utiliser dans notre jeu. On veut pouvoir :
+        - Juste piocher une pièce aléatoirement sans la retire de la liste (cas Tetris)
+        - Retirer des pièces (Cas Blokus. Possibilité d'avoir une liste de pièce nécessaire pour chaque joueur.)
+        - Ajouter des pièces (autre jeux non couverts dans ceux que l'on doit créer.
+     */
+
+
+    //Accesseurs
 
     public Case[][] getTableauJeu(){
         return tableauJeu;

@@ -137,6 +137,37 @@ public class Piece {
         System.out.println("---------------");
     }
 
+    public void translater(Direction dir) {
+
+        //Pour chaque case, on décale leur contenu d'une case vers la gauche/droite/haut/bas. En ignorant la première/dernière ligne/colonne
+        // et en partant d'une différente extrémité de la matrice en fonction de la direction.
+        switch (dir) {
+            case LEFT:
+                for(int i = 0; i < cases.length; i++) { //Chaque ligne
+                    for (int j = 0; j < cases[0].length - 1; j++) { //Chaque colonne - la dernière
+                        cases[i][j] = cases[i][j + 1]; //On copie le contenu de la case de droite dans la case actuelle.
+                    }
+                }
+                for ( int i = 0; i < cases.length; i++ )
+                    cases[i][cases[0].length] = 0;
+                break;
+            case RIGHT:
+                for(int i = 0; i < cases.length; i++) { //Chaque ligne
+                    for (int j = cases[0].length-1; j > 0 ; j--) { //Chaque colonne - la première
+                        cases[i][j] = cases[i][j - 1]; //On copie le contenu de la case de droite dans la case actuelle.
+                    }
+                }
+                for ( int i = 0; i < cases.length; i++ )
+                    cases[i][0] = 0;
+                break;
+            case UP:
+                break;
+
+            case DOWN:
+                break;
+        }
+
+    }
 
     //Accesseurs
     public int[][] getCases() {
