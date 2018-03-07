@@ -8,11 +8,14 @@ public class Piece {
     private  String nom;
     private int taille;
     private Color couleur;
-    private int vitesseChute;
     private Vec2d pivot;
-    private boolean isStatic = false;
     private int[][] cases;
-    private int rotationState; // A voir : 0 si initial, 1 si tourné uen fosi droite, 2 si tourné 2 fois. Idem pour 3.
+
+
+    private int vitesseChute; //Useless ?
+    private boolean isStatic = false; //Useless ?
+    private int rotationState; //Useless ?
+    // A voir : 0 si initial, 1 si tourné uen fois droite, 2 si tourné 2 fois. Idem pour 3.
 
     public Piece(String nom, Color couleur, int vitesse, int[][] cases) {
         this.nom = nom;
@@ -55,6 +58,17 @@ public class Piece {
     }
 
 
+    /**
+     * Supprime la case de coordonnées (x,y) dans la matrice local de Piece. (Set sa valeur à 0)
+     * @param x Coordonnée x de la 'case' à supprimer.
+     * @param y Coordonnée y de la 'case' à supprimer.
+     */
+    public void supprimer(int x, int y) {
+        if (x < cases.length && y < cases[0].length)
+            cases[x][y] = 0;
+    }
+
+    // TODO : C'est quoi ?
     public void fission(){
 
     }
@@ -137,6 +151,12 @@ public class Piece {
         System.out.println("---------------");
     }
 
+    /**
+     * Translate toutes les cases de la pièce d'une case dans la matrice locale vers la direction donnée.
+     * @param dir Direction vers laquelle translater la pice
+     */
+    //Testé & Fonctionnelle.
+    //Va servir à centrer les pièces.
     public void translater(Direction dir) {
 
         //Pour chaque case, on décale leur contenu d'une case vers la gauche/droite/haut/bas. En ignorant la première/dernière ligne/colonne
@@ -149,23 +169,40 @@ public class Piece {
                     }
                 }
                 for ( int i = 0; i < cases.length; i++ )
-                    cases[i][cases[0].length] = 0;
+                    cases[i][cases[0].length-1] = 0;
                 break;
             case RIGHT:
                 for(int i = 0; i < cases.length; i++) { //Chaque ligne
-                    for (int j = cases[0].length-1; j > 0 ; j--) { //Chaque colonne - la première
-                        cases[i][j] = cases[i][j - 1]; //On copie le contenu de la case de droite dans la case actuelle.
+                    for (int j = cases[0].length-1; j > 0 ; j--) { //Chaque colonne sauf la première
+                        cases[i][j] = cases[i][j - 1]; //On copie le contenu de la case de gauche dans la case actuelle.
                     }
                 }
                 for ( int i = 0; i < cases.length; i++ )
                     cases[i][0] = 0;
                 break;
             case UP:
+                for(int i = 0; i < cases.length-1; i++) { //Chaque ligne sauf la dernière
+                    for (int j = 0; j < cases[0].length; j++) { //Chaque colonne
+                        cases[i][j] = cases[i+1][j]; //On copie le contenu de la case en dessous dans celle actuelle.
+                    }
+                }
+                for ( int j = 0; j < cases[0].length; j++ )
+                    cases[cases.length-1][j] = 0;
                 break;
-
             case DOWN:
+                for(int i = cases.length-1; i > 0; i--) {
+                    for (int j = 0; j < cases[0].length; j++) {
+                        cases[i][j] = cases[i-1][j];
+                    }
+                }
+                for ( int j = 0; j < cases[0].length; j++ )
+                    cases[0][j] = 0;
                 break;
         }
+    }
+
+    //Centre la pièce le plus possible sur sa matrice locale en translatant la matrice de façon à centrer le pivot.
+    public void centrerPiece() {
 
     }
 

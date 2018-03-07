@@ -79,5 +79,23 @@ public class TestBuilder {
         listeDesPieces[1].afficherPiece();
 
 
+        System.out.println("    TEST - Translations ");
+        listeCoor = new Vec2d[] { new Vec2d(1, 1), new Vec2d(1, 2), new Vec2d(2, 1), new Vec2d(2, 2) };
+        builder.addPiece("Cube", 4, 4, Color.RED, listeCoor);
+        builder.afficherPiece("Cube");
+        System.out.println("    TEST - Translations UP");
+        builder.getPiece("Cube").translater(Direction.UP);
+        builder.afficherPiece("Cube");
+        System.out.println("    TEST - Translations LEFT");
+        builder.getPiece("Cube").translater(Direction.LEFT);
+        builder.afficherPiece("Cube");
+        System.out.println("    TEST - Translations DOWN");
+        builder.getPiece("Cube").translater(Direction.DOWN);
+        builder.afficherPiece("Cube");
+        System.out.println("    TEST - Translations RIGHT");
+        builder.getPiece("Cube").translater(Direction.RIGHT);
+        builder.afficherPiece("Cube");
+
+
     }
 }
