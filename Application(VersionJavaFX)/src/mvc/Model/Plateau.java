@@ -51,7 +51,7 @@ public class Plateau extends Observable {
      * @param j
      * @return
      */
-    synchronized public boolean poserPiecePlateau(Piece piece,int i, int j){
+    public boolean poserPiecePlateau(Piece piece,int i, int j){
         //On parcours le plateau de jeu depuis la position (i,j) et les cases de la pièce simultanement.
         //On ajoutera à positionsPlateau les positions de notre plateau à remplir par notre pièce. Evite uen boucle supplémentaire.
         ArrayList<Vec2d> positionsPlateau = new ArrayList<>(); // Les positions (x,y) du plateau où il faudra placer notre pièce
@@ -64,6 +64,7 @@ public class Plateau extends Observable {
         //on parcours le tableau de cases de notre pièce.
         for(int x=0; x<piece.getCases().length;x++){ //Parcours des colonnes
             pieceTrouvee = false;
+            decalageY = 0;
             for (int y = 0; y < piece.getCases().length; y++) { //Parcours des lignes
                 if(i+y >= 0 && j+x >= 0
                         && i+y-decalageY< this.getLargeur() && j+x-decalageX < this.getHauteur() //Si cela ne dépasses pas notre plateau de jeu
@@ -155,13 +156,20 @@ public class Plateau extends Observable {
                     }
                     iter++;
             }
+            setChanged();
+            notifyObservers();
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
         setChanged();
         notifyObservers();
     }
 
-    public void descente(Piece piece){ //Descente jusqu'a la fin du plateau ou la rencontre d'ne autre pièce
-        deplacer(Direction.DOWN, piece, this.getHauteur());
+    public void descente(){ //Descente jusqu'a la fin du plateau ou la rencontre d'ne autre pièce
+        deplacer(Direction.DOWN, this.pieceCourante, this.getHauteur());
     }
 
     public void versBas(Piece piece){

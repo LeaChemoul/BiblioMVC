@@ -9,13 +9,18 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import mvc.Tetris.Modele.Partie;
 import mvc.VueControleur.VueControleur;
 
 
 public class VueControleurTetris extends Application {
+
+    private Partie partie;
+
     @Override
     public void start(Stage primaryStage){
         VueControleur grille = new VueControleur(10,20);
+        this.partie = new Partie(grille.getP());
 
         Scene scene = new Scene(grille, Color.WHITE);
 
@@ -26,7 +31,7 @@ public class VueControleurTetris extends Application {
                     @Override
                     public void handle(MouseEvent event) {
                         if(grille.getP().getPieceCourante() == null){
-                            grille.getP().newPiece();
+                            partie.deroulement();
                         }
                     }
                 });
