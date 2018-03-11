@@ -137,55 +137,38 @@ public class Plateau extends Observable {
      * Prends en charge le déplacement d'une piece sur un plateau
      * @param direction Enum qui determine si on la déplace en haut, a droite, à gauche ou en bas
      * @param piece Piece à déplacer
-     * @param nbrDeplac Determine combien de fois on souhaite déplacer la pièce dans telle direction
      */
-    public void deplacer(Direction direction, Piece piece, int nbrDeplac){
+    public void deplacer(Direction direction, Piece piece){
         //tester si la place est occupée avant de bouger
         int iter = 1; //L'itérateur qui va compter le nombea de déplacements réalisés.
-        while(iter <= nbrDeplac){
             ArrayList<Vec2d> positions = occurrencesPiecesPlateau(piece); //Toutes les occurences de notre pièce donnée sur le plateau
-            if(positions != null){
+        if(positions != null){
 
-                    if(!collision(positions, direction,this.piecesPosees.indexOf(piece))){ //Si nos positions ne génère pas de collisions
-                        effacerPiecePlateau(positions); //On éfface la pièce
-                        //On la pose aux nouvelle coordonnées.
-                        // On la place à partir de la position précédente auquel on a ajouté (0,-1) par exemple pour la descendre verticalement
-                        this.poserPiecePlateau(piece,(int) positions.get(0).x + direction.x, (int) positions.get(0).y +direction.y);
-                    }else{
-                        break;
-                    }
-                    iter++;
-            }
-            setChanged();
-            notifyObservers();
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+                if(!collision(positions, direction,this.piecesPosees.indexOf(piece))){ //Si nos positions ne génère pas de collisions
+                    effacerPiecePlateau(positions); //On éfface la pièce
+                    //On la pose aux nouvelle coordonnées.
+                    // On la place à partir de la position précédente auquel on a ajouté (0,-1) par exemple pour la descendre verticalement
+                    this.poserPiecePlateau(piece,(int) positions.get(0).x + direction.x, (int) positions.get(0).y +direction.y);
+                }
         }
         setChanged();
         notifyObservers();
     }
 
-    public void descente(){ //Descente jusqu'a la fin du plateau ou la rencontre d'ne autre pièce
-        deplacer(Direction.DOWN, this.pieceCourante, this.getHauteur());
-    }
-
     public void versBas(Piece piece){
-        this.deplacer(Direction.DOWN, piece, 1);
+        this.deplacer(Direction.DOWN, piece);
     }
 
     public void versDroite(Piece piece){
-        this.deplacer(Direction.RIGHT, piece,1);
+        this.deplacer(Direction.RIGHT, piece);
     }
 
     public void versGauche(Piece piece){
-        this.deplacer(Direction.LEFT, piece,1);
+        this.deplacer(Direction.LEFT, piece);
     }
 
     public void versHaut(Piece piece){
-        this.deplacer(Direction.UP, piece,1);
+        this.deplacer(Direction.UP, piece);
     }
 
     /**
@@ -220,6 +203,8 @@ public class Plateau extends Observable {
         for (Vec2d occurrence : occurrences) {
             this.getTableauJeu()[(int) occurrence.x][(int) occurrence.y] = null;
         }
+        setChanged();
+        notifyObservers();
     }
 
     public void effacerLigne(){
@@ -254,5 +239,7 @@ public class Plateau extends Observable {
         return largeur;
     }
 
-
+    public void setPieceCourante(Piece pieceCourante) {
+        this.pieceCourante = pieceCourante;
+    }
 }

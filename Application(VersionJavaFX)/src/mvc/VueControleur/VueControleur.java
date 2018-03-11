@@ -73,14 +73,6 @@ public class VueControleur extends BorderPane{
         this.setCenter(gPane);
         this.setPadding(new Insets(10, 20, 10, 20));
 
-        //TOP
-        Text titre = new Text("Le super TETRIS");
-        this.setTop(titre);
-
-        //RIGHT
-        Button startButton = new Button();
-        this.setRight(startButton);
-
     }
 
     public Plateau getP() {

@@ -3,11 +3,13 @@ package mvc.Tetris.VueControleur;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import mvc.Tetris.Modele.Partie;
 import mvc.VueControleur.VueControleur;
@@ -20,6 +22,21 @@ public class VueControleurTetris extends Application {
     @Override
     public void start(Stage primaryStage){
         VueControleur grille = new VueControleur(10,20);
+        //TOP
+        Text titre = new Text("Le super TETRIS");
+        grille.setTop(titre);
+
+        //RIGHT
+        Button startButton = new Button();
+        grille.setRight(startButton);
+        startButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                partie.deroulement();
+            }
+        });
+
+
         this.partie = new Partie(grille.getP());
 
         Scene scene = new Scene(grille, Color.WHITE);
@@ -30,9 +47,7 @@ public class VueControleurTetris extends Application {
                 tab[i][j].setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent event) {
-                        if(grille.getP().getPieceCourante() == null){
-                            partie.deroulement();
-                        }
+                        //dans le tetris rien à faire
                     }
                 });
             }
