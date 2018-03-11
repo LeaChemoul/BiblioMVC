@@ -24,6 +24,8 @@ public class RepeterAction {
                 nbrRepetitions--;
             } else {
                 plateau.setPieceCourante(null);
+                plateau.newPiece();
+                RepeterAction repeterAction = new RepeterAction(plateau);
                 t.cancel();
             }
         }

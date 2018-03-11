@@ -145,9 +145,9 @@ public class Plateau extends Observable {
         if(positions != null){
 
                 if(!collision(positions, direction,this.piecesPosees.indexOf(piece))){ //Si nos positions ne génère pas de collisions
-                    effacerPiecePlateau(positions); //On éfface la pièce
+                    effacerPiecePlateau(positions); //On efface la pièce
                     //On la pose aux nouvelle coordonnées.
-                    // On la place à partir de la position précédente auquel on a ajouté (0,-1) par exemple pour la descendre verticalement
+                    // On la place à partir de la position précédente à laquelle on a ajouté (0,-1) par exemple pour la descendre verticalement
                     this.poserPiecePlateau(piece,(int) positions.get(0).x + direction.x, (int) positions.get(0).y +direction.y);
                 }
         }
@@ -229,7 +229,6 @@ public class Plateau extends Observable {
     public Piece getPieceCourante() {
         return pieceCourante;
     }
-
 
     public int getHauteur() {
         return hauteur;

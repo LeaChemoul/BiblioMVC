@@ -7,6 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
@@ -37,7 +38,6 @@ public class VueControleurTetris extends Application {
             }
         });
 
-
         this.partie = new Partie(grille.getP());
 
         Scene scene = new Scene(grille, Color.WHITE);
@@ -60,13 +60,11 @@ public class VueControleurTetris extends Application {
         scene.setOnKeyPressed(new EventHandler<KeyEvent>(){
             @Override
             public void handle(KeyEvent ke){
-                //System.out.println("Pressed: " + ke.getCode());
-                //Indisponible au tétris
-                /*if (ke.getCode().equals(KeyCode.UP)) {
-                    if(grille.getP().getPieceCourante() != null)
-                        grille.getP().versHaut(grille.getP().getPieceCourante());
-                    //bouger à gauche la pièce courante du plateau si possible
-                }*/
+                if (ke.getCode().equals(KeyCode.UP)) {
+                    /*if(grille.getP().getPieceCourante() != null)
+                        grille.getP().versHaut(grille.getP().getPieceCourante());*/
+                    //rotation
+                }
                 if (ke.getCode().equals(KeyCode.LEFT)) {
                     if(grille.getP().getPieceCourante() != null)
                         grille.getP().versGauche(grille.getP().getPieceCourante());
@@ -80,9 +78,6 @@ public class VueControleurTetris extends Application {
                 if (ke.getCode().equals(KeyCode.DOWN)) {
                     if(grille.getP().getPieceCourante() != null)
                         grille.getP().versBas(grille.getP().getPieceCourante());
-                    //TODO ici test de la descente, automatqiue : synchroniser l'affichage
-                    //p.descente(p.getPieceCourante());
-                    //descendre la pièce courante du plateau si possible
                 }
             }
         });
