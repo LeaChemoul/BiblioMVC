@@ -118,7 +118,7 @@ public class Plateau extends Observable {
         this.piecesPosees.add(pieceCourante);
         this.poserPiecePlateau(pieceCourante,0,0);
 
-        Vec2d[] listeVect2 = new Vec2d[4];
+        /*Vec2d[] listeVect2 = new Vec2d[4];
         listeVect2[0] = new Vec2d(2,2);
         listeVect2[1] = new Vec2d(1,1);
         listeVect2[2] = new Vec2d(1,2);
@@ -128,7 +128,7 @@ public class Plateau extends Observable {
         this.pieceCourante = builder.getPiece("test2");
         this.piecesPosees.add(pieceCourante);
         this.poserPiecePlateau(pieceCourante, 0,1); //collision
-        this.poserPiecePlateau(pieceCourante, 1,1);
+        this.poserPiecePlateau(pieceCourante, 1,1);*/
         setChanged();
         notifyObservers();
     }

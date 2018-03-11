@@ -29,7 +29,7 @@ public class VueControleur extends BorderPane{
         // initialisation du modèle que l'on souhaite utiliser
         p = new Plateau(largeur, hauteur);
 
-        // permet de placer les diffrents boutons dans une grille
+        // permet de placer les differents boutons dans une grille
         GridPane gPane = new GridPane();
 
         tab = new Rectangle[largeur][hauteur];
@@ -37,9 +37,6 @@ public class VueControleur extends BorderPane{
         p.addObserver(new Observer() {
             @Override
             public void update(Observable o, Object arg) {
-
-                //System.out.println("test");
-
                 for(int a = 0; a< largeur; a++)
                     for(int b = 0; b< hauteur; b++){
                         if(p.getTableauJeu()[a][b] != null)

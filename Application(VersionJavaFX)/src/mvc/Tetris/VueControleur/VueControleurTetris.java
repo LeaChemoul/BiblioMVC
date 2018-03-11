@@ -28,6 +28,7 @@ public class VueControleurTetris extends Application {
 
         //RIGHT
         Button startButton = new Button();
+        startButton.setText("Commencer");
         grille.setRight(startButton);
         startButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -48,11 +49,14 @@ public class VueControleurTetris extends Application {
                     @Override
                     public void handle(MouseEvent event) {
                         //dans le tetris rien à faire
+                        //dans le blockus recupération de la case et placement d'une pièce
+                        //dans le puzzle recupération de la case et déplacement d'une pièce
                     }
                 });
             }
         }
 
+        //EVENEMENTS LIES AUX TOUCHES CLAVIER
         scene.setOnKeyPressed(new EventHandler<KeyEvent>(){
             @Override
             public void handle(KeyEvent ke){
