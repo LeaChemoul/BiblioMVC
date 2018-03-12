@@ -5,6 +5,7 @@ import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.Observable;
+import java.util.Random;
 
 public class Plateau extends Observable {
 
@@ -58,9 +59,7 @@ public class Plateau extends Observable {
         int index = this.piecesPosees.indexOf(piece);
         boolean pieceTrouvee;
         //cette variable permet de garder en mémoire combien de colonnes de Piece.cases nous avons parcourus avant de trouver la pièce : décalage
-        int decalageX = 0;
-        int decalageY = 0;
-        int nbrCasesParcourues = 0;
+        int decalageX = 0, decalageY = 0, nbrCasesParcourues = 0;
         //on parcours le tableau de cases de notre pièce.
         for(int x=0; x<piece.getCases().length;x++){ //Parcours des colonnes
             pieceTrouvee = false;
@@ -106,29 +105,16 @@ public class Plateau extends Observable {
      * On crée une nouvelle instance de pièce qu'on pose sur notre plateau de jeu.
      */
     public void newPiece(){
-        //TEST de création et d'affichage d'une pièce
-        Vec2d[] listeVect = new Vec2d[4];
-        listeVect[0] = new Vec2d(2,2);
-        listeVect[1] = new Vec2d(1,2);
-        listeVect[2] = new Vec2d(3,2);
-        listeVect[3] = new Vec2d(1,3);
-        builder.addPiece("test",4,4,Color.rgb(120,150,1),2,listeVect);
-        builder.afficherPiece("test");
-        this.pieceCourante = builder.getPiece("test");
-        this.piecesPosees.add(pieceCourante);
-        this.poserPiecePlateau(pieceCourante,0,0);
+        this.pieceCourante = null;
 
-        /*Vec2d[] listeVect2 = new Vec2d[4];
-        listeVect2[0] = new Vec2d(2,2);
-        listeVect2[1] = new Vec2d(1,1);
-        listeVect2[2] = new Vec2d(1,2);
-        listeVect2[3] = new Vec2d(2,1);
-        builder.addPiece("test2",4,4,Color.rgb(160,30,115),2,listeVect2);
-        builder.afficherPiece("test2");
-        this.pieceCourante = builder.getPiece("test2");
-        this.piecesPosees.add(pieceCourante);
-        this.poserPiecePlateau(pieceCourante, 0,1); //collision
-        this.poserPiecePlateau(pieceCourante, 1,1);*/
+        //On crée une pièce à partir des modèles disponibles dans le pool de pièces
+        if(PoolDePiece != null){
+            Random random = new Random();
+            this.pieceCourante = new Piece(PoolDePiece[random.nextInt(PoolDePiece.length)]);
+            this.piecesPosees.add(pieceCourante);
+            this.poserPiecePlateau(pieceCourante,0,0);
+        }
+
         setChanged();
         notifyObservers();
     }
@@ -146,7 +132,7 @@ public class Plateau extends Observable {
 
                 if(!collision(positions, direction,this.piecesPosees.indexOf(piece))){ //Si nos positions ne génère pas de collisions
                     effacerPiecePlateau(positions); //On efface la pièce
-                    //On la pose aux nouvelle coordonnées.
+                    //On la pose aux nouvelles coordonnées.
                     // On la place à partir de la position précédente à laquelle on a ajouté (0,-1) par exemple pour la descendre verticalement
                     this.poserPiecePlateau(piece,(int) positions.get(0).x + direction.x, (int) positions.get(0).y +direction.y);
                 }
@@ -207,6 +193,12 @@ public class Plateau extends Observable {
         notifyObservers();
     }
 
+    public int ligneASupprimer(){
+        boolean estRemplie = false;
+
+        return -1; //Si aucune ligne est remplie
+    }
+
     public void effacerLigne(){
 
     }
@@ -240,5 +232,9 @@ public class Plateau extends Observable {
 
     public void setPieceCourante(Piece pieceCourante) {
         this.pieceCourante = pieceCourante;
+    }
+
+    public void setPoolDePiece(Piece[] poolDePiece) {
+        PoolDePiece = poolDePiece;
     }
 }

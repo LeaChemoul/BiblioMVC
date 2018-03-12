@@ -4,6 +4,8 @@ package mvc.Model;
 import com.sun.javafx.geom.Vec2d;
 import javafx.scene.paint.Color;
 
+import java.util.Random;
+
 public class Piece {
     private  String nom;
     private int taille;
@@ -23,6 +25,27 @@ public class Piece {
         this.vitesseChute = vitesse;
         this.cases = cases;
         calculPivot();
+    }
+
+    /**
+     * Constructeur par copie de la classe.
+     * @param piece
+     */
+    public Piece(Piece piece){
+        this.nom = piece.nom;
+        this.taille = piece.taille;
+        Random random = new Random();
+        this.couleur = Color.rgb(random.nextInt(255),random.nextInt(255),random.nextInt(255));
+        //this.couleur = piece.couleur;
+        this.vitesseChute = piece.vitesseChute;
+        int length = piece.cases.length;
+        this.cases = new int[length][length];
+        for (int i = 0; i < length ; i++) {
+            for (int j = 0; j < length; j++) {
+                this.cases[i][j] = piece.cases[i][j];
+            }
+        }
+        this.pivot = piece.pivot;
     }
 
     /**

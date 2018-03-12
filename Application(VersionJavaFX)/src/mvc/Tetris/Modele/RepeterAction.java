@@ -20,10 +20,14 @@ public class RepeterAction {
 
         public void run() {
             if (nbrRepetitions > 0) {
+                //TODO Lorsqu'on descend bcp plus vite que le timer, on va au-delà de l'index du tableau : IndexOutOfBoundException
                 plateau.versBas(plateau.getPieceCourante());
                 nbrRepetitions--;
             } else {
-                plateau.setPieceCourante(null);
+                //La pièce est arrivée à la fin
+                /*while(plateau.ligneASupprimer() != -1){
+                    //effacer ligne concernée
+                }*/
                 plateau.newPiece();
                 RepeterAction repeterAction = new RepeterAction(plateau);
                 t.cancel();
