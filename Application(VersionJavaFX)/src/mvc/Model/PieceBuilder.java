@@ -3,6 +3,7 @@ package mvc.Model;
 import com.sun.javafx.geom.Vec2d;
 import javafx.scene.paint.Color;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class PieceBuilder {
@@ -109,6 +110,15 @@ public class PieceBuilder {
      */
     public Piece[] exporterListe() {
         return listePieces.values().toArray( new Piece[listePieces.size()] );
+    }
+
+    /**
+     * Renvoie une liste de Pice construite à partir de toutes les pieces contenus dans la HashMap listePieces.
+     * C'est ce format qu'on utilisera pour manipuler nos pieces.
+     * @return Liste de Pieces
+     */
+    public ArrayList<Piece> exporterArrayListe() {
+        return new ArrayList<Piece>(listePieces.values());
     }
 
     //Méthodes booléenes
