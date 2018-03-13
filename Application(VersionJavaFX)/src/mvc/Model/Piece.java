@@ -142,7 +142,7 @@ public class Piece {
 
         for (int i = 0; i < nbRaw; i++) {
             vprim[i][0] = vt[i][0] + px;
-            vprim[1][0] = vt[i][1] + py;
+            vprim[i][1] = vt[i][1] + py;
             this.cases[i] = vprim[i];
         }
     }
