@@ -193,6 +193,13 @@ public class Plateau extends Observable {
         notifyObservers();
     }
 
+    /**
+     * Renvoie la pièce à qui appartient la case aux coordonnées x,y du plateau.
+     */
+    public Piece recupererPiece(int x, int y) {
+        return piecesPosees.get( tableauJeu[x][y].getIndex() );
+    }
+    
     public int ligneASupprimer(){
         boolean estRemplie = false;
 
