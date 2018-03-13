@@ -172,6 +172,13 @@ public class Plateau extends Observable {
     }
 
     /**
+     * Renvoie la pièce à qui appartient la case aux coordonnées x,y du plateau.
+     */
+    public Piece recupererPiece(int x, int y) {
+        return piecesPosees.get( tableauJeu[x][y].getIndex() );
+    }
+
+    /**
      * Retourne toutes les occurences (i,j) d'une pièce sur le plateau
      * @param piece notre pièce
      * @return
@@ -207,7 +214,11 @@ public class Plateau extends Observable {
         notifyObservers();
     }
 
-    public void effacerLigne(){
+    /**
+     * Efface tout les cases de la ligne i.
+     * @param x
+     */
+    public void effacerLigne(int x){
 
     }
 

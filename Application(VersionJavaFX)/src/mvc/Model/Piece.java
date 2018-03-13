@@ -22,7 +22,7 @@ public class Piece {
         this.couleur = couleur;
         this.vitesseChute = vitesse;
         this.cases = cases;
-        calculPivot();
+        calculPivotEtTaille();
     }
 
     /**
@@ -58,7 +58,7 @@ public class Piece {
 
             }
         }
-        calculPivot();
+        calculPivotEtTaille();
     }
 
 
@@ -78,21 +78,25 @@ public class Piece {
     }
 
 
-    public void calculPivot() {
+    /**
+     * Mets à jour les valeurs des attributs Pivot et Taille en fonction de l'état de la pièce.
+     */
+    public void calculPivotEtTaille() {
         pivot = new Vec2d(0,0);
-        int nbCases = 0;
+        taille = 0;
         for (int i = 0; i < cases.length; i++) {
             for (int j = 0; j < cases[0].length; j++) {
                 if ( cases[i][j] != 0 ) {
-                    nbCases++;
+                    taille++;
                     pivot.x += i + 0.5;
                     pivot.y += j + 0.5;
                 }
             }
         }
-        pivot.x /= nbCases;
-        pivot.y /= nbCases;
+        pivot.x /= taille;
+        pivot.y /= taille;
     }
+
 
     public void afficherPiece() {
 

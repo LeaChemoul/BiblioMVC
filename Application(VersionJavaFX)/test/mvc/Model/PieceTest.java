@@ -1,4 +1,4 @@
-package mvc.Model;
+package mvc.Tetris.VueControleur;
 
 import com.sun.javafx.geom.Vec2d;
 import javafx.scene.paint.Color;
