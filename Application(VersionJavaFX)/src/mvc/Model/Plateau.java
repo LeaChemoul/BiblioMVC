@@ -102,7 +102,7 @@ public class Plateau extends Observable {
     /**
      * On crée une nouvelle instance de pièce qu'on pose sur notre plateau de jeu.
      */
-    public void newPiece(){
+    public boolean newPiece(){
         this.pieceCourante = null;
 
         //On crée une pièce à partir des modèles disponibles dans le pool de pièces
@@ -110,11 +110,13 @@ public class Plateau extends Observable {
             Random random = new Random();
             this.pieceCourante = new Piece(PoolDePiece[random.nextInt(PoolDePiece.length)]);
             this.piecesPosees.add(pieceCourante);
-            this.poserPiecePlateau(pieceCourante,0,0);
+            return this.poserPiecePlateau(pieceCourante,0,0);
+
         }
 
         setChanged();
         notifyObservers();
+        return false;
     }
 
     /**

@@ -35,7 +35,7 @@ public class RepeterAction {
                 }
             } else {
                 //La pièce est arrivée à la fin
-                plateau.newPiece();
+                boolean piecePosee = plateau.newPiece();
                 t.cancel();
                 int ligne = 0;
                 do{
@@ -44,7 +44,9 @@ public class RepeterAction {
                     if(ligne != -1)
                         plateau.effacerLigne(ligne);
                 } while(ligne != -1);
-                RepeterAction repeterAction = new RepeterAction(plateau);
+                if(piecePosee){
+                    RepeterAction repeterAction = new RepeterAction(plateau);
+                }
             }
         }
     }
