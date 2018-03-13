@@ -220,11 +220,14 @@ public class Plateau extends Observable {
         ArrayList<Piece> ontEteDescendues = new ArrayList<>();
         for (int j = 0; j < this.getHauteur() ; j++) {
             Piece pieceASupp = recupererPiece(ligne,j);
+            if(pieceASupp != null){
+
+            }
             Vec2d decalage = decalagePremiereCase(pieceASupp,new Vec2d(ligne,j));
             pieceASupp.deleteDecalage(decalage);
             ArrayList<Vec2d> occurences = occurrencesPiecesPlateau(pieceASupp);
             effacerPiecePlateau(occurences);
-
+            poserPiecePlateau(pieceASupp,(int) occurences.get(0).x, (int) occurences.get(0).y);
 
             setChanged();
             notifyObservers();
@@ -254,7 +257,10 @@ public class Plateau extends Observable {
      * Renvoie la pièce à qui appartient la case aux coordonnées x,y du plateau.
      */
     public Piece recupererPiece(int x, int y) {
-        return piecesPosees.get( tableauJeu[x][y].getIndex() );
+        if(tableauJeu[x][y].getIndex() != -1)
+            return piecesPosees.get(tableauJeu[x][y].getIndex() );
+        else
+            return null;
     }
 
 

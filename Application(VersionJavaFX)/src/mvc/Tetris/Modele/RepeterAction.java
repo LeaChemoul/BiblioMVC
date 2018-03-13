@@ -29,14 +29,15 @@ public class RepeterAction {
                     nbrRepetitions--;
             } else {
                 //La pièce est arrivée à la fin
-                /*while(plateau.ligneASupprimer() != -1){
-                while(plateau.ligneASupprimer() != -1){
-                    System.out.println("Suppression de la ligne ");
-                    //effacer ligne concernée
-                }*/
                 plateau.newPiece();
-                RepeterAction repeterAction = new RepeterAction(plateau);
                 t.cancel();
+                int ligne = 0;
+                do{
+                    System.out.println("Suppression de la ligne ");
+                    ligne = plateau.ligneASupprimer();
+                    plateau.effacerLigne(ligne);
+                } while(ligne != -1);
+                RepeterAction repeterAction = new RepeterAction(plateau);
             }
         }
     }
