@@ -73,6 +73,8 @@ public class Piece {
      * dans le sens trigonométrique (LEFT) ou horaire (RIGHT, ou par défaut) en fonction de la direction sens
      * @param sens
      */
+
+    /*
     public void Rotation(Direction sens){
         int[][] m = getCases(); // On récupère la matrice locale de la pièce
         int l = m.length -1; // longueur de la matrice, celle-ci est carrée
@@ -104,12 +106,54 @@ public class Piece {
         calculPivotEtTaille();
     }
 
+    */
 
-    /**
-     * Supprime la case de coordonnées (x,y) dans la matrice local de Piece. (Set sa valeur à 0)
-     * @param x Coordonnée x de la 'case' à supprimer.
-     * @param y Coordonnée y de la 'case' à supprimer.
-     */
+    public void Rotation (Direction sens) {
+        int nbRaw = this.cases.length;
+        int nbCol = this.cases[0].length;
+
+        int[][] vr = new int[nbRaw][nbCol]; // coordinates comparatively to the pivot
+        int[][] vt = new int[nbRaw][nbCol]; // coordinates comparatively to the pivot after transform
+        int[][] vprim = new int[nbRaw][nbCol]; // absolute coordinates after transform
+
+        // int[][] Rg = { {0,-1} , {1,0} }; // 90 degrees rotation to the left (counter clockwise)
+        // int[][] Rd = { {0,1} , {-1,0} }; // 90 degrees rotation to the left (clockwise)
+
+        int px = (int) this.pivot.x;
+        int py = (int) this.pivot.y;
+
+        for (int i = 0; i < nbRaw; i++) {
+            vr[i][0] = this.cases[i][0] - px;
+            vr[i][1] = this.cases[i][1] - py;
+        }
+
+        switch (sens) {
+            case LEFT:
+                for (int i = 0; i < nbRaw; i++) {
+                    vt[i][0] = (0 * vr[i][0]) + (-1 * vr[i][1]);
+                    vt[i][1] = (1 * vr[i][0]) + (0 * vr[i][1]);
+                }
+            case RIGHT:
+                for (int i = 0; i < nbRaw; i++) {
+                    vt[i][0] = (0 * vr[i][0]) + (1 * vr[i][1]);
+                    vt[i][1] = (-1 * vr[i][0]) + (0 * vr[i][1]);
+                }
+        }
+
+        for (int i = 0; i < nbRaw; i++) {
+            vprim[i][0] = vt[i][0] + px;
+            vprim[1][0] = vt[i][1] + py;
+            this.cases[i] = vprim[i];
+        }
+    }
+
+
+
+        /**
+         * Supprime la case de coordonnées (x,y) dans la matrice local de Piece. (Set sa valeur à 0)
+         * @param x Coordonnée x de la 'case' à supprimer.
+         * @param y Coordonnée y de la 'case' à supprimer.
+         */
     public void supprimer(int x, int y) {
         if (x < cases.length && y < cases[0].length)
             cases[x][y] = 0;
