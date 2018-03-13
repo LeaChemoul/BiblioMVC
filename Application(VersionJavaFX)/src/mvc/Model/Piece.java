@@ -48,6 +48,26 @@ public class Piece {
         this.pivot = piece.pivot;
     }
 
+
+
+    public void deleteDecalage(Vec2d decalage){
+        boolean trouve = false;
+        int decalageX = 0;
+        int decalageY = 0;
+        for (int i = 0; i < this.getCases().length ; i++) {
+            for (int j = 0; j < this.getCases().length; j++) {
+                if(this.getCases()[i][j] == 1){
+                    trouve = true;
+                    deleteCase(i + (int) decalage.x, j + (int) decalage.y);
+                }
+            }
+        }
+    }
+
+    public void deleteCase(int i, int j){
+        this.cases[i][j] = 0;
+    }
+
     /**
      * Tourne une pièce de 90° degré dans sa matrice locale
      * dans le sens trigonométrique (LEFT) ou horaire (RIGHT, ou par défaut) en fonction de la direction sens

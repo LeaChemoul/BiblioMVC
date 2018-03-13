@@ -124,37 +124,40 @@ public class Plateau extends Observable {
      * @param direction Enum qui determine si on la déplace en haut, a droite, à gauche ou en bas
      * @param piece Piece à déplacer
      */
-    public void deplacer(Direction direction, Piece piece){
+    public boolean deplacer(Direction direction, Piece piece){
         //tester si la place est occupée avant de bouger
         int iter = 1; //L'itérateur qui va compter le nombea de déplacements réalisés.
-            ArrayList<Vec2d> positions = occurrencesPiecesPlateau(piece); //Toutes les occurences de notre pièce donnée sur le plateau
+        ArrayList<Vec2d> positions = occurrencesPiecesPlateau(piece); //Toutes les occurences de notre pièce donnée sur le plateau
         if(positions != null){
 
-                if(!collision(positions, direction,this.piecesPosees.indexOf(piece))){ //Si nos positions ne génère pas de collisions
-                    effacerPiecePlateau(positions); //On efface la pièce
-                    //On la pose aux nouvelles coordonnées.
-                    // On la place à partir de la position précédente à laquelle on a ajouté (0,-1) par exemple pour la descendre verticalement
-                    this.poserPiecePlateau(piece,(int) positions.get(0).x + direction.x, (int) positions.get(0).y +direction.y);
-                }
+            if(!collision(positions, direction,this.piecesPosees.indexOf(piece))){ //Si nos positions ne génère pas de collisions
+                effacerPiecePlateau(positions); //On efface la pièce
+                //On la pose aux nouvelles coordonnées.
+                // On la place à partir de la position précédente à laquelle on a ajouté (0,-1) par exemple pour la descendre verticalement
+                this.poserPiecePlateau(piece,(int) positions.get(0).x + direction.x, (int) positions.get(0).y +direction.y);
+            }else{
+                return false;
+            }
         }
         setChanged();
         notifyObservers();
+        return true;
     }
 
-    public void versBas(Piece piece){
-        this.deplacer(Direction.DOWN, piece);
+    public boolean versBas(Piece piece){
+        return this.deplacer(Direction.DOWN, piece);
     }
 
-    public void versDroite(Piece piece){
-        this.deplacer(Direction.RIGHT, piece);
+    public boolean versDroite(Piece piece){
+        return this.deplacer(Direction.RIGHT, piece);
     }
 
-    public void versGauche(Piece piece){
-        this.deplacer(Direction.LEFT, piece);
+    public boolean versGauche(Piece piece){
+        return this.deplacer(Direction.LEFT, piece);
     }
 
-    public void versHaut(Piece piece){
-        this.deplacer(Direction.UP, piece);
+    public boolean versHaut(Piece piece){
+        return this.deplacer(Direction.UP, piece);
     }
 
     /**
@@ -193,18 +196,67 @@ public class Plateau extends Observable {
         notifyObservers();
     }
 
+
+    public int ligneASupprimer(){
+        boolean estRemplie = false;
+        for (int i = 0; i < this.largeur ; i++) {
+            estRemplie =true;
+            for (int j = 0; j < this.hauteur; j++) {
+                if(this.tableauJeu[i][j] == null){
+                    estRemplie =false;
+                    break;
+                }
+            }
+            if(estRemplie){
+                return i;
+            }
+        }
+        return -1; //Si aucune ligne est remplie
+    }
+
+    public void effacerLigne(int ligne){
+        //TODO Pour la ligne considerée mettre à jour les pièces puis descendre celles au-dessus
+        //Pour chaque pièce à descendre, la passer en pièce courante et appeller le timer qui la descend
+        ArrayList<Piece> ontEteDescendues = new ArrayList<>();
+        for (int j = 0; j < this.getHauteur() ; j++) {
+            Piece pieceASupp = recupererPiece(ligne,j);
+            Vec2d decalage = decalagePremiereCase(pieceASupp,new Vec2d(ligne,j));
+            pieceASupp.deleteDecalage(decalage);
+            ArrayList<Vec2d> occurences = occurrencesPiecesPlateau(pieceASupp);
+            effacerPiecePlateau(occurences);
+
+
+            setChanged();
+            notifyObservers();
+        }
+
+    }
+
+    //Retourne le decalage d'une case sur notre plateau
+    // vis à vis de la première occurence de la pièce en paratnt de en haut à gauche du plateau.
+    public Vec2d decalagePremiereCase(Piece piece, Vec2d pos){
+        ArrayList<Vec2d> occurences = this.occurrencesPiecesPlateau(piece);
+        //première occurence par rapport à laquelle on va calculer notre décalage
+        int firstX = (int) occurences.get(0).x;
+        int firstY = (int) occurences.get(0).y;
+        for (int i = 0; i < occurences.size(); i++) {
+            //On compare la position de chaque case de la pièce par rapport à la position donnée
+            int a = (int) occurences.get(i).x;
+            int b = (int) occurences.get(i).y;
+            if(a-firstX == (int) pos.x && b-firstY == (int) pos.y){
+                return new Vec2d(a-firstX, b-firstY);
+            }
+        }
+        return  null;
+    }
+
     /**
      * Renvoie la pièce à qui appartient la case aux coordonnées x,y du plateau.
      */
     public Piece recupererPiece(int x, int y) {
         return piecesPosees.get( tableauJeu[x][y].getIndex() );
     }
-    
-    public int ligneASupprimer(){
-        boolean estRemplie = false;
 
-        return -1; //Si aucune ligne est remplie
-    }
 
     public void effacerLigne(){
 
