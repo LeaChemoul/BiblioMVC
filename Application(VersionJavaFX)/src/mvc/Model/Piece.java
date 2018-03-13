@@ -145,6 +145,8 @@ public class Piece {
             vprim[i][1] = vt[i][1] + py;
             this.cases[i] = vprim[i];
         }
+
+        calculPivotEtTaille();
     }
 
 
