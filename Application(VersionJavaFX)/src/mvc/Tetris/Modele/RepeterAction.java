@@ -12,7 +12,7 @@ public class RepeterAction {
     public RepeterAction(Plateau p) {
         this.plateau = p;
         t = new Timer();
-        t.schedule(new Descente(), 0, 1 * 500);
+        t.schedule(new Descente(), 0, 1 * 550);
     }
 
     class Descente extends TimerTask {
@@ -22,11 +22,17 @@ public class RepeterAction {
         public void run() {
             if (nbrRepetitions > 0) {
                 //TODO Lorsqu'on descend bcp plus vite que le timer, on va au-delà de l'index du tableau : IndexOutOfBoundException
-                boolean aEuLieu = plateau.versBas(plateau.getPieceCourante());
-                if (!aEuLieu)
-                    nbrRepetitions = 0;
-                else
-                    nbrRepetitions--;
+                try {
+                    Thread.sleep(500);
+                    boolean aEuLieu = plateau.versBas(plateau.getPieceCourante());
+                    if (!aEuLieu)
+                        nbrRepetitions = 0;
+                    else
+                        nbrRepetitions--;
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             } else {
                 //La pièce est arrivée à la fin
                 plateau.newPiece();
@@ -35,7 +41,8 @@ public class RepeterAction {
                 do{
                     System.out.println("Suppression de la ligne ");
                     ligne = plateau.ligneASupprimer();
-                    plateau.effacerLigne(ligne);
+                    if(ligne != -1)
+                        plateau.effacerLigne(ligne);
                 } while(ligne != -1);
                 RepeterAction repeterAction = new RepeterAction(plateau);
             }
