@@ -42,7 +42,7 @@ public class VueControleur extends BorderPane{
                 tab[i][j] = new Rectangle();
                 tab[i][j].setHeight(30);
                 tab[i][j].setWidth(30);
-                tab[i][j].setFill(Color.TRANSPARENT);
+                tab[i][j].setFill(Color.WHITE);
                 gPane.add(tab[i][j],i, j);
                 /*tab[i][j].setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
@@ -55,7 +55,7 @@ public class VueControleur extends BorderPane{
             }
 
         //CENTER
-        gPane.setGridLinesVisible(true);
+        gPane.setGridLinesVisible(false);
         this.setCenter(gPane);
         this.setPadding(new Insets(10, 20, 10, 20));
 

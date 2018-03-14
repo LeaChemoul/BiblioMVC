@@ -31,7 +31,7 @@ public class Partie implements Runnable{
             if (nbrRepetitions > 0) {
                 //TODO Lorsqu'on descend bcp plus vite que le timer, on va au-delà de l'index du tableau : IndexOutOfBoundException
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(300);
                     boolean aEuLieu = plateau.versBas(plateau.getPieceCourante());
                     if (!aEuLieu)
                         nbrRepetitions = 0;
