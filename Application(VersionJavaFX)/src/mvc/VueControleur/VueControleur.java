@@ -3,6 +3,8 @@ package mvc.VueControleur;
 
 import java.util.Observable;
 import java.util.Observer;
+
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
@@ -33,19 +35,6 @@ public class VueControleur extends BorderPane{
         GridPane gPane = new GridPane();
 
         tab = new Rectangle[largeur][hauteur];
-        // la vue observe les "update" du modèle, et réalise les mises à jour graphiques
-        p.addObserver(new Observer() {
-            @Override
-            public void update(Observable o, Object arg) {
-                for(int a = 0; a< largeur; a++)
-                    for(int b = 0; b< hauteur; b++){
-                        if(p.getTableauJeu()[b][a] != null)
-                            tab[a][b].setFill(p.getTableauJeu()[b][a].getCouleur());
-                        else
-                            tab[a][b].setFill(Color.WHITE);
-                    }
-            }
-        });
 
         // création des boutons et placement dans la grille
         for(int i = 0; i< largeur; i++)

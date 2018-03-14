@@ -1,6 +1,7 @@
 package mvc.Tetris.VueControleur;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -15,17 +16,21 @@ import javafx.stage.Stage;
 import mvc.Tetris.Modele.Partie;
 import mvc.VueControleur.VueControleur;
 
+import java.util.Observable;
+import java.util.Observer;
 
-public class VueControleurTetris extends Application {
+
+public class VueControleurTetris extends Application implements Observer {
 
     private Partie partie;
+    VueControleur grille = new VueControleur(10,20);
 
     @Override
     public void start(Stage primaryStage){
-        VueControleur grille = new VueControleur(10,20);
         //TOP
         Text titre = new Text("Le super TETRIS");
         grille.setTop(titre);
+        partie = new Partie(grille.getP());
 
         //RIGHT
         Button startButton = new Button();
@@ -38,7 +43,8 @@ public class VueControleurTetris extends Application {
             }
         });
 
-        this.partie = new Partie(grille.getP());
+        // la vue observe les "update" du modèle, et réalise les mises à jour graphiques
+        partie.getPlateau().addObserver(this);
 
         Scene scene = new Scene(grille, Color.WHITE);
 
@@ -89,5 +95,22 @@ public class VueControleurTetris extends Application {
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                for(int a = 0; a< grille.getP().getLargeur(); a++)
+                    for(int b = 0; b< grille.getP().getHauteur(); b++){
+
+                        if(grille.getP().getTableauJeu()[b][a] != null)
+                            grille.getTab()[a][b].setFill(grille.getP().getTableauJeu()[b][a].getCouleur());
+                        else
+                            grille.getTab()[a][b].setFill(Color.WHITE);
+                    }
+            }
+        });
     }
 }

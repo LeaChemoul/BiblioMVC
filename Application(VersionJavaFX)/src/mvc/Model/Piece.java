@@ -50,18 +50,8 @@ public class Piece {
 
 
 
-    public void deleteDecalage(Vec2d decalage){
-        boolean trouve = false;
-        int decalageX = 0;
-        int decalageY = 0;
-        for (int i = 0; i < this.getCases().length ; i++) {
-            for (int j = 0; j < this.getCases().length; j++) {
-                if(this.getCases()[i][j] == 1){
-                    trouve = true;
-                    deleteCase(i + (int) decalage.x, j + (int) decalage.y);
-                }
-            }
-        }
+    public void deleteDecalage(Vec2d position, Vec2d decalage){
+       deleteCase((int) position.x + (int) decalage.x, (int) position.y + (int) decalage.y);
     }
 
     public void deleteCase(int i, int j){

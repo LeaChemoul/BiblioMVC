@@ -110,6 +110,8 @@ public class Plateau extends Observable {
             Random random = new Random();
             this.pieceCourante = new Piece(PoolDePiece[random.nextInt(PoolDePiece.length)]);
             this.piecesPosees.add(pieceCourante);
+            setChanged();
+            notifyObservers();
             return this.poserPiecePlateau(pieceCourante,0,0);
 
         }
@@ -218,14 +220,14 @@ public class Plateau extends Observable {
         //Pour chaque pièce à descendre, la passer en pièce courante et appeller le timer qui la descend
         ArrayList<Piece> ontEteDescendues = new ArrayList<>();
         for (int j = 0; j < this.getHauteur() ; j++) {
-            Piece pieceASupp = recupererPiece(ligne,j);
-            if(pieceASupp != null){
-                Vec2d decalage = decalagePremiereCase(pieceASupp,new Vec2d(ligne,j));
+            Piece pieceAChanger = recupererPiece(ligne,j);
+            if(pieceAChanger != null){
+                Vec2d decalage = decalagePremiereCase(pieceAChanger,new Vec2d(ligne,j));
                 if(decalage != null){
-                    pieceASupp.deleteDecalage(decalage);
-                    ArrayList<Vec2d> occurences = occurrencesPiecesPlateau(pieceASupp);
+                    pieceAChanger.deleteDecalage(new Vec2d(ligne, j),decalage);
+                    ArrayList<Vec2d> occurences = occurrencesPiecesPlateau(pieceAChanger);
                     effacerPiecePlateau(occurences);
-                    poserPiecePlateau(pieceASupp,(int) occurences.get(0).x, (int) occurences.get(0).y);
+                    poserPiecePlateau(pieceAChanger,(int) occurences.get(0).x, (int) occurences.get(0).y);
 
                     setChanged();
                     notifyObservers();
@@ -242,12 +244,12 @@ public class Plateau extends Observable {
         //première occurence par rapport à laquelle on va calculer notre décalage
         int firstX = (int) occurences.get(0).x;
         int firstY = (int) occurences.get(0).y;
-        for (int i = 0; i < occurences.size(); i++) {
+        for (Vec2d occurence : occurences) {
             //On compare la position de chaque case de la pièce par rapport à la position donnée
-            int a = (int) occurences.get(i).x;
-            int b = (int) occurences.get(i).y;
-            if(a-firstX == (int) pos.x && b-firstY == (int) pos.y){
-                return new Vec2d(a-firstX, b-firstY);
+            int a = (int) occurence.x;
+            int b = (int) occurence.y;
+            if (a == (int) pos.x && b == (int) pos.y) {
+                return new Vec2d(a - firstX, b - firstY);
             }
         }
         return  null;
@@ -257,7 +259,7 @@ public class Plateau extends Observable {
      * Renvoie la pièce à qui appartient la case aux coordonnées x,y du plateau.
      */
     public Piece recupererPiece(int x, int y) {
-        if(tableauJeu[y][x].getIndex() != -1)
+        if(tableauJeu[x][y].getIndex() != -1)
             return piecesPosees.get(tableauJeu[x][y].getIndex());
         else
             return null;
