@@ -4,6 +4,8 @@ package mvc.Model;
 import com.sun.javafx.geom.Vec2d;
 import javafx.scene.paint.Color;
 
+import java.util.Random;
+
 public class Piece {
     private  String nom;
     private int taille;
@@ -21,7 +23,6 @@ public class Piece {
         this.couleur = Color.BLACK; //Couleur par défaut.
         this.cases = cases;
         calculPivotEtTaille();
-        centrerPiece();
     }
 
     public Piece(String nom, Color couleur, int[][] cases) {
@@ -29,7 +30,37 @@ public class Piece {
         this.couleur = couleur;
         this.cases = cases;
         calculPivotEtTaille();
-        centrerPiece();
+    }
+
+    /**
+     * Constructeur par copie de la classe.
+     * @param piece
+     */
+    public Piece(Piece piece){
+        this.nom = piece.nom;
+        this.taille = piece.taille;
+        Random random = new Random();
+        this.couleur = Color.rgb(random.nextInt(255),random.nextInt(255),random.nextInt(255));
+        //this.couleur = piece.couleur;
+
+        int length = piece.cases.length;
+        this.cases = new int[length][length];
+        for (int i = 0; i < length ; i++) {
+            for (int j = 0; j < length; j++) {
+                this.cases[i][j] = piece.cases[i][j];
+            }
+        }
+        this.pivot = piece.pivot;
+    }
+
+
+
+    public void deleteDecalage(Vec2d position, Vec2d decalage){
+       deleteCase((int) position.x + (int) decalage.x, (int) position.y + (int) decalage.y);
+    }
+
+    public void deleteCase(int i, int j){
+        this.cases[i][j] = 0;
     }
 
     /**
@@ -65,6 +96,47 @@ public class Piece {
 
             }
         }
+        calculPivotEtTaille();
+    }
+
+    public void Rotation_New(Direction sens) {
+        int nbRaw = this.cases.length;
+        int nbCol = this.cases[0].length;
+
+        int[][] vr = new int[nbRaw][nbCol]; // coordinates comparatively to the pivot
+        int[][] vt = new int[nbRaw][nbCol]; // coordinates comparatively to the pivot after transform
+        int[][] vprim = new int[nbRaw][nbCol]; // absolute coordinates after transform
+
+        // int[][] Rg = { {0,-1} , {1,0} }; // 90 degrees rotation to the left (counter clockwise)
+        // int[][] Rd = { {0,1} , {-1,0} }; // 90 degrees rotation to the left (clockwise)
+
+        int px = (int) this.pivot.x;
+        int py = (int) this.pivot.y;
+
+        for (int i = 0; i < nbRaw; i++) {
+            vr[i][0] = this.cases[i][0] - px;
+            vr[i][1] = this.cases[i][1] - py;
+        }
+
+        switch (sens) {
+            case LEFT:
+                for (int i = 0; i < nbRaw; i++) {
+                    vt[i][0] = (0 * vr[i][0]) + (-1 * vr[i][1]);
+                    vt[i][1] = (1 * vr[i][0]) + (0 * vr[i][1]);
+                }
+            case RIGHT:
+                for (int i = 0; i < nbRaw; i++) {
+                    vt[i][0] = (0 * vr[i][0]) + (1 * vr[i][1]);
+                    vt[i][1] = (-1 * vr[i][0]) + (0 * vr[i][1]);
+                }
+        }
+
+        for (int i = 0; i < nbRaw; i++) {
+            vprim[i][0] = vt[i][0] + px;
+            vprim[i][1] = vt[i][1] + py;
+            this.cases[i] = vprim[i];
+        }
+
         calculPivotEtTaille();
     }
 
@@ -274,8 +346,6 @@ public class Piece {
         //la création de pièce "surréaliste" où tout ses cases ne sont pas reliés.
         hauteur = Math.abs(hMax - hMin);
         largeur = Math.abs(lMax - lMin);
-        System.out.println("hauteur = " + hauteur);
-        System.out.println("largeur = " + largeur);
 
         //Nouvelle dimension (carré) de la matrice, on prévoit large.
         int dimM = Math.max(hauteur, largeur) + 1;
@@ -287,9 +357,13 @@ public class Piece {
         int offsetX = (int) (dimM/2.0 - pivot.x);
         int offsetY = (int) (dimM/2.0 - pivot.y);
 
+    /* DEBUG
+        System.out.println("hauteur = " + hauteur);
+        System.out.println("largeur = " + largeur);
         System.out.println("dimM = " + dimM);
         System.out.println("offsetX = " + offsetX);
         System.out.println("offsetY = " + offsetY);
+        */
 
         //On remplit la nouvelle matrice avec ces nouvelles informations
         for (int i = 0; i < cases.length; i++ ) {

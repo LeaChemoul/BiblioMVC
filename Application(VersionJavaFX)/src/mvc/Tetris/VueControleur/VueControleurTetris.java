@@ -1,12 +1,14 @@
 package mvc.Tetris.VueControleur;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
@@ -14,17 +16,21 @@ import javafx.stage.Stage;
 import mvc.Tetris.Modele.Partie;
 import mvc.VueControleur.GrilleVue;
 
+import java.util.Observable;
+import java.util.Observer;
 
-public class VueControleurTetris extends Application {
+
+public class VueControleurTetris extends Application implements Observer {
 
     private Partie partie;
+    GrilleVue grille = new GrilleVue(10,20);
 
     @Override
     public void start(Stage primaryStage){
-        GrilleVue grille = new GrilleVue(10,20);
         //TOP
         Text titre = new Text("Le super TETRIS");
         grille.setTop(titre);
+        partie = new Partie(grille.getP());
 
         //RIGHT
         Button startButton = new Button();
@@ -37,8 +43,8 @@ public class VueControleurTetris extends Application {
             }
         });
 
-
-        this.partie = new Partie(grille.getP());
+        // la vue observe les "update" du modèle, et réalise les mises à jour graphiques
+        partie.getPlateau().addObserver(this);
 
         Scene scene = new Scene(grille, Color.WHITE);
 
@@ -60,13 +66,11 @@ public class VueControleurTetris extends Application {
         scene.setOnKeyPressed(new EventHandler<KeyEvent>(){
             @Override
             public void handle(KeyEvent ke){
-                //System.out.println("Pressed: " + ke.getCode());
-                //Indisponible au tétris
-                /*if (ke.getCode().equals(KeyCode.UP)) {
-                    if(grille.getP().getPieceCourante() != null)
-                        grille.getP().versHaut(grille.getP().getPieceCourante());
-                    //bouger à gauche la pièce courante du plateau si possible
-                }*/
+                if (ke.getCode().equals(KeyCode.UP)) {
+                    /*if(grille.getP().getPieceCourante() != null)
+                        grille.getP().versHaut(grille.getP().getPieceCourante());*/
+                    //rotation
+                }
                 if (ke.getCode().equals(KeyCode.LEFT)) {
                     if(grille.getP().getPieceCourante() != null)
                         grille.getP().versGauche(grille.getP().getPieceCourante());
@@ -80,9 +84,6 @@ public class VueControleurTetris extends Application {
                 if (ke.getCode().equals(KeyCode.DOWN)) {
                     if(grille.getP().getPieceCourante() != null)
                         grille.getP().versBas(grille.getP().getPieceCourante());
-                    //TODO ici test de la descente, automatqiue : synchroniser l'affichage
-                    //p.descente(p.getPieceCourante());
-                    //descendre la pièce courante du plateau si possible
                 }
             }
         });
@@ -94,5 +95,22 @@ public class VueControleurTetris extends Application {
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                for(int a = 0; a< grille.getP().getLargeur(); a++)
+                    for(int b = 0; b< grille.getP().getHauteur(); b++){
+
+                        if(grille.getP().getTableauJeu()[b][a] != null)
+                            grille.getTab()[a][b].setFill(grille.getP().getTableauJeu()[b][a].getCouleur());
+                        else
+                            grille.getTab()[a][b].setFill(Color.WHITE);
+                    }
+            }
+        });
     }
 }

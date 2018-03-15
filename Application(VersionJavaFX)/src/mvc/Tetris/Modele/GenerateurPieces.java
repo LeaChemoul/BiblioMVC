@@ -78,13 +78,13 @@ public class GenerateurPieces {
 
     public HashMap<String, Piece> createPieces(){
 
-        pieceBuilder.addPiece("OTetris",4,4, Color.rgb(120,150,1),2,OTetris());
-        pieceBuilder.addPiece("ITetris",4,4, Color.rgb(29,150,145),2,ITetris());
-        pieceBuilder.addPiece("STetris",4,4, Color.rgb(150,72,73),2,STetris());
-        pieceBuilder.addPiece("ZTetris",4,4, Color.rgb(150,0,40),2,ZTetris());
-        pieceBuilder.addPiece("LTetris",4,4, Color.rgb(0,91,150),2,LTetris());
-        pieceBuilder.addPiece("JTetris",4,4, Color.rgb(214,213,31),2,JTetris());
-        pieceBuilder.addPiece("TTetris",4,4, Color.rgb(109,67,150),2,TTetris());
+        pieceBuilder.addPiece("OTetris", Color.rgb(120,150,1),OTetris());
+        pieceBuilder.addPiece("ITetris", Color.rgb(29,150,145),ITetris());
+        pieceBuilder.addPiece("STetris", Color.rgb(150,72,73),STetris());
+        pieceBuilder.addPiece("ZTetris", Color.rgb(150,0,40),ZTetris());
+        pieceBuilder.addPiece("LTetris", Color.rgb(0,91,150),LTetris());
+        pieceBuilder.addPiece("JTetris", Color.rgb(214,213,31),JTetris());
+        pieceBuilder.addPiece("TTetris", Color.rgb(109,67,150),TTetris());
         return pieceBuilder.getListePiece();
     }
 }

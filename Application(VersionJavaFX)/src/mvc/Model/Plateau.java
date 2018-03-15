@@ -5,6 +5,7 @@ import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.Observable;
+import java.util.Random;
 
 public class Plateau extends Observable {
 
@@ -29,16 +30,14 @@ public class Plateau extends Observable {
     private boolean isFull = false; //si on ne peut pas placer d'autres pièces
 
     public Plateau(int h,int l){
-        this.hauteur = l;
-        this.largeur = h;
+        this.hauteur = h;
+        this.largeur = l;
         this.piecesPosees = new ArrayList<>();
         tableauJeu = new Case[h][l];
-        test= new int[largeur][hauteur];
 
-        for(int i = 0; i<this.largeur; i++)
-            for(int j = 0; j<this.hauteur; j++){
+        for(int i = 0; i<this.hauteur; i++)
+            for(int j = 0; j<this.largeur; j++){
                 tableauJeu[i][j]= null;
-                test[i][j] = 0;
             }
     }
 
@@ -58,22 +57,20 @@ public class Plateau extends Observable {
         int index = this.piecesPosees.indexOf(piece);
         boolean pieceTrouvee;
         //cette variable permet de garder en mémoire combien de colonnes de Piece.cases nous avons parcourus avant de trouver la pièce : décalage
-        int decalageX = 0;
-        int decalageY = 0;
-        int nbrCasesParcourues = 0;
+        int decalageX = 0, decalageY = 0, nbrCasesParcourues = 0;
         //on parcours le tableau de cases de notre pièce.
         for(int x=0; x<piece.getCases().length;x++){ //Parcours des colonnes
             pieceTrouvee = false;
             decalageY = 0;
             for (int y = 0; y < piece.getCases().length; y++) { //Parcours des lignes
-                if(i+y >= 0 && j+x >= 0
-                        && i+y-decalageY< this.getLargeur() && j+x-decalageX < this.getHauteur() //Si cela ne dépasses pas notre plateau de jeu
+                if(j+y >= 0 && i+x >= 0
+                        && j+y-decalageY< this.getLargeur() && i+x-decalageX < this.getHauteur() //Si cela ne dépasses pas notre plateau de jeu
                         //On teste les collisions
-                        && (tableauJeu[i+y-decalageY][j+x-decalageX] == null || //Ou la case est vide et on peut poser notre pièce.
-                                (tableauJeu[i+y][j+x]!= null && tableauJeu[i+y][j+x].getIndex() == index))) //Ou c'est une occurence de notre pièce (avant d'être bougée)
+                        && (tableauJeu[i+x-decalageX][j+y-decalageY] == null || //Ou la case est vide et on peut poser notre pièce.
+                                (tableauJeu[i+x-decalageX][j+y-decalageY]!= null && tableauJeu[i+x-decalageX][j+y-decalageY].getIndex() == index))) //Ou c'est une occurence de notre pièce (avant d'être bougée)
                 {
                     if (piece.getCases()[x][y] == 1){
-                        positionsPlateau.add(new Vec2d(i + y -decalageY, j + x - decalageX));
+                        positionsPlateau.add(new Vec2d(i + x - decalageX, j + y -decalageY));
                         pieceTrouvee = true;
                         nbrCasesParcourues ++;
                     }
@@ -105,32 +102,23 @@ public class Plateau extends Observable {
     /**
      * On crée une nouvelle instance de pièce qu'on pose sur notre plateau de jeu.
      */
-    public void newPiece(){
-        //TEST de création et d'affichage d'une pièce
-        Vec2d[] listeVect = new Vec2d[4];
-        listeVect[0] = new Vec2d(2,2);
-        listeVect[1] = new Vec2d(1,2);
-        listeVect[2] = new Vec2d(3,2);
-        listeVect[3] = new Vec2d(1,3);
-        builder.addPiece("test", Color.rgb(120,150,1) ,listeVect);
-        builder.afficherPiece("test");
-        this.pieceCourante = builder.getPiece("test");
-        this.piecesPosees.add(pieceCourante);
-        this.poserPiecePlateau(pieceCourante,0,0);
+    public boolean newPiece(){
+        this.pieceCourante = null;
 
-        /*Vec2d[] listeVect2 = new Vec2d[4];
-        listeVect2[0] = new Vec2d(2,2);
-        listeVect2[1] = new Vec2d(1,1);
-        listeVect2[2] = new Vec2d(1,2);
-        listeVect2[3] = new Vec2d(2,1);
-        builder.addPiece("test2",4,4,Color.rgb(160,30,115),2,listeVect2);
-        builder.afficherInfosPiece("test2");
-        this.pieceCourante = builder.getPiece("test2");
-        this.piecesPosees.add(pieceCourante);
-        this.poserPiecePlateau(pieceCourante, 0,1); //collision
-        this.poserPiecePlateau(pieceCourante, 1,1);*/
+        //On crée une pièce à partir des modèles disponibles dans le pool de pièces
+        if(PoolDePiece != null){
+            Random random = new Random();
+            this.pieceCourante = new Piece(PoolDePiece[random.nextInt(PoolDePiece.length)]);
+            this.piecesPosees.add(pieceCourante);
+            setChanged();
+            notifyObservers();
+            return this.poserPiecePlateau(pieceCourante,0,0);
+
+        }
+
         setChanged();
         notifyObservers();
+        return false;
     }
 
     /**
@@ -138,44 +126,40 @@ public class Plateau extends Observable {
      * @param direction Enum qui determine si on la déplace en haut, a droite, à gauche ou en bas
      * @param piece Piece à déplacer
      */
-    public void deplacer(Direction direction, Piece piece){
+    public boolean deplacer(Direction direction, Piece piece){
         //tester si la place est occupée avant de bouger
         int iter = 1; //L'itérateur qui va compter le nombea de déplacements réalisés.
-            ArrayList<Vec2d> positions = occurrencesPiecesPlateau(piece); //Toutes les occurences de notre pièce donnée sur le plateau
+        ArrayList<Vec2d> positions = occurrencesPiecesPlateau(piece); //Toutes les occurences de notre pièce donnée sur le plateau
         if(positions != null){
 
-                if(!collision(positions, direction,this.piecesPosees.indexOf(piece))){ //Si nos positions ne génère pas de collisions
-                    effacerPiecePlateau(positions); //On éfface la pièce
-                    //On la pose aux nouvelle coordonnées.
-                    // On la place à partir de la position précédente auquel on a ajouté (0,-1) par exemple pour la descendre verticalement
-                    this.poserPiecePlateau(piece,(int) positions.get(0).x + direction.x, (int) positions.get(0).y +direction.y);
-                }
+            if(!collision(positions, direction,this.piecesPosees.indexOf(piece))){ //Si nos positions ne génère pas de collisions
+                effacerPiecePlateau(positions); //On efface la pièce
+                //On la pose aux nouvelles coordonnées.
+                // On la place à partir de la position précédente à laquelle on a ajouté (0,-1) par exemple pour la descendre verticalement
+                this.poserPiecePlateau(piece,(int) positions.get(0).x + direction.x, (int) positions.get(0).y +direction.y);
+            }else{
+                return false;
+            }
         }
         setChanged();
         notifyObservers();
+        return true;
     }
 
-    public void versBas(Piece piece){
-        this.deplacer(Direction.DOWN, piece);
+    public boolean versBas(Piece piece){
+        return this.deplacer(Direction.RIGHT, piece);
     }
 
-    public void versDroite(Piece piece){
-        this.deplacer(Direction.RIGHT, piece);
+    public boolean versDroite(Piece piece){
+        return this.deplacer(Direction.DOWN, piece);
     }
 
-    public void versGauche(Piece piece){
-        this.deplacer(Direction.LEFT, piece);
+    public boolean versGauche(Piece piece){
+        return this.deplacer(Direction.UP, piece);
     }
 
-    public void versHaut(Piece piece){
-        this.deplacer(Direction.UP, piece);
-    }
-
-    /**
-     * Renvoie la pièce à qui appartient la case aux coordonnées x,y du plateau.
-     */
-    public Piece recupererPiece(int x, int y) {
-        return piecesPosees.get( tableauJeu[x][y].getIndex() );
+    public boolean versHaut(Piece piece){
+        return this.deplacer(Direction.LEFT, piece);
     }
 
     /**
@@ -186,8 +170,8 @@ public class Plateau extends Observable {
     public ArrayList<Vec2d> occurrencesPiecesPlateau(Piece piece){
         int index = this.piecesPosees.indexOf(piece);
         ArrayList<Vec2d> positions = new ArrayList<>();
-        for (int i = 0; i < this.largeur; i++) {
-            for (int j = 0; j < this.hauteur; j++) {
+        for (int i = 0; i < this.hauteur; i++) {
+            for (int j = 0; j < this.largeur; j++) {
                 if(this.tableauJeu[i][j] != null && this.tableauJeu[i][j].getIndex() == index){
                     positions.add(new Vec2d(i,j));
                 }
@@ -200,7 +184,7 @@ public class Plateau extends Observable {
         for (Vec2d occurrence : occurrences){
             int a = (int) occurrence.x + dir.x;
             int b = (int) occurrence.y + dir.y;
-            if (a<0 || a>=this.largeur || b< 0 || b>=this.hauteur || (this.getTableauJeu()[a][b] != null && this.getTableauJeu()[a][b].getIndex() != index ))
+            if (a<0 || a>=this.hauteur || b< 0 || b>=this.largeur || (this.getTableauJeu()[a][b] != null && this.getTableauJeu()[a][b].getIndex() != index ))
                 return true;
         }
         return false;
@@ -214,11 +198,75 @@ public class Plateau extends Observable {
         notifyObservers();
     }
 
+
+    public int ligneASupprimer(){
+        boolean estRemplie;
+        for (int i = 0; i < this.hauteur ; i++) {
+            estRemplie =true;
+            for (int j = 0; j < this.largeur; j++) {
+                if(this.tableauJeu[i][j] == null){
+                    estRemplie =false;
+                }
+            }
+            if(estRemplie){
+                return i;
+            }
+        }
+        return -1; //Si aucune ligne est remplie
+    }
+
+    public void effacerLigne(int ligne){
+        //TODO Pour la ligne considerée mettre à jour les pièces puis descendre celles au-dessus
+        //Pour chaque pièce à descendre, la passer en pièce courante et appeller le timer qui la descend
+        ArrayList<Piece> ontEteDescendues = new ArrayList<>();
+        for (int j = 0; j < this.getHauteur() ; j++) {
+            Piece pieceAChanger = recupererPiece(ligne,j);
+            if(pieceAChanger != null){
+                Vec2d decalage = decalagePremiereCase(pieceAChanger,new Vec2d(ligne,j));
+                if(decalage != null){
+                    pieceAChanger.deleteDecalage(new Vec2d(ligne, j),decalage);
+                    ArrayList<Vec2d> occurences = occurrencesPiecesPlateau(pieceAChanger);
+                    effacerPiecePlateau(occurences);
+                    poserPiecePlateau(pieceAChanger,(int) occurences.get(0).x, (int) occurences.get(0).y);
+
+                    setChanged();
+                    notifyObservers();
+                }
+            }
+        }
+
+    }
+
+    //Retourne le decalage d'une case sur notre plateau
+    // vis à vis de la première occurence de la pièce en paratnt de en haut à gauche du plateau.
+    public Vec2d decalagePremiereCase(Piece piece, Vec2d pos){
+        ArrayList<Vec2d> occurences = this.occurrencesPiecesPlateau(piece);
+        //première occurence par rapport à laquelle on va calculer notre décalage
+        int firstX = (int) occurences.get(0).x;
+        int firstY = (int) occurences.get(0).y;
+        for (Vec2d occurence : occurences) {
+            //On compare la position de chaque case de la pièce par rapport à la position donnée
+            int a = (int) occurence.x;
+            int b = (int) occurence.y;
+            if (a == (int) pos.x && b == (int) pos.y) {
+                return new Vec2d(a - firstX, b - firstY);
+            }
+        }
+        return  null;
+    }
+
     /**
-     * Efface tout les cases de la ligne i.
-     * @param x
+     * Renvoie la pièce à qui appartient la case aux coordonnées x,y du plateau.
      */
-    public void effacerLigne(int x){
+    public Piece recupererPiece(int x, int y) {
+        if(tableauJeu[x][y].getIndex() != -1)
+            return piecesPosees.get(tableauJeu[x][y].getIndex());
+        else
+            return null;
+    }
+
+
+    public void effacerLigne(){
 
     }
 
@@ -241,7 +289,6 @@ public class Plateau extends Observable {
         return pieceCourante;
     }
 
-
     public int getHauteur() {
         return hauteur;
     }
@@ -252,5 +299,9 @@ public class Plateau extends Observable {
 
     public void setPieceCourante(Piece pieceCourante) {
         this.pieceCourante = pieceCourante;
+    }
+
+    public void setPoolDePiece(Piece[] poolDePiece) {
+        PoolDePiece = poolDePiece;
     }
 }

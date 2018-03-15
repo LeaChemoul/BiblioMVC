@@ -61,6 +61,7 @@ public class PieceBuilder {
         //On génère la pièce et on l'ajoute à notre liste de piece.
         //Le calcul de la taille, du pivot, et le centrage de la pièce sont pris en charge par le constructeur de la Piece.
         Piece piece = new Piece(name, couleur, matricePiece);
+        piece.centrerPiece();
 
         //Si il y avait déjà une pièce avec le même nom, on l'écrase et on informe l'utilisateur..
         if ( listePieces.containsKey(name) )
@@ -80,6 +81,7 @@ public class PieceBuilder {
 
     /**
      * Ajoute à listePieces la pièce donnée en argument
+     * Attention ! NE RECENTRE PAS.
      * @param piece Piece à ajouter à ListePieces.
      */
     public void addPiece (Piece piece) {
