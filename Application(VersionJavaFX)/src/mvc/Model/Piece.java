@@ -12,17 +12,24 @@ public class Piece {
     private int[][] cases;
 
 
-    private int vitesseChute; //Useless ?
-    private boolean isStatic = false; //Useless ?
-    private int rotationState; //Useless ?
-    // A voir : 0 si initial, 1 si tourné uen fois droite, 2 si tourné 2 fois. Idem pour 3.
+    //Nécessaire pour le RushHour, permet de savoir si la pièce peut se déplacer verticalement ( UP/DOWN ) ou horizontalement ( LEFT/RIGHT )
+    private Direction sensDeplacement;
 
-    public Piece(String nom, Color couleur, int vitesse, int[][] cases) {
+
+    public Piece(String nom, int[][] cases) {
         this.nom = nom;
-        this.couleur = couleur;
-        this.vitesseChute = vitesse;
+        this.couleur = Color.BLACK; //Couleur par défaut.
         this.cases = cases;
         calculPivotEtTaille();
+        centrerPiece();
+    }
+
+    public Piece(String nom, Color couleur, int[][] cases) {
+        this.nom = nom;
+        this.couleur = couleur;
+        this.cases = cases;
+        calculPivotEtTaille();
+        centrerPiece();
     }
 
     /**
@@ -72,11 +79,6 @@ public class Piece {
             cases[x][y] = 0;
     }
 
-    // TODO : C'est quoi ?
-    public void fission(){
-
-    }
-
 
     /**
      * Mets à jour les valeurs des attributs Pivot et Taille en fonction de l'état de la pièce.
@@ -97,12 +99,35 @@ public class Piece {
         pivot.y /= taille;
     }
 
-
-    public void afficherPiece() {
+    /**
+     * Affichage complet de la pièce, avec nom, matrice, couleur, pivot.
+     */
+    public void afficherInfosPiece() {
 
         //On affiche le nom de la pièce.
         System.out.println("Piece \'"+nom+"\' : ");
 
+        afficherPiece();
+
+        //On affiche sa couleur
+        //TODO : Créer un COLOR TO STRING. Pour l'instant getCouleur() et getCouleur().toString() renvoie tout les deux un code hexadecimal dégeulasse.
+        System.out.println("Couleur de la piece : "+ getCouleur() );
+
+        //On affiche son pivot.
+        System.out.println("Coordonnées du pivot : " + getPivot() );
+
+        System.out.println("---------------");
+    }
+
+    /**
+     * Affichage simple de la Pièce, de ce style :
+     -------
+     |     |
+     |  X  |
+     | XXX |
+     -------
+     */
+    public void afficherPiece() {
         //On récupère la matrice qui la compose.
         int[][] matricePiece = getCases();
         //On récupère les dimensions de la pièce.
@@ -138,33 +163,16 @@ public class Piece {
             System.out.print("---");
         System.out.println("-");
 
-        /* TYPE DE RENDU :
-            -------
-            |     |
-            |  X  |
-            | XXX |
-            -------
-         */
-
-        //On affiche sa couleur
-        //TODO : Créer un COLOR TO STRING. Pour l'instant getCouleur() et getCouleur().toString() renvoie tout les deux un code hexadecimal dégeulasse.
-        System.out.println("Couleur de la piece : "+ getCouleur() );
-
-        //On affiche sa vitesse de chute.
-        System.out.println("Vitesse de chute de la piece : " + getVitesseChute() );
-
-        //On affiche son pivot.
-        System.out.println("Coordonnées du pivot : " + getPivot() );
-
-        System.out.println("---------------");
     }
 
+
+
+    //TODO : translater(dir) est potentiellement inutile, je ne l'ai pas utilisé pour centrer la pièce. On la garde atm mais si on lui trouve aucune utilité on la supprimera.
     /**
      * Translate toutes les cases de la pièce d'une case dans la matrice locale vers la direction donnée.
      * @param dir Direction vers laquelle translater la piece
      */
     //Testé & Fonctionnelle.
-    //Va servir à centrer les pièces.
     public void translater(Direction dir) {
 
         //Pour chaque case, on décale leur contenu d'une case vers la gauche/droite/haut/bas. En ignorant la première/dernière ligne/colonne
@@ -303,16 +311,18 @@ public class Piece {
         return cases;
     }
 
-    public int getVitesseChute() {
-        return vitesseChute;
-    }
-
     public Vec2d getPivot() {
         return pivot;
     }
 
+    public String getNom() {
+        return nom;
+    }
     public Color getCouleur() {
         return couleur;
+    }
+    public void setCouleur(Color couleur) {
+        this.couleur = couleur;
     }
 
     public int getTaille(){
@@ -321,5 +331,13 @@ public class Piece {
 
     public void setTaille(int taille) {
         this.taille = taille;
+    }
+
+    public Direction getSensDeplacement() {
+        return sensDeplacement;
+    }
+
+    public void setSensDeplacement(Direction sensDeplacement) {
+        this.sensDeplacement = sensDeplacement;
     }
 }

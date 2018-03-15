@@ -3,7 +3,6 @@ package mvc.Blokus.ModeleBlokus;
 import com.sun.javafx.geom.Vec2d;
 import javafx.scene.paint.Color;
 import mvc.Model.*;
-import mvc.Blokus.ModeleBlokus.*;
 
 import java.util.ArrayList;
 
@@ -31,7 +30,7 @@ public class Partie {
         Vec2d[] PieceCoor = { new Vec2d(1, 1) };
         builder.addPiece("Piece1-1", Color.GREEN, PieceCoor);
 
-        return builder.exporterArrayListe();
+        return builder.exporterArrayList();
     }
 
     public Plateau getPlateau() {

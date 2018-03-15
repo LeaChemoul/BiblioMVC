@@ -13,33 +13,27 @@ public class TestBuilder2 {
         Vec2d[] listeCoor = new Vec2d[] { new Vec2d(0, 1), new Vec2d(0, 2), new Vec2d(0, 3), new Vec2d(0, 0) };
         builder.addPiece("Barre", Color.GREEN, listeCoor);
 
-        centrerPiece("Barre");
+        afficherInfosPiece("Barre");
         rotationComplete("Barre");
 
         listeCoor = new Vec2d[] { new Vec2d(1, 1), new Vec2d(2, 0), new Vec2d(2, 1), new Vec2d(2, 2) };
         builder.addPiece("Tetro", Color.BLUE, listeCoor);
 
-
-        centrerPiece("Tetro");
+        afficherInfosPiece("Tetro");
         rotationComplete("Tetro");
 
         listeCoor = new Vec2d[] { new Vec2d(0, 0), new Vec2d(1, 0), new Vec2d(1, 1), new Vec2d(1, 2), new Vec2d(1, 3) };
         builder.addPiece("P", Color.BLUE, listeCoor);
 
-        centrerPiece("P");
+        afficherInfosPiece("P");
         rotationComplete("P");
 
 
-
     }
 
-    static public void centrerPiece(String name) {
-        builder.afficherPiece(name);
-        System.out.println("    TEST - CENTRER PIECE ");
-        builder.getPiece(name).centrerPiece();
-        builder.afficherPiece(name);
+    static public void afficherInfosPiece(String name) {
+        builder.getPiece(name).afficherInfosPiece();
     }
-
     static public void rotationComplete(String name) {
 
         System.out.println("    TEST - Rotation complete de la piece " + name);

@@ -112,7 +112,7 @@ public class Plateau extends Observable {
         listeVect[1] = new Vec2d(1,2);
         listeVect[2] = new Vec2d(3,2);
         listeVect[3] = new Vec2d(1,3);
-        builder.addPiece("test",4,4,Color.rgb(120,150,1),2,listeVect);
+        builder.addPiece("test", Color.rgb(120,150,1) ,listeVect);
         builder.afficherPiece("test");
         this.pieceCourante = builder.getPiece("test");
         this.piecesPosees.add(pieceCourante);
@@ -124,7 +124,7 @@ public class Plateau extends Observable {
         listeVect2[2] = new Vec2d(1,2);
         listeVect2[3] = new Vec2d(2,1);
         builder.addPiece("test2",4,4,Color.rgb(160,30,115),2,listeVect2);
-        builder.afficherPiece("test2");
+        builder.afficherInfosPiece("test2");
         this.pieceCourante = builder.getPiece("test2");
         this.piecesPosees.add(pieceCourante);
         this.poserPiecePlateau(pieceCourante, 0,1); //collision

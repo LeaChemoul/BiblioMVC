@@ -15,16 +15,16 @@ public class TestBuilder {
 
         System.out.println("    TEST - Remplissage de la liste du Builder avec deux nouvelles pieces + Affichage toute une liste");
         Vec2d[] listeCoor = new Vec2d[] { new Vec2d(0, 1), new Vec2d(0, 2), new Vec2d(0, 3), new Vec2d(0, 0) };
-        builder.addPiece("Barre", 4, 4, Color.GREEN, listeCoor);
+        builder.addPiece("Barre", Color.GREEN, listeCoor);
 
         listeCoor = new Vec2d[] { new Vec2d(1, 1), new Vec2d(2, 0), new Vec2d(2, 1), new Vec2d(2, 2) };
-        builder.addPiece("Tetro", 3, 3, Color.BLUE, 3, listeCoor);
+        builder.addPiece("Tetro", Color.BLUE, listeCoor);
 
         builder.afficherPieces();
 
         System.out.println("    TEST - Remplacer une piece par une autre avec le même nom : ");
         listeCoor = new Vec2d[] { new Vec2d(0, 0), new Vec2d(1, 0), new Vec2d(0, 1), new Vec2d(1, 1) };
-        builder.addPiece("Barre", 2, 2, Color.RED, listeCoor);
+        builder.addPiece("Barre", Color.RED, listeCoor);
 
         System.out.println("    TEST - Afficher une seule piece de la liste : ");
         builder.afficherPiece("Barre");
@@ -54,44 +54,44 @@ public class TestBuilder {
         builder.addPiece("Barre",  Color.RED, listeCoor);
 
         System.out.println("    TEST - Exporter liste (Fonctionne si aucun message d'erreur) ");
-        Piece[] listeDesPieces = builder.exporterListe();
+        Piece[] listeDesPieces = builder.exporterArray();
 
         builder.afficherPieces();
 
         System.out.println("    TEST - Translations Right");
         listeDesPieces[0].translater(Direction.RIGHT);
-        listeDesPieces[0].afficherPiece();
+        listeDesPieces[0].afficherInfosPiece();
         System.out.println("    TEST - Rotation droite ");
         listeDesPieces[0].Rotation(Direction.RIGHT);
-        listeDesPieces[0].afficherPiece();
+        listeDesPieces[0].afficherInfosPiece();
         System.out.println("    TEST - Rotation droite ");
         listeDesPieces[0].Rotation(Direction.RIGHT);
-        listeDesPieces[0].afficherPiece();
+        listeDesPieces[0].afficherInfosPiece();
         System.out.println("    TEST - Rotation droite ");
         listeDesPieces[0].Rotation(Direction.RIGHT);
-        listeDesPieces[0].afficherPiece();
+        listeDesPieces[0].afficherInfosPiece();
         System.out.println("    TEST - Rotation droite (TOUR COMPLET) ");
         listeDesPieces[0].Rotation(Direction.RIGHT);
-        listeDesPieces[0].afficherPiece();
+        listeDesPieces[0].afficherInfosPiece();
         System.out.println("    TEST - Rotation gauche ");
         listeDesPieces[0].Rotation(Direction.LEFT);
-        listeDesPieces[0].afficherPiece();
+        listeDesPieces[0].afficherInfosPiece();
 
 
         System.out.println("    TEST - Rotation gauche ");
         listeDesPieces[1].Rotation(Direction.LEFT);
-        listeDesPieces[1].afficherPiece();
+        listeDesPieces[1].afficherInfosPiece();
         System.out.println("    TEST - Rotation gauche ");
         listeDesPieces[1].Rotation(Direction.LEFT);
-        listeDesPieces[1].afficherPiece();
+        listeDesPieces[1].afficherInfosPiece();
         System.out.println("    TEST - Rotation vide (droite) ");
         listeDesPieces[1].Rotation(Direction.UP);
-        listeDesPieces[1].afficherPiece();
+        listeDesPieces[1].afficherInfosPiece();
 
 
         System.out.println("    TEST - Translations ");
         listeCoor = new Vec2d[] { new Vec2d(1, 1), new Vec2d(1, 2), new Vec2d(2, 1), new Vec2d(2, 2) };
-        builder.addPiece("Cube", 4, 4, Color.RED, listeCoor);
+        builder.addPiece("Cube", Color.RED, listeCoor);
         builder.afficherPiece("Cube");
         System.out.println("    TEST - Translations UP");
         builder.getPiece("Cube").translater(Direction.UP);
