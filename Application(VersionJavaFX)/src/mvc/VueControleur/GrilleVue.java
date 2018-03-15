@@ -15,14 +15,14 @@ import mvc.Model.Plateau;
 
 import javafx.scene.text.Text;
 
-public class VueControleur extends BorderPane{
+public class GrilleVue extends BorderPane{
 
     private int largeur;
     private int hauteur;
     private Plateau p;
     private Rectangle[][] tab;
 
-    public VueControleur(int a,int b) {
+    public GrilleVue(int a, int b) {
         this.largeur = a;
         this.hauteur = b;
         

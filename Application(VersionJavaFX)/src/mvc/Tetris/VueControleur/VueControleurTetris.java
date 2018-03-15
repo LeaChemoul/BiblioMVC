@@ -12,7 +12,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import mvc.Tetris.Modele.Partie;
-import mvc.VueControleur.VueControleur;
+import mvc.VueControleur.GrilleVue;
 
 
 public class VueControleurTetris extends Application {
@@ -21,7 +21,7 @@ public class VueControleurTetris extends Application {
 
     @Override
     public void start(Stage primaryStage){
-        VueControleur grille = new VueControleur(10,20);
+        GrilleVue grille = new GrilleVue(10,20);
         //TOP
         Text titre = new Text("Le super TETRIS");
         grille.setTop(titre);

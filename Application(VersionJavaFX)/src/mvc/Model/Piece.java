@@ -207,11 +207,95 @@ public class Piece {
                     cases[0][j] = 0;
                 break;
         }
+        calculPivotEtTaille();
     }
 
     //Centre la pièce le plus possible sur sa matrice locale en translatant la matrice de façon à centrer le pivot.
     public void centrerPiece() {
 
+        /* Conditions et objectifs :
+        Il faut que la Piece finisse dans une matrice carré.
+        Son pivot doit être le plus centré possible dans la matrice.
+        On calcule donc la hauteur et largeux max de la pièce, et on fait une matrice carré capable de contenir tout ça,
+        et on recopie la pièce dans cette nouvelle matrice, en la décalant poru centrer le plus possible son pivot.
+         */
+
+        //CALCUL DIMENSION DE LA NOUVELLE MATRICE
+        int hauteur, hMin = 0, hMax = 0;
+        int largeur, lMin = 0, lMax = 0;
+        boolean ligneVide = true;
+
+        //On parcours la matrice de la piece ligne par ligne.
+        for ( int i = 0; i < cases.length; i++) { //Lignes
+            for ( int j = 0; j < cases[0].length ; j++) { //Colonnes
+
+                //Si la case n'est pas vide.
+                if ( cases[i][j] != 0 ) {
+
+                    //Si c'est la première case de la ligne
+                    if ( ligneVide ) {
+
+                        //TRAITEMENT HAUTEUR
+                        //Si on a pas encore de hauteur min, elle est défini ici.
+                        if ( hMin == 0 )
+                            hMin = i+1;
+                        //Sinon c'est une nouvelle hauteur max.
+                        else
+                            hMax = i+1;
+
+                        //TRAITEMENT LARGEUR
+                        //Si on a pas encore de largeur min, elle est défini ici.
+                        //Si on a une nouvelle largeur minimum, on modifie lMin.
+                        if ( lMin == 0 || j+1 < lMin)
+                            lMin = j+1;
+
+                        ligneVide = false;
+
+                    }
+                    //Si la case n'est pas vide, c'est peut-être une nouvelle largeur max.
+                    else if ( lMax < j+1 )
+                            lMax = j+2;
+                }
+
+            }
+            //On réintiialise ligneVide pour la prochaine ligne
+            ligneVide = true;
+        }
+
+        //On choisit d'utiliser deux variables et non juste incrémenter une variable h pour permettre
+        //la création de pièce "surréaliste" où tout ses cases ne sont pas reliés.
+        hauteur = Math.abs(hMax - hMin);
+        largeur = Math.abs(lMax - lMin);
+        System.out.println("hauteur = " + hauteur);
+        System.out.println("largeur = " + largeur);
+
+        //Nouvelle dimension (carré) de la matrice, on prévoit large.
+        int dimM = Math.max(hauteur, largeur) + 1;
+        int[][] newCases = new int[dimM][dimM];
+
+        //On calcule le décalage qu'on doit appliquer pour centrer la pièce grâce au pivot.
+        //Le pivot idéal est ( dimM/2 , dimM/2 )
+        //On calcule la différence par rapport à notre pivot, arrondi car on ne peut pas toujours centrer parfaitement.
+        int offsetX = (int) (dimM/2.0 - pivot.x);
+        int offsetY = (int) (dimM/2.0 - pivot.y);
+
+        System.out.println("dimM = " + dimM);
+        System.out.println("offsetX = " + offsetX);
+        System.out.println("offsetY = " + offsetY);
+
+        //On remplit la nouvelle matrice avec ces nouvelles informations
+        for (int i = 0; i < cases.length; i++ ) {
+            for (int j = 0; j < cases[0].length; j++ ) {
+                if (cases[i][j] != 0)
+                    newCases[i + offsetX][j + offsetY] = cases[i][j];
+            }
+        }
+
+        //On remplace l'ancienne matrice par la nouvelle, centrée.
+        cases = newCases;
+
+        //On met à jour le pivot.
+        calculPivotEtTaille();
     }
 
     //Accesseurs

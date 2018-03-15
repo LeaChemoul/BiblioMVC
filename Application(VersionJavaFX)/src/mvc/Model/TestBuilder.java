@@ -57,10 +57,20 @@ public class TestBuilder {
         Piece[] listeDesPieces = builder.exporterListe();
 
         builder.afficherPieces();
+
+        System.out.println("    TEST - Translations Right");
+        listeDesPieces[0].translater(Direction.RIGHT);
+        listeDesPieces[0].afficherPiece();
         System.out.println("    TEST - Rotation droite ");
         listeDesPieces[0].Rotation(Direction.RIGHT);
         listeDesPieces[0].afficherPiece();
         System.out.println("    TEST - Rotation droite ");
+        listeDesPieces[0].Rotation(Direction.RIGHT);
+        listeDesPieces[0].afficherPiece();
+        System.out.println("    TEST - Rotation droite ");
+        listeDesPieces[0].Rotation(Direction.RIGHT);
+        listeDesPieces[0].afficherPiece();
+        System.out.println("    TEST - Rotation droite (TOUR COMPLET) ");
         listeDesPieces[0].Rotation(Direction.RIGHT);
         listeDesPieces[0].afficherPiece();
         System.out.println("    TEST - Rotation gauche ");

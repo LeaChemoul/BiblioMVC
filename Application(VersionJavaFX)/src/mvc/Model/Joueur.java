@@ -18,6 +18,10 @@ public class Joueur {
     private Plateau plateau;
 
 
+    public Joueur (int num) {
+        this.numJoueur = num;
+    }
+
     public Joueur (int num, Plateau plateau, ArrayList<Piece> PoolDePiece) {
         this.numJoueur = num;
         this.plateau = plateau;
