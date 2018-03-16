@@ -91,6 +91,20 @@ public class PieceBuilder {
         listePieces.put(piece.getNom(), piece);
     }
 
+    /**
+     * Ajout de pièce alternatif. On rentre une liste de double et il va automatiquement le trier en couple de valeur, des coordonnées.
+     * Sert juste à rendre l'ajout de pièce plus simple sans avoir à déclarer énormément de "new Vec2d(x,y)" à la suite.
+     * @param name Nom de la piece
+     * @param tabCoor Liste des coordonnées x,y de la pièce, tel quel : [x1, y1, x2, y2, ect...]
+     */
+    public void addPiece(String name, double[] tabCoor) {
+        addPiece(name, arrayDoubleToVec2D(tabCoor));
+    }
+
+    public void addPiece(String name, Color couleur, double[] tabCoor) {
+        addPiece(name, couleur, arrayDoubleToVec2D(tabCoor));
+    }
+
 
     /**
      * Supprime la pièce avec le nom donné
@@ -206,6 +220,31 @@ public class PieceBuilder {
         listePieces.forEach( (name, piece) -> {
             piece.setCouleur(couleur);
         });
+    }
+
+    //Fonctions statiques
+
+    /**
+     * Prends un tableau de double et renvoie un tableau de Vec2d en sélectionnant les valeurs deux à deux.
+     * Si le nombre de valeur est impair, ignore la dernière.
+     * @param tabCoor Tableau de coordonnées
+     * @return Tableau de Vec2d
+     */
+    public static Vec2d[] arrayDoubleToVec2D(double[] tabCoor ) {
+        //Récupère les valeurs double de tabCoor deux à deux et remplit un tableau de Vec2d avec.
+        Vec2d[] tabVec = new Vec2d[tabCoor.length/2];
+
+        //Si le nombre de coordonnées est impair, on ignore la dernière grâce à " - tabCoor.length%2 "
+        for ( int i = 0; i < tabCoor.length - tabCoor.length%2 ; i+=2 ) {
+            tabVec[i/2] = new Vec2d( tabCoor[i], tabCoor[i+1] );
+        }
+
+        /* DEBUG
+        System.out.println("tabCoor = " + Arrays.toString(tabCoor) );
+        System.out.println("tabVec = " + Arrays.toString(tabVec) );
+        */
+
+        return tabVec;
     }
 
     //Accesseurs

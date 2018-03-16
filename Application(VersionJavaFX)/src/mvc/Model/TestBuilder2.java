@@ -28,15 +28,32 @@ public class TestBuilder2 {
         afficherInfosPiece("P");
         rotationComplete("P");
 
+        System.out.println("    TEST - Ajout tableau double");
+        builder.addPiece("Zigzag", new double[]{ 4,4 , 3,4 , 3,3, 2,3 } );
+        afficherPiece("Zigzag");
+        rotationComplete("Zigzag");
+
+        System.out.println("    TEST - Ajout tableau double NbValeurs impair");
+        builder.addPiece("Angle", new double[]{ 5,5 , 4,4 , 4,5, 2 } );
+        afficherPiece("Angle");
+        rotationComplete("Angle");
+
+
+
 
     }
 
     static public void afficherInfosPiece(String name) {
         builder.getPiece(name).afficherInfosPiece();
     }
+
+    static public void afficherPiece(String name) {
+        builder.getPiece(name).afficherPiece();
+    }
+
     static public void rotationComplete(String name) {
 
-        System.out.println("    TEST - Rotation complete de la piece " + name);
+        System.out.println("    TEST - Rotation complete de la piece (POSITION INITIAL) : " + name);
         builder.afficherPiece(name);
         System.out.println("    Rotation droite(1) ");
         builder.getPiece(name).Rotation(Direction.RIGHT);
