@@ -72,25 +72,41 @@ public class TestBuilder2 {
 
     public static void genererPiecesBlokus() {
 
+        /*
         //Pièce à une case
         builder.addPiece("Piece1-1", new double[]{0,0});
 
         //Pièce à deux cases
-        builder.addPiece("Piece2-1", new double[]{0,0, 0,1});
+        builder.addPiece("Piece2-1", new double[]{0,0, 1,0});
 
         //Pièces à trois cases
-        builder.addPiece("Piece3-1", new double[]{0,0, 0,1 , 0,2});
+        builder.addPiece("Piece3-1", new double[]{0,0, 1,0 , 2,0});
         builder.addPiece("Piece3-2", new double[]{0,0, 1,0 , 1,1});
 
-        //Pièces à trois cases
-        builder.addPiece("Piece4-1", new double[]{0,0, 0,1 , 0,2, 0,3});
+        //Pièces à quatre cases
+        builder.addPiece("Piece4-1", new double[]{0,0, 1,0 , 2,0, 3,0});
         builder.addPiece("Piece4-2", new double[]{2,0, 2,1 , 1,1, 0,1});
         builder.addPiece("Piece4-3", new double[]{0,0, 1,0 , 1,1, 2,0});
         builder.addPiece("Piece4-4", new double[]{0,0, 1,0 , 1,1, 0,1});
         builder.addPiece("Piece4-5", new double[]{0,0, 0,1 , 1,1, 1,2});
 
+        //Pièces à cinq cases
+        builder.addPiece("Piece5-1", new double[]{0,0, 1,0, 2,0, 3,0, 4,0});
+        builder.addPiece("Piece5-2", new double[]{3,0, 3,1, 2,1, 1,1, 0,1});
+        builder.addPiece("Piece5-3", new double[]{0,1, 1,1, 2,1, 2,0, 3,0});
+        builder.addPiece("Piece5-4", new double[]{0,1, 1,0, 1,1, 2,1, 2,0});
+        builder.addPiece("Piece5-5", new double[]{0,0, 0,1, 1,1, 2,1, 2,0});
+        builder.addPiece("Piece5-6", new double[]{0,0, 1,0, 2,0, 3,0, 1,1});
+        builder.addPiece("Piece5-7", new double[]{0,1, 1,1, 2,1, 2,2, 2,0});
+        builder.addPiece("Piece5-8", new double[]{0,0, 1,0, 2,0, 2,1, 2,2});
+        builder.addPiece("Piece5-9", new double[]{0,0, 0,1, 1,1, 1,2, 2,2});
+        builder.addPiece("Piece5-10", new double[]{0,0, 1,0, 1,1, 1,2, 2,2});
+        builder.addPiece("Piece5-11", new double[]{0,0, 1,0, 1,1, 1,2, 2,1});
+        builder.addPiece("Piece5-12", new double[]{0,1, 1,0, 1,1, 1,2, 2,1});
+        */
+
         //DEBUG
-        builder.afficherPieces();
+        //builder.afficherPieces();
     }
 
 }

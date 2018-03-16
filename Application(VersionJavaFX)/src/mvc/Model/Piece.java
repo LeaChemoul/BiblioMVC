@@ -206,7 +206,7 @@ public class Piece {
         int n = matricePiece.length;
         int m = matricePiece[0].length;
 
-        System.out.println("Dimensions : "+n+"*"+m);
+        System.out.println(nom + " -- Dimensions : "+n+"*"+m);
 
         //Ligne bordure au sommet.
         System.out.print("  -");
