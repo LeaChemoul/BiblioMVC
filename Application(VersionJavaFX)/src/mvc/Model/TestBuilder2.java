@@ -1,6 +1,7 @@
 package mvc.Model;
 import com.sun.javafx.geom.Vec2d;
 import javafx.scene.paint.Color;
+import mvc.Blokus.ModeleBlokus.Partie;
 
 public class TestBuilder2 {
 
@@ -38,9 +39,9 @@ public class TestBuilder2 {
         afficherPiece("Angle");
         rotationComplete("Angle");
 
-
-
-
+        System.out.println("    TEST - PIECES BLOKUS");
+        builder.clearListePiece();
+        genererPiecesBlokus();
     }
 
     static public void afficherInfosPiece(String name) {
@@ -68,4 +69,28 @@ public class TestBuilder2 {
         builder.getPiece(name).Rotation(Direction.RIGHT);
         builder.getPiece(name).afficherPiece();
     }
+
+    public static void genererPiecesBlokus() {
+
+        //Pièce à une case
+        builder.addPiece("Piece1-1", new double[]{0,0});
+
+        //Pièce à deux cases
+        builder.addPiece("Piece2-1", new double[]{0,0, 0,1});
+
+        //Pièces à trois cases
+        builder.addPiece("Piece3-1", new double[]{0,0, 0,1 , 0,2});
+        builder.addPiece("Piece3-2", new double[]{0,0, 1,0 , 1,1});
+
+        //Pièces à trois cases
+        builder.addPiece("Piece4-1", new double[]{0,0, 0,1 , 0,2, 0,3});
+        builder.addPiece("Piece4-2", new double[]{2,0, 2,1 , 1,1, 0,1});
+        builder.addPiece("Piece4-3", new double[]{0,0, 1,0 , 1,1, 2,0});
+        builder.addPiece("Piece4-4", new double[]{0,0, 1,0 , 1,1, 0,1});
+        builder.addPiece("Piece4-5", new double[]{0,0, 0,1 , 1,1, 1,2});
+
+        //DEBUG
+        builder.afficherPieces();
+    }
+
 }
