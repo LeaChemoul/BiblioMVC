@@ -1,5 +1,6 @@
 package mvc.Tetris.Modele;
 
+import javafx.scene.control.Alert;
 import mvc.Model.Piece;
 import mvc.Model.Plateau;
 
@@ -29,6 +30,14 @@ public class Partie implements Runnable{
         }
     }
 
+    public void partieFinie(){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Information Dialog");
+        alert.setHeaderText(null);
+        alert.setContentText("I have a great message for you!");
+
+        alert.showAndWait();
+    }
 
     public void deroulement(){
         new Thread(this).start();
@@ -67,9 +76,11 @@ public class Partie implements Runnable{
                 if (piecePosee) {
                     nbrRepetitions = this.plateau.getHauteur();
                 }else{
-                    nbrRepetitions = -1;
+                    this.estFinie = true;
+                    break;
                 }
             }
         }
+
     }
 }

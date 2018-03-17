@@ -320,7 +320,6 @@ public class Plateau extends Observable {
             return null;
     }
 
-
     //Méthodes relatives à PoolDePiece
     /*
         PoolDePiece va contenir les pièces générés à travers le Builder et qu'on va utiliser dans notre jeu. On veut pouvoir :
