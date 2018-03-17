@@ -1,4 +1,4 @@
-package mvc.Blokus.VueControleurBlokus;
+package mvc.VueControleur;
 
 
 
@@ -25,7 +25,7 @@ public class Grille extends GridPane{
     private int hauteur;
     private Rectangle[][] tab;
 
-    public Grille(int[][] grille, Color couleur, boolean visibleLine) {
+    public Grille(int[][] grille, Color couleur, boolean visibleLine, int size) {
 
 
         this.hauteur = grille.length;
@@ -37,8 +37,8 @@ public class Grille extends GridPane{
         for(int i = 0; i < hauteur; i++)
             for(int j = 0; j < largeur; j++){
                 tab[i][j] = new Rectangle();
-                tab[i][j].setHeight(15);
-                tab[i][j].setWidth(15);
+                tab[i][j].setHeight(size);
+                tab[i][j].setWidth(size);
 
                 if ( grille[i][j] == 0)
                     tab[i][j].setFill(Color.WHITE);

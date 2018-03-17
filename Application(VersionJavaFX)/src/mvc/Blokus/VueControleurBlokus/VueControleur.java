@@ -1,13 +1,9 @@
 package mvc.Blokus.VueControleurBlokus;
 
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.TilePane;
@@ -19,8 +15,7 @@ import javafx.stage.Stage;
 
 import mvc.Model.*;
 import mvc.Blokus.ModeleBlokus.*;
-import mvc.VueControleur.GrilleVue;
-import org.w3c.dom.css.Rect;
+import mvc.VueControleur.Grille;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -75,7 +70,7 @@ public class VueControleur extends Application implements Observer {
         //On remplit une TilePane avec chaque pièce du joueur.
         for (Piece piece: partie.getJoueur(joueurActif).getPoolDePiece()) {
 
-            GridPane grillePiece = new Grille( piece.getCases(), piece.getCouleur(), true );
+            GridPane grillePiece = new Grille( piece.getCases(), piece.getCouleur(), true ,15);
             grillePiece.setPadding(new Insets(3));
             tileP.getChildren().add(grillePiece);
 

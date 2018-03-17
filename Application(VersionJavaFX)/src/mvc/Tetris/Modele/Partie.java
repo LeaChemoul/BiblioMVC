@@ -4,17 +4,31 @@ import mvc.Model.Piece;
 import mvc.Model.Plateau;
 
 import java.util.HashMap;
+import java.util.Random;
 
 public class Partie implements Runnable{
 
     private GenerateurPieces generateurPieces = new GenerateurPieces();
     private Plateau plateau;
+    private boolean estFinie;
 
     public Partie(Plateau p){
         this.plateau = p;
         HashMap<String, Piece> poolDePieces = generateurPieces.createPieces();
         plateau.setPoolDePiece(poolDePieces.values().toArray(new Piece[0]));
+        pieceSuivante();
     }
+
+    public void pieceSuivante(){
+        //Le nombre de pièces suivantes connues n'excedera jamais 1 pièce
+        if(plateau.getPoolDePiece() != null){
+            Random random = new Random();
+            Piece pieceSuiv = new Piece(plateau.getPoolDePiece()[random.nextInt(plateau.getPoolDePiece().length)]);
+            plateau.getPiecesSuivantes().clear();
+            plateau.getPiecesSuivantes().add(pieceSuiv);
+        }
+    }
+
 
     public void deroulement(){
         new Thread(this).start();
@@ -44,6 +58,7 @@ public class Partie implements Runnable{
             } else {
 
                 boolean piecePosee = plateau.newPiece();
+                this.pieceSuivante();
                 int ligne = 0;
                 do {
                     ligne = plateau.ligneASupprimer();
@@ -52,6 +67,8 @@ public class Partie implements Runnable{
                 } while (ligne != -1);
                 if (piecePosee) {
                     nbrRepetitions = this.plateau.getHauteur();
+                }else{
+                    nbrRepetitions = -1;
                 }
             }
         }

@@ -25,7 +25,7 @@ public class Plateau extends Observable {
     private Piece[] PoolDePiece;
 
     //Pas encore implémenté.
-    private ArrayList<Piece> piecesSuivantes;
+    private ArrayList<Piece> piecesSuivantes = new ArrayList<>();
 
     public Plateau(int h,int l){
         this.hauteur = h;
@@ -104,14 +104,12 @@ public class Plateau extends Observable {
         this.pieceCourante = null;
 
         //On crée une pièce à partir des modèles disponibles dans le pool de pièces
-        if(PoolDePiece != null){
-            Random random = new Random();
-            this.pieceCourante = new Piece(PoolDePiece[random.nextInt(PoolDePiece.length)]);
+        if(piecesSuivantes != null){
+            this.pieceCourante = new Piece(piecesSuivantes.get(0));
             this.piecesPosees.add(pieceCourante);
             setChanged();
             notifyObservers();
             return this.poserPiecePlateau(pieceCourante,0,0);
-
         }
 
         setChanged();
@@ -307,5 +305,13 @@ public class Plateau extends Observable {
 
     public void setPoolDePiece(Piece[] poolDePiece) {
         PoolDePiece = poolDePiece;
+    }
+
+    public Piece[] getPoolDePiece() {
+        return PoolDePiece;
+    }
+
+    public ArrayList<Piece> getPiecesSuivantes() {
+        return piecesSuivantes;
     }
 }
