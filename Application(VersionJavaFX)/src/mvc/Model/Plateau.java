@@ -92,6 +92,9 @@ public class Plateau extends Observable {
             int jj = (int) aPositionsPlateau.y;
             this.tableauJeu[ii][jj] = new Case(ii,jj, piece.getCouleur(),index);
         }
+
+        setChanged();
+        notifyObservers();
         return true;
     }
 

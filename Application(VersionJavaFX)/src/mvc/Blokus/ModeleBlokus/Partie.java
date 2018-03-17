@@ -1,12 +1,13 @@
 package mvc.Blokus.ModeleBlokus;
 
 import com.sun.javafx.geom.Vec2d;
+import java.util.Observable;
 import javafx.scene.paint.Color;
 import mvc.Model.*;
 
 import java.util.ArrayList;
 
-public class Partie {
+public class Partie extends Observable {
 
     private PieceBuilder builder = new PieceBuilder();
     private Plateau plateau;
@@ -14,6 +15,7 @@ public class Partie {
 
     private int numJoueurActif;
     private Joueur joueurActif;
+
 
 
     public Partie(Plateau p, int nbJoueur){
@@ -48,6 +50,9 @@ public class Partie {
         if ( numJoueurActif > joueurs.length )
             numJoueurActif = 1;
         joueurActif = joueurs[numJoueurActif-1];
+
+        setChanged();
+        notifyObservers();
     }
 
     //TODO : Laisser ici ou la déplacer en static ailleurs pour etre réutilisable ?

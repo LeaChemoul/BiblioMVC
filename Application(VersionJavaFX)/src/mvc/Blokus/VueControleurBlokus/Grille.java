@@ -6,6 +6,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import javafx.application.Platform;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
@@ -50,7 +51,7 @@ public class Grille extends GridPane{
         this.setGridLinesVisible(visibleLine);
 
     }
-
+    
 
     public Rectangle[][] getTab() {
         return tab;
