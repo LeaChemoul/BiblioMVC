@@ -33,15 +33,15 @@ public class PieceBuilder {
             if ( Coor.y > maxY )
                 maxY = (int)Coor.y;
         }
-        //int tMat = Math.max(maxX, maxY) + 1;
-        int[][] matricePiece = new int[maxX+1][maxY+1];
+
+        int hauteur = maxY, largeur = maxX; //On les renomme pour la lisibilité.
+        int[][] matricePiece = new int[hauteur+1][largeur+1];
 
         //---- ON REMPLIT MATRICE PIECE
-        int n = maxX, m = maxY; //On les renomme pour la lisibilité.
 
         //On initialise les cases vides à 0
-        for ( int i = 0; i < n; i++) {
-            for ( int j = 0; j < m; j++) {
+        for ( int i = 0; i < hauteur; i++) {
+            for ( int j = 0; j < largeur; j++) {
                 matricePiece[i][j] = 0;
             }
         }
@@ -55,7 +55,7 @@ public class PieceBuilder {
                 System.out.println("ERREUR coordonnées non valides ! ( Négative ) : " + Coor.toString() );
                 return;
             }
-            matricePiece[(int)Coor.x][(int)Coor.y] = 1;
+            matricePiece[(int)Coor.y][(int)Coor.x] = 1;
         }
 
         //On génère la pièce et on l'ajoute à notre liste de piece.

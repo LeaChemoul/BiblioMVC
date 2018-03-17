@@ -13,6 +13,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import mvc.Model.Direction;
 import mvc.Tetris.Modele.Partie;
 import mvc.VueControleur.GrilleVue;
 
@@ -67,9 +68,12 @@ public class VueControleurTetris extends Application implements Observer {
             @Override
             public void handle(KeyEvent ke){
                 if (ke.getCode().equals(KeyCode.UP)) {
-                    /*if(grille.getP().getPieceCourante() != null)
-                        grille.getP().versHaut(grille.getP().getPieceCourante());*/
                     //rotation
+                    /*
+                    if(grille.getP().getPieceCourante() != null)
+                        grille.getP().tournerPieceCourante(Direction.RIGHT);
+                    */
+
                 }
                 if (ke.getCode().equals(KeyCode.LEFT)) {
                     if(grille.getP().getPieceCourante() != null)

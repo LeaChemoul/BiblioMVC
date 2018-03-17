@@ -61,31 +61,31 @@ public class TestBuilder {
         System.out.println("    TEST - Translations Right");
         listeDesPieces[0].translater(Direction.RIGHT);
         listeDesPieces[0].afficherInfosPiece();
-        System.out.println("    TEST - Rotation droite ");
-        listeDesPieces[0].Rotation(Direction.RIGHT);
+        System.out.println("    TEST - rotation droite ");
+        listeDesPieces[0].rotation(Direction.RIGHT);
         listeDesPieces[0].afficherInfosPiece();
-        System.out.println("    TEST - Rotation droite ");
-        listeDesPieces[0].Rotation(Direction.RIGHT);
+        System.out.println("    TEST - rotation droite ");
+        listeDesPieces[0].rotation(Direction.RIGHT);
         listeDesPieces[0].afficherInfosPiece();
-        System.out.println("    TEST - Rotation droite ");
-        listeDesPieces[0].Rotation(Direction.RIGHT);
+        System.out.println("    TEST - rotation droite ");
+        listeDesPieces[0].rotation(Direction.RIGHT);
         listeDesPieces[0].afficherInfosPiece();
-        System.out.println("    TEST - Rotation droite (TOUR COMPLET) ");
-        listeDesPieces[0].Rotation(Direction.RIGHT);
+        System.out.println("    TEST - rotation droite (TOUR COMPLET) ");
+        listeDesPieces[0].rotation(Direction.RIGHT);
         listeDesPieces[0].afficherInfosPiece();
-        System.out.println("    TEST - Rotation gauche ");
-        listeDesPieces[0].Rotation(Direction.LEFT);
+        System.out.println("    TEST - rotation gauche ");
+        listeDesPieces[0].rotation(Direction.LEFT);
         listeDesPieces[0].afficherInfosPiece();
 
 
-        System.out.println("    TEST - Rotation gauche ");
-        listeDesPieces[1].Rotation(Direction.LEFT);
+        System.out.println("    TEST - rotation gauche ");
+        listeDesPieces[1].rotation(Direction.LEFT);
         listeDesPieces[1].afficherInfosPiece();
-        System.out.println("    TEST - Rotation gauche ");
-        listeDesPieces[1].Rotation(Direction.LEFT);
+        System.out.println("    TEST - rotation gauche ");
+        listeDesPieces[1].rotation(Direction.LEFT);
         listeDesPieces[1].afficherInfosPiece();
-        System.out.println("    TEST - Rotation vide (droite) ");
-        listeDesPieces[1].Rotation(Direction.UP);
+        System.out.println("    TEST - rotation vide (droite) ");
+        listeDesPieces[1].rotation(Direction.UP);
         listeDesPieces[1].afficherInfosPiece();
 
 

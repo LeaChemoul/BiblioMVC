@@ -20,6 +20,7 @@ import javafx.stage.Stage;
 import mvc.Model.*;
 import mvc.Blokus.ModeleBlokus.*;
 import mvc.VueControleur.GrilleVue;
+import org.w3c.dom.css.Rect;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -34,10 +35,11 @@ public class VueControleur extends Application implements Observer {
     private int joueurActif = 1;
     private Partie partie = new Partie(plateau, 2);
 
-    private int xCase;
-    private int yCase;
+    private Piece pieceEnSurvol;
 
     private BorderPane bPane = new BorderPane();
+    private GridPane grilleJeu;
+
     private Rectangle[][] tab;
 
     /*
@@ -91,22 +93,36 @@ public class VueControleur extends Application implements Observer {
 
 
         // ------------- CENTER -- Plateau de Jeu
-        GridPane grilleJeu = new GridPane();
+        grilleJeu = new GridPane();
         tab = new Rectangle[plateau.getHauteur()][plateau.getLargeur()];
         for(int i = 0; i < plateau.getHauteur(); i++)
             for(int j = 0; j < plateau.getLargeur(); j++){
-                tab[i][j] = new Rectangle();
-                tab[i][j].setHeight(30);
-                tab[i][j].setWidth(30);
-                tab[i][j].setFill(Color.WHITE);
-                grilleJeu.add(tab[i][j], i, j);
-                //CONTROLEUR -- Si on clique sur une case ça essaye de poser la pièce
-                xCase = i;
-                yCase = j;
-                tab[i][j].setOnMouseClicked( event -> {
-                    System.out.println("xCase = " +xCase +" yCase = " + yCase);
-                    plateau.poserPiecePlateau(plateau.getPieceCourante(), xCase, yCase) ;
-                    });
+                Rectangle rect = new Rectangle();
+                rect.setHeight(30);
+                rect.setWidth(30);
+                rect.setFill(Color.WHITE);
+                tab[i][j] = rect;
+                grilleJeu.add(tab[i][j], j, i);
+                //CONTROLEURs
+                // Si on clique sur une case on essaye de poser la pièce
+                rect.setOnMouseClicked( event -> {
+                    System.out.println("RowIndex = " +grilleJeu.getRowIndex(rect) +" ColIndex = " + grilleJeu.getColumnIndex(rect));
+
+                    if (plateau.getPieceCourante() != null) {
+                        plateau.getPieceCourante().afficherPiece();
+                        plateau.poserPiecePlateau(plateau.getPieceCourante(), grilleJeu.getRowIndex(rect), grilleJeu.getColumnIndex(rect));
+                    } });
+
+                // Si on survole une case avec une pièce active, ça nous montre où elle serait posée.
+                rect.setOnMouseEntered( event -> {
+                    //System.out.println("RowIndex = " +grilleJeu.getRowIndex(rect) +" ColIndex = " + grilleJeu.getColumnIndex(rect));
+                    if (plateau.getPieceCourante() != null)
+                        afficherPieceSurvol(plateau.getPieceCourante(), grilleJeu.getRowIndex(rect), grilleJeu.getColumnIndex(rect));
+                });
+                // Si on ne survole plus une case, on efface la pièce qui y était affiché en survole
+                rect.setOnMouseExited( event -> {
+                    effacerPieceSurvol(grilleJeu.getRowIndex(rect), grilleJeu.getColumnIndex(rect));
+                });
 
             }
         grilleJeu.setGridLinesVisible(true);
@@ -149,6 +165,54 @@ public class VueControleur extends Application implements Observer {
         primaryStage.show();
     }
 
+    public void effacerPieceSurvol(int row, int col) {
+
+        //Si il n'y a pas de pièce à effacer on n'efface rien.
+        if ( pieceEnSurvol == null )
+            return;
+
+        for (int i = row-pieceEnSurvol.getHauteur(); i < row+pieceEnSurvol.getHauteur(); i++) {
+            for (int j = col-pieceEnSurvol.getLargeur(); j < col+pieceEnSurvol.getLargeur(); j++) {
+
+                //Si la case visée ne dépasse pas les limites du plateau
+                if ( inBound(i, j, plateau.getHauteur(), plateau.getLargeur()) ) {
+
+                    //On rétablit les couleurs d'origines du plateau.
+                    if (plateau.getTableauJeu()[i][j] != null)
+                        tab[i][j].setFill(plateau.getTableauJeu()[i][j].getCouleur());
+                    else
+                        tab[i][j].setFill(Color.WHITE);
+                }
+            }
+        }
+        pieceEnSurvol = null;
+
+    }
+
+    public void afficherPieceSurvol(Piece piece, int row, int col) {
+
+        if ( piece == null )
+            return;
+
+        //On modifie la vue pour afficher la pièce par dessus le point de la grille.
+        for (int i = 0; i < piece.getHauteur(); i++ ) {
+            for (int j = 0; j < piece.getLargeur(); j++) {
+
+                //Si la case visée ne dépasse pas les limites du plateau
+                if (inBound(row+i, col+j, plateau.getHauteur(), plateau.getLargeur()) ) {
+                    //On colorie par dessus le plateau avec la couleur de la piece qu'on veut visualiser.
+                    if (piece.getCases()[i][j] != 0)
+                        tab[row+i][col+j].setFill(piece.getCouleur());
+                }
+            }
+        }
+        pieceEnSurvol = piece;
+
+    }
+
+    public boolean inBound(int i, int j, int iMax, int jMax) {
+        return ( i >= 0 && j >= 0 && i < iMax && j < jMax);
+    }
     @Override
     public void update(Observable o, Object arg) {
 
@@ -158,7 +222,7 @@ public class VueControleur extends Application implements Observer {
         else if (o instanceof Plateau) {
 
             //DEBUG GRILLE
-
+            /*
             System.out.print("  -");
             for ( int j = 0; j < plateau.getLargeur(); j++ )
                 System.out.print("---");
@@ -169,11 +233,15 @@ public class VueControleur extends Application implements Observer {
                 for (int j = 0; j < plateau.getLargeur(); j++) {
                     //Si la case est égale à 0, elle est vide. (Convention actuelle. A CHANGER ?)
                     if ( plateau.getTableauJeu()[i][j] != null )
-                        System.out.print(" X ");
+                        System.out.print(" X|");
                     else
-                        System.out.print("   ");
+                        System.out.print("  |");
                 }
                 System.out.println("|");
+                System.out.print("  -");
+                for ( int j = 0; j < plateau.getLargeur(); j++ )
+                    System.out.print("---");
+                System.out.println("-");
             }
 
             //Ligne bordure au pied.
@@ -181,18 +249,22 @@ public class VueControleur extends Application implements Observer {
             for ( int j = 0; j < plateau.getLargeur(); j++ )
                 System.out.print("---");
             System.out.println("-");
-
+            */
 
 
             //On rafraichit la grille.
-            for( int a = 0; a < plateau.getLargeur(); a++)
-                for( int b = 0; b < plateau.getHauteur(); b++){
+            //On modifie la vue pour afficher la pièce par dessus le point de la grille.
+            for (int i = 0; i < plateau.getHauteur(); i++ ) {
+                for (int j = 0; j < plateau.getLargeur(); j++) {
 
-                    if(plateau.getTableauJeu()[b][a] != null)
-                        tab[a][b].setFill(plateau.getTableauJeu()[b][a].getCouleur());
+                    if(plateau.getTableauJeu()[i][j] != null)
+                        tab[i][j].setFill(plateau.getTableauJeu()[i][j].getCouleur());
                     else
-                        tab[a][b].setFill(Color.WHITE);
+                        tab[i][j].setFill(Color.WHITE);
+
                 }
+            }
+
 
         }
     }

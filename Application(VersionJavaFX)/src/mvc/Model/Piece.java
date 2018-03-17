@@ -7,10 +7,15 @@ import javafx.scene.paint.Color;
 import java.util.Random;
 
 public class Piece {
+
     private  String nom;
+
     private int taille;
+
     private Color couleur;
+
     private Vec2d pivot;
+
     private int[][] cases;
 
 
@@ -68,7 +73,7 @@ public class Piece {
      * dans le sens trigonométrique (LEFT) ou horaire (RIGHT, ou par défaut) en fonction de la direction sens
      * @param sens
      */
-    public void Rotation(Direction sens){
+    public void rotation(Direction sens){
         int[][] m = getCases(); // On récupère la matrice locale de la pièce
         int l = m.length -1; // longueur de la matrice, celle-ci est carrée
         for (int i = 0; i <= l/2; i++){ // On se déplace de la couronne extérieure à la couronne intérieur
@@ -203,35 +208,31 @@ public class Piece {
         //On récupère la matrice qui la compose.
         int[][] matricePiece = getCases();
         //On récupère les dimensions de la pièce.
-        int n = matricePiece.length;
-        int m = matricePiece[0].length;
+        int hauteur = matricePiece.length;
+        int largeur = matricePiece[0].length;
 
-        System.out.println(nom + " -- Dimensions : "+n+"*"+m);
+        System.out.println(nom + " -- Dimensions : "+hauteur+"*"+largeur);
 
         //Ligne bordure au sommet.
         System.out.print("  -");
-        for ( int j = 0; j < m; j++ )
+        for ( int j = 0; j < largeur; j++ )
             System.out.print("---");
         System.out.println("-");
 
-        for ( int i = 0; i < n; i++ ) {
-
+        for ( int i = 0; i < hauteur; i++ ) {
             System.out.print("  |");
-            for (int j = 0; j < m; j++) {
-
-                //Si la case est égale à 0, elle est vide. (Convention actuelle. A CHANGER ?)
+            for (int j = 0; j < largeur; j++) {
                 if ( matricePiece[i][j] != 0 )
                     System.out.print(" X ");
                 else
                     System.out.print("   ");
-
             }
             System.out.println("|");
         }
 
         //Ligne bordure au pied.
         System.out.print("  -");
-        for ( int j = 0; j < m; j++ )
+        for ( int j = 0; j < largeur; j++ )
             System.out.print("---");
         System.out.println("-");
 
@@ -381,6 +382,13 @@ public class Piece {
     }
 
     //Accesseurs
+    public int getHauteur() {
+        return cases.length;
+    }
+    public int getLargeur() {
+        return cases[0].length;
+    }
+
     public int[][] getCases() {
         return cases;
     }
@@ -392,6 +400,7 @@ public class Piece {
     public String getNom() {
         return nom;
     }
+
     public Color getCouleur() {
         return couleur;
     }
@@ -402,7 +411,6 @@ public class Piece {
     public int getTaille(){
         return this.taille;
     }
-
     public void setTaille(int taille) {
         this.taille = taille;
     }
@@ -410,7 +418,6 @@ public class Piece {
     public Direction getSensDeplacement() {
         return sensDeplacement;
     }
-
     public void setSensDeplacement(Direction sensDeplacement) {
         this.sensDeplacement = sensDeplacement;
     }

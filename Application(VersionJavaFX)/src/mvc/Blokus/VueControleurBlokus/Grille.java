@@ -27,14 +27,15 @@ public class Grille extends GridPane{
 
     public Grille(int[][] grille, Color couleur, boolean visibleLine) {
 
-        this.largeur = grille[0].length;
+
         this.hauteur = grille.length;
+        this.largeur = grille[0].length;
 
         tab = new Rectangle[hauteur][largeur];
 
         // création des boutons et placement dans la grille
-        for(int i = 0; i< hauteur; i++)
-            for(int j = 0; j< largeur; j++){
+        for(int i = 0; i < hauteur; i++)
+            for(int j = 0; j < largeur; j++){
                 tab[i][j] = new Rectangle();
                 tab[i][j].setHeight(15);
                 tab[i][j].setWidth(15);
@@ -44,14 +45,14 @@ public class Grille extends GridPane{
                 else
                     tab[i][j].setFill(couleur);
 
-                this.add(tab[i][j], i, j);
+                this.add(tab[i][j], j, i);
             }
 
         //CENTER
         this.setGridLinesVisible(visibleLine);
 
     }
-    
+
 
     public Rectangle[][] getTab() {
         return tab;

@@ -1,7 +1,6 @@
 package mvc.Model;
 import com.sun.javafx.geom.Vec2d;
 import javafx.scene.paint.Color;
-import mvc.Blokus.ModeleBlokus.Partie;
 
 public class TestBuilder2 {
 
@@ -11,7 +10,18 @@ public class TestBuilder2 {
     public static void main ( String[] args ) {
 
 
-        Vec2d[] listeCoor = new Vec2d[] { new Vec2d(0, 1), new Vec2d(0, 2), new Vec2d(0, 3), new Vec2d(0, 0) };
+        /*
+        Vec2d[] listeVect = new Vec2d[4];
+        listeVect[0] = new Vec2d(1,0);
+        listeVect[1] = new Vec2d(1,1);
+        listeVect[2] = new Vec2d(1,2);
+        listeVect[3] = new Vec2d(2,1);
+
+        builder.addPiece("TTetris", listeVect);
+        rotationComplete("TTetris");
+        /*
+
+        /*Vec2d[] listeCoor = new Vec2d[] { new Vec2d(0, 1), new Vec2d(0, 2), new Vec2d(0, 3), new Vec2d(0, 0) };
         builder.addPiece("Barre", Color.GREEN, listeCoor);
 
         afficherInfosPiece("Barre");
@@ -37,7 +47,7 @@ public class TestBuilder2 {
         System.out.println("    TEST - Ajout tableau double NbValeurs impair");
         builder.addPiece("Angle", new double[]{ 5,5 , 4,4 , 4,5, 2 } );
         afficherPiece("Angle");
-        rotationComplete("Angle");
+        rotationComplete("Angle"); */
 
         System.out.println("    TEST - PIECES BLOKUS");
         builder.clearListePiece();
@@ -54,25 +64,25 @@ public class TestBuilder2 {
 
     static public void rotationComplete(String name) {
 
-        System.out.println("    TEST - Rotation complete de la piece (POSITION INITIAL) : " + name);
+        System.out.println("    TEST - rotation complete de la piece (POSITION INITIAL) : " + name);
         builder.afficherPiece(name);
-        System.out.println("    Rotation droite(1) ");
-        builder.getPiece(name).Rotation(Direction.RIGHT);
+        System.out.println("    rotation droite(1) ");
+        builder.getPiece(name).rotation(Direction.RIGHT);
         builder.getPiece(name).afficherPiece();
-        System.out.println("    Rotation droite(2) ");
-        builder.getPiece(name).Rotation(Direction.RIGHT);
+        System.out.println("    rotation droite(2) ");
+        builder.getPiece(name).rotation(Direction.RIGHT);
         builder.getPiece(name).afficherPiece();
-        System.out.println("    Rotation droite(3) ");
-        builder.getPiece(name).Rotation(Direction.RIGHT);
+        System.out.println("    rotation droite(3) ");
+        builder.getPiece(name).rotation(Direction.RIGHT);
         builder.getPiece(name).afficherPiece();
-        System.out.println("    Rotation droite (TOUR COMPLET) ");
-        builder.getPiece(name).Rotation(Direction.RIGHT);
+        System.out.println("    rotation droite (TOUR COMPLET) ");
+        builder.getPiece(name).rotation(Direction.RIGHT);
         builder.getPiece(name).afficherPiece();
     }
 
     public static void genererPiecesBlokus() {
 
-        /*
+
         //Pièce à une case
         builder.addPiece("Piece1-1", new double[]{0,0});
 
@@ -103,10 +113,10 @@ public class TestBuilder2 {
         builder.addPiece("Piece5-10", new double[]{0,0, 1,0, 1,1, 1,2, 2,2});
         builder.addPiece("Piece5-11", new double[]{0,0, 1,0, 1,1, 1,2, 2,1});
         builder.addPiece("Piece5-12", new double[]{0,1, 1,0, 1,1, 1,2, 2,1});
-        */
+
 
         //DEBUG
-        //builder.afficherPieces();
+        builder.afficherPieces();
     }
 
 }

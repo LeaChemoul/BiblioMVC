@@ -26,8 +26,6 @@ public class Plateau extends Observable {
 
     //Pas encore implémenté.
     private ArrayList<Piece> piecesSuivantes;
-    //Useless ?
-    private boolean isFull = false; //si on ne peut pas placer d'autres pièces
 
     public Plateau(int h,int l){
         this.hauteur = h;
@@ -59,7 +57,7 @@ public class Plateau extends Observable {
         //cette variable permet de garder en mémoire combien de colonnes de Piece.cases nous avons parcourus avant de trouver la pièce : décalage
         int decalageX = 0, decalageY = 0, nbrCasesParcourues = 0;
         //on parcours le tableau de cases de notre pièce.
-        for(int x=0; x<piece.getCases().length;x++){ //Parcours des colonnes
+        for( int x = 0; x < piece.getCases().length; x++ ){ //Parcours des colonnes
             pieceTrouvee = false;
             decalageY = 0;
             for (int y = 0; y < piece.getCases().length; y++) { //Parcours des lignes
@@ -74,32 +72,29 @@ public class Plateau extends Observable {
                         pieceTrouvee = true;
                         nbrCasesParcourues ++;
                     }
-                }else if(nbrCasesParcourues<=piece.getTaille()){
+                }
+                else if (nbrCasesParcourues<=piece.getTaille()) {
                     break;
                 }
-                else{
+                else {
                     System.out.println("La place est occupée ou en dehors du plateau");
                     return false;
                 }
                 if(!pieceTrouvee)
-                    decalageY ++; //On a toujours pas trouvé notre pièce on décale en ligne
+                    decalageY++; //On a toujours pas trouvé notre pièce on décale en ligne
             }
             if(!pieceTrouvee)
-                decalageX ++; //On a toujours pas trouvé notre pièce on décale en colonne
+                decalageX++; //On a toujours pas trouvé notre pièce on décale en colonne
         }
-        for (Vec2d aPositionsPlateau : positionsPlateau) { //On met à jour le plateau en y posant la pièce
-            int ii = (int) aPositionsPlateau.x;
-            int jj = (int) aPositionsPlateau.y;
+        for (Vec2d position : positionsPlateau) { //On met à jour le plateau en y posant la pièce
+            int ii = (int) position.x;
+            int jj = (int) position.y;
             this.tableauJeu[ii][jj] = new Case(ii,jj, piece.getCouleur(),index);
         }
 
         setChanged();
         notifyObservers();
         return true;
-    }
-
-    public void rotationPiece(){
-        //mettre a jour etat rotation pièce
     }
 
     /**
@@ -163,6 +158,12 @@ public class Plateau extends Observable {
 
     public boolean versHaut(Piece piece){
         return this.deplacer(Direction.LEFT, piece);
+    }
+
+    public void tournerPieceCourante(Direction dir) {
+        pieceCourante.rotation(dir);
+        setChanged();
+        notifyObservers();
     }
 
     /**
