@@ -1,11 +1,14 @@
 package mvc.Model;
 
+import javafx.scene.paint.Color;
+
 import java.util.ArrayList;
 
 public class Joueur {
 
 
     private int numJoueur; //Numéro du joueur
+    private Color couleur;
     private Piece pieceActive; //Piece avec laquelle le joueur peut interagir
     private ArrayList<Piece> PoolDePiece; //Liste des pièces du joueur, utilisés différemment en fonction du jeu
 
@@ -25,6 +28,13 @@ public class Joueur {
     public Joueur (int num, Plateau plateau, ArrayList<Piece> PoolDePiece) {
         this.numJoueur = num;
         this.plateau = plateau;
+        this.PoolDePiece = PoolDePiece;
+    }
+
+    public Joueur (int num, Plateau plateau, Color couleur, ArrayList<Piece> PoolDePiece) {
+        this.numJoueur = num;
+        this.plateau = plateau;
+        this.couleur = couleur;
         this.PoolDePiece = PoolDePiece;
     }
 
@@ -51,6 +61,15 @@ public class Joueur {
 
 
 
+    //Accesseurs
+
+    public ArrayList<Piece> getPoolDePiece() {
+        return PoolDePiece;
+    }
+
+    public Color getCouleur() {
+        return couleur;
+    }
 
     public Piece getPieceActive() {
         return pieceActive;

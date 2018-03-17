@@ -12,6 +12,7 @@ public class Partie {
     private Plateau plateau;
     private Joueur[] joueurs = new Joueur[4];
 
+    private int numJoueurActif;
     private Joueur joueurActif;
 
 
@@ -30,7 +31,7 @@ public class Partie {
         for (int i = 0; i < nbJoueur ; i++ ) {
             //On donne une couleur différente pour les pièces de chaque joueurs
             builder.setCouleurAll( intToColor(i) );
-            joueurs[i] = new Joueur(i+1, p, builder.exporterArrayList());
+            joueurs[i] = new Joueur(i+1, p, intToColor(i), builder.exporterArrayList());
         }
 
     }
@@ -38,6 +39,16 @@ public class Partie {
 
     //Méthodes
 
+    /**
+     * Modifie numJoueurActif et JoueurActif avec le joueur suivant.
+     */
+    public void joueurSuivant() {
+
+        numJoueurActif++;
+        if ( numJoueurActif > joueurs.length )
+            numJoueurActif = 1;
+        joueurActif = joueurs[numJoueurActif-1];
+    }
 
     //TODO : Laisser ici ou la déplacer en static ailleurs pour etre réutilisable ?
     public Color intToColor(int n) {
@@ -96,6 +107,11 @@ public class Partie {
         //builder.afficherPieces();
     }
 
+    public Joueur getJoueur (int numJ) {
+        if ( numJ > 0 && numJ < joueurs.length )
+            return joueurs[numJ-1];
+        return null;
+    }
     public Plateau getPlateau() {
         return plateau;
     }

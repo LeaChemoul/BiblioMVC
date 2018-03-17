@@ -1,16 +1,13 @@
 package mvc.Blokus.VueControleurBlokus;
 
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -19,7 +16,7 @@ import javafx.stage.Stage;
 
 import mvc.Model.*;
 import mvc.Blokus.ModeleBlokus.*;
-import mvc.VueControleur.*;
+import mvc.VueControleur.GrilleVue;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -30,6 +27,7 @@ public class VueControleur extends Application implements Observer {
 
 
     private Plateau plateau= new Plateau(20, 20);
+    private int joueurActif = 1;
     private Partie partie = new Partie(plateau, 2);
 
 
@@ -41,10 +39,6 @@ public class VueControleur extends Application implements Observer {
             -> Affichage de la pièce en hoover du plateau ?
         -> Bouton abandonner. (Si on n'implémente pas de vérification de condition de victoire).
     */
-
-    /*
-
-     */
 
 
     @Override
@@ -60,14 +54,40 @@ public class VueControleur extends Application implements Observer {
         Text titre = new Text("--- BLOKUS ---");
         titre.setFont(Font.font("Helvetica", FontWeight.BOLD, 20));
         titre.setFill(Color.MEDIUMPURPLE);
-        bPane.setTop(titre);
         bPane.setAlignment(titre, Pos.CENTER);
-
-        //CENTRE -- Plateau de Jeu
-        GrilleVue grille = new GrilleVue(20, 20);
-        bPane.setCenter(grille);
+        bPane.setTop(titre);
 
         //RIGHT -- Liste des pièces du joueur actif
+        TilePane tileP = new TilePane();
+
+        for (Piece piece: partie.getJoueur(joueurActif).getPoolDePiece()) {
+            GridPane grillePiece = new Grille( piece.getCases(), piece.getCouleur(), false );
+            grillePiece.setPadding(new Insets(3));
+            tileP.getChildren().add(grillePiece);
+        }
+        //tileP.setAlignment(Pos.TOP_RIGHT);
+        //bPane.setAlignment(tileP, Pos.BOTTOM_RIGHT);
+        bPane.setMargin(tileP, new Insets(20, 0, 0, -130));
+        bPane.setRight(tileP);
+
+
+        //CENTER -- Plateau de Jeu
+        GridPane grilleJeu = new GridPane();
+        Rectangle[][] tab = new Rectangle[plateau.getHauteur()][plateau.getLargeur()];
+        for(int i = 0; i < plateau.getHauteur(); i++)
+            for(int j = 0; j < plateau.getLargeur(); j++){
+                tab[i][j] = new Rectangle();
+                tab[i][j].setHeight(30);
+                tab[i][j].setWidth(30);
+                tab[i][j].setFill(Color.WHITE);
+                grilleJeu.add(tab[i][j], i, j);
+            }
+        grilleJeu.setGridLinesVisible(true);
+        grilleJeu.setPadding(new Insets(10, 0, 10, 20));
+
+        //bPane.setAlignment(grilleJeu, Pos.CENTER_RIGHT);
+        bPane.setCenter(grilleJeu);
+
 
         //LEFT -- Liste des Joueurs.
 
@@ -89,6 +109,7 @@ public class VueControleur extends Application implements Observer {
         bPane.setLeft(vBoxJ);
 
         //SCENE
+
 
         Scene scene = new Scene(bPane);
 
