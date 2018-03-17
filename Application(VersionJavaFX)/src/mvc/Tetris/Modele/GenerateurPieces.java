@@ -13,78 +13,15 @@ public class GenerateurPieces {
     public GenerateurPieces() {
     }
 
-    public Vec2d[] OTetris(){
-        Vec2d[] listeVect = new Vec2d[4];
-        listeVect[0] = new Vec2d(1,1);
-        listeVect[1] = new Vec2d(1,2);
-        listeVect[2] = new Vec2d(2,1);
-        listeVect[3] = new Vec2d(2,2);
-        return listeVect;
-    }
-
-    public Vec2d[] ITetris(){
-        Vec2d[] listeVect = new Vec2d[4];
-        listeVect[0] = new Vec2d(0,1);
-        listeVect[1] = new Vec2d(1,1);
-        listeVect[2] = new Vec2d(2,1);
-        listeVect[3] = new Vec2d(3,1);
-        return listeVect;
-    }
-
-    public Vec2d[] STetris(){
-        Vec2d[] listeVect = new Vec2d[4];
-        listeVect[0] = new Vec2d(1,1);
-        listeVect[1] = new Vec2d(1,2);
-        listeVect[2] = new Vec2d(2,0);
-        listeVect[3] = new Vec2d(2,1);
-        return listeVect;
-    }
-
-    public Vec2d[] ZTetris(){
-        Vec2d[] listeVect = new Vec2d[4];
-        listeVect[0] = new Vec2d(1,0);
-        listeVect[1] = new Vec2d(1,1);
-        listeVect[2] = new Vec2d(2,1);
-        listeVect[3] = new Vec2d(2,2);
-        return listeVect;
-    }
-
-    public Vec2d[] LTetris(){
-        Vec2d[] listeVect = new Vec2d[4];
-        listeVect[0] = new Vec2d(1,0);
-        listeVect[1] = new Vec2d(2,0);
-        listeVect[2] = new Vec2d(3,0);
-        listeVect[3] = new Vec2d(3,1);
-        return listeVect;
-    }
-
-    public Vec2d[] JTetris(){
-        Vec2d[] listeVect = new Vec2d[4];
-        listeVect[0] = new Vec2d(3,0);
-        listeVect[1] = new Vec2d(1,1);
-        listeVect[2] = new Vec2d(2,1);
-        listeVect[3] = new Vec2d(3,1);
-        return listeVect;
-    }
-
-    public Vec2d[] TTetris(){
-        Vec2d[] listeVect = new Vec2d[4];
-        listeVect[0] = new Vec2d(1,0);
-        listeVect[1] = new Vec2d(1,1);
-        listeVect[2] = new Vec2d(1,2);
-        listeVect[3] = new Vec2d(2,1);
-        return listeVect;
-    }
-
     public HashMap<String, Piece> createPieces(){
 
-        pieceBuilder.addPiece("OTetris", Color.rgb(120,150,1),OTetris());
-        pieceBuilder.addPiece("ITetris", Color.rgb(29,150,145),ITetris());
-        pieceBuilder.addPiece("STetris", Color.rgb(150,72,73),STetris());
-        pieceBuilder.addPiece("ZTetris", Color.rgb(150,0,40),ZTetris());
-        pieceBuilder.addPiece("LTetris", Color.rgb(0,91,150),LTetris());
-        pieceBuilder.addPiece("JTetris", Color.rgb(214,213,31),JTetris());
-        pieceBuilder.addPiece("TTetris", Color.rgb(109,67,150),TTetris());
+        pieceBuilder.addPiece("OTetris", null,new double[]{1,1, 1,2, 2,1, 2,2});
+        pieceBuilder.addPiece("ITetris", null,new double[]{0,1, 1,1, 2,1, 3,1});
+        pieceBuilder.addPiece("STetris", null,new double[]{1,1, 1,2, 2,0, 2,1});
+        pieceBuilder.addPiece("ZTetris", null,new double[]{1,0, 1,1, 2,1, 2,2});
+        pieceBuilder.addPiece("LTetris", null,new double[]{1,0, 2,0, 3,0, 3,1});
+        pieceBuilder.addPiece("JTetris", null,new double[]{3,0, 1,1, 2,1, 3,1});
+        pieceBuilder.addPiece("TTetris", null,new double[]{1,0, 1,1, 1,2, 2,1});
         return pieceBuilder.getListePiece();
     }
 }

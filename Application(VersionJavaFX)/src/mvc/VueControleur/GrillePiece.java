@@ -19,13 +19,13 @@ import mvc.Model.Plateau;
 
 import javafx.scene.text.Text;
 
-public class Grille extends GridPane{
+public class GrillePiece extends GridPane{
 
     private int largeur;
     private int hauteur;
     private Rectangle[][] tab;
 
-    public Grille(int[][] grille, Color couleur, boolean visibleLine, int size) {
+    public GrillePiece(int[][] grille, Color couleur, boolean visibleLine, int size) {
 
 
         this.hauteur = grille.length;

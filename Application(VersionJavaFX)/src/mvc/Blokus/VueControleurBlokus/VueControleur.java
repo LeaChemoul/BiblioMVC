@@ -15,7 +15,7 @@ import javafx.stage.Stage;
 
 import mvc.Model.*;
 import mvc.Blokus.ModeleBlokus.*;
-import mvc.VueControleur.Grille;
+import mvc.VueControleur.GrillePiece;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -70,7 +70,7 @@ public class VueControleur extends Application implements Observer {
         //On remplit une TilePane avec chaque pièce du joueur.
         for (Piece piece: partie.getJoueur(joueurActif).getPoolDePiece()) {
 
-            GridPane grillePiece = new Grille( piece.getCases(), piece.getCouleur(), true ,15);
+            GridPane grillePiece = new GrillePiece( piece.getCases(), piece.getCouleur(), true ,15);
             grillePiece.setPadding(new Insets(3));
             tileP.getChildren().add(grillePiece);
 

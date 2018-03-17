@@ -70,7 +70,7 @@ public class Piece {
 
     /**
      * Tourne une pièce de 90° degré dans sa matrice locale
-     * dans le sens trigonométrique (LEFT) ou horaire (RIGHT, ou par défaut) en fonction de la direction sens
+     * dans le sens trigonométrique (UP) ou horaire (DOWN, ou par défaut) en fonction de la direction sens
      * @param sens
      */
     public void rotation(Direction sens){

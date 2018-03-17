@@ -65,7 +65,7 @@ public class Plateau extends Observable {
                         && j+y-decalageY< this.getLargeur() && i+x-decalageX < this.getHauteur() //Si cela ne dépasses pas notre plateau de jeu
                         //On teste les collisions
                         && (tableauJeu[i+x-decalageX][j+y-decalageY] == null || //Ou la case est vide et on peut poser notre pièce.
-                                (tableauJeu[i+x-decalageX][j+y-decalageY]!= null && tableauJeu[i+x-decalageX][j+y-decalageY].getIndex() == index))) //Ou c'est une occurence de notre pièce (avant d'être bougée)
+                        (tableauJeu[i+x-decalageX][j+y-decalageY]!= null && tableauJeu[i+x-decalageX][j+y-decalageY].getIndex() == index))) //Ou c'est une occurence de notre pièce (avant d'être bougée)
                 {
                     if (piece.getCases()[x][y] == 1){
                         positionsPlateau.add(new Vec2d(i + x - decalageX, j + y -decalageY));
@@ -86,6 +86,42 @@ public class Plateau extends Observable {
             if(!pieceTrouvee)
                 decalageX++; //On a toujours pas trouvé notre pièce on décale en colonne
         }
+        if(!positionsPlateau.isEmpty() && positionsPlateau.size() == piece.getTaille()) //Si on a bien pu tout poser dans le plateau
+            for (Vec2d position : positionsPlateau) { //On met à jour le plateau en y posant la pièce
+                int ii = (int) position.x;
+                int jj = (int) position.y;
+                this.tableauJeu[ii][jj] = new Case(ii,jj, piece.getCouleur(),index);
+            }
+        else
+            return false;
+        setChanged();
+        notifyObservers();
+        return true;
+    }
+
+    public boolean poserPiecePlateauPivot(Piece piece,int i,int j){
+        Vec2d pivot = piece.getPivot();
+        int a = (int) pivot.x;
+        int b = (int) pivot.y;
+        int index = this.piecesPosees.indexOf(piece);
+        ArrayList<Vec2d> positionsPlateau = new ArrayList<>(); // Les positions (x,y) du plateau où il faudra placer notre pièce
+
+        for (int k = -piece.getHauteur()+1; k < piece.getHauteur(); k++) {
+            for (int l = -piece.getLargeur()+1; l < piece.getLargeur() ; l++) {
+                if(i+k >= 0 && i+k < piece.getHauteur() && j+l >= 0 && j+l < piece.getLargeur()
+                    && (tableauJeu[i+k][j+l] == null || //Ou la case est vide et on peut poser notre pièce.
+                        (tableauJeu[i+k][j+l]!= null && tableauJeu[i+k][j+l].getIndex() == index))) //Ou c'est une occurence de notre pièce (avant d'être bougée)
+                {
+                    if (piece.getCases()[a+k][b+l] == 1){
+                        positionsPlateau.add(new Vec2d(a+k, b+l));
+                    }
+                }else{
+                    return false;
+                }
+
+            }
+        }
+
         for (Vec2d position : positionsPlateau) { //On met à jour le plateau en y posant la pièce
             int ii = (int) position.x;
             int jj = (int) position.y;
@@ -106,6 +142,7 @@ public class Plateau extends Observable {
         //On crée une pièce à partir des modèles disponibles dans le pool de pièces
         if(piecesSuivantes != null){
             this.pieceCourante = new Piece(piecesSuivantes.get(0));
+            this.pieceCourante.afficherPiece();
             this.piecesPosees.add(pieceCourante);
             setChanged();
             notifyObservers();
@@ -126,8 +163,7 @@ public class Plateau extends Observable {
         //tester si la place est occupée avant de bouger
         int iter = 1; //L'itérateur qui va compter le nombea de déplacements réalisés.
         ArrayList<Vec2d> positions = occurrencesPiecesPlateau(piece); //Toutes les occurences de notre pièce donnée sur le plateau
-        if(positions != null){
-
+        if(!positions.isEmpty()){
             if(!collision(positions, direction,this.piecesPosees.indexOf(piece))){ //Si nos positions ne génère pas de collisions
                 effacerPiecePlateau(positions); //On efface la pièce
                 //On la pose aux nouvelles coordonnées.
@@ -143,19 +179,19 @@ public class Plateau extends Observable {
     }
 
     public boolean versBas(Piece piece){
-        return this.deplacer(Direction.RIGHT, piece);
-    }
-
-    public boolean versDroite(Piece piece){
         return this.deplacer(Direction.DOWN, piece);
     }
 
+    public boolean versDroite(Piece piece){
+        return this.deplacer(Direction.RIGHT, piece);
+    }
+
     public boolean versGauche(Piece piece){
-        return this.deplacer(Direction.UP, piece);
+        return this.deplacer(Direction.LEFT, piece);
     }
 
     public boolean versHaut(Piece piece){
-        return this.deplacer(Direction.LEFT, piece);
+        return this.deplacer(Direction.UP, piece);
     }
 
     public void tournerPieceCourante(Direction dir) {

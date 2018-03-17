@@ -11,7 +11,6 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
@@ -19,9 +18,8 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import mvc.Model.Direction;
 import mvc.Tetris.Modele.Partie;
-import mvc.VueControleur.Grille;
+import mvc.VueControleur.GrillePiece;
 import mvc.VueControleur.GrilleVue;
 
 import java.util.Observable;
@@ -52,8 +50,10 @@ public class VueControleurTetris extends Application implements Observer {
         grille.setRight(startButton);
 
         //LEFT
-        Grille grillePieceSuivante = new Grille(partie.getPlateau().getPiecesSuivantes().get(0).getCases(),Color.BLUE,false,25);
-        grille.setLeft(grillePieceSuivante);
+        GrillePiece grillePiecePieceSuivante = new GrillePiece(partie.getPlateau().getPiecesSuivantes().get(0).getCases(),Color.BLUE,false,25);
+        grillePiecePieceSuivante.setPadding(new Insets(30));
+
+        grille.setLeft(grillePiecePieceSuivante);
 
 
         grille.setPadding(new Insets(20));
@@ -138,7 +138,7 @@ public class VueControleurTetris extends Application implements Observer {
     }
 
     @Override
-    public void update(Observable o, Object arg) {
+    synchronized public void update(Observable o, Object arg) {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -150,8 +150,10 @@ public class VueControleurTetris extends Application implements Observer {
                         else
                             grille.getTab()[a][b].setFill(Color.WHITE);
 
-                        Grille grillePieceSuivante = new Grille(partie.getPlateau().getPiecesSuivantes().get(0).getCases(),Color.BLUE,false,30);
-                        grille.setLeft(grillePieceSuivante);
+                        //Mise a jour de la pièce suivante affichée
+                        GrillePiece grillePiecePieceSuivante = new GrillePiece(partie.getPlateau().getPiecesSuivantes().get(0).getCases(),Color.BLUE,false,30);
+                        grillePiecePieceSuivante.setPadding(new Insets(30));
+                        grille.setLeft(grillePiecePieceSuivante);
                     }
             }
         });
