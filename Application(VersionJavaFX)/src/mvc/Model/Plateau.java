@@ -53,13 +53,15 @@ public class Plateau extends Observable {
         //On ajoutera à positionsPlateau les positions de notre plateau à remplir par notre pièce. Evite uen boucle supplémentaire.
         ArrayList<Vec2d> positionsPlateau = new ArrayList<>(); // Les positions (x,y) du plateau où il faudra placer notre pièce
         int index = this.piecesPosees.indexOf(piece);
-        boolean pieceTrouvee;
+        boolean pieceTrouvee = false;
         //cette variable permet de garder en mémoire combien de colonnes de Piece.cases nous avons parcourus avant de trouver la pièce : décalage
         int decalageX = 0, decalageY = 0, nbrCasesParcourues = 0;
         //on parcours le tableau de cases de notre pièce.
-        for( int x = 0; x < piece.getCases().length; x++ ){ //Parcours des colonnes
+        for(int x = 0; x < piece.getCases().length; x++ ){ //Parcours des colonnes
             pieceTrouvee = false;
             decalageY = 0;
+            /*if(!piece.colonneVide(0))
+                pieceTrouvee = true;*/
             for (int y = 0; y < piece.getCases().length; y++) { //Parcours des lignes
                 if(j+y >= 0 && i+x >= 0
                         && j+y-decalageY< this.getLargeur() && i+x-decalageX < this.getHauteur() //Si cela ne dépasses pas notre plateau de jeu
@@ -99,6 +101,13 @@ public class Plateau extends Observable {
         return true;
     }
 
+    /**
+     * On pose une pièce sur le plateau de jeu en commencant par son pivot.
+     * @param piece piece a poser
+     * @param i ligne du plateau
+     * @param j colonne du plateau
+     * @return
+     */
     public boolean poserPiecePlateauPivot(Piece piece,int i,int j){
         Vec2d pivot = piece.getPivot();
         int a = (int) pivot.x;
@@ -237,6 +246,10 @@ public class Plateau extends Observable {
     }
 
 
+    /**
+     * Permet de savoir quelle ligne de otre plateau doit être supprimée, c'est à dire qui est complète.
+     * @return ligne complète
+     */
     public int ligneASupprimer(){
         boolean estRemplie;
         for (int i = 0; i < this.hauteur ; i++) {
@@ -253,16 +266,20 @@ public class Plateau extends Observable {
         return -1; //Si aucune ligne est remplie
     }
 
+    /**
+     * Efface la ligne entrée en paramètre de la fonction.
+     * @param ligne ligne à supprimer
+     */
     public void effacerLigne(int ligne){
         //TODO Pour la ligne considerée mettre à jour les pièces puis descendre celles au-dessus
-        //Pour chaque pièce à descendre, la passer en pièce courante et appeller le timer qui la descend
+        //Pour chaque pièce à descendre, la desecendre jusqu'en abs avec un while
         ArrayList<Piece> ontEteDescendues = new ArrayList<>();
         for (int j = 0; j < this.getHauteur() ; j++) {
             Piece pieceAChanger = recupererPiece(ligne,j);
             if(pieceAChanger != null){
                 Vec2d decalage = decalagePremiereCase(pieceAChanger,new Vec2d(ligne,j));
                 if(decalage != null){
-                    pieceAChanger.deleteDecalage(new Vec2d(ligne, j),decalage);
+                    pieceAChanger.deleteDecalage(decalage);
                     ArrayList<Vec2d> occurences = occurrencesPiecesPlateau(pieceAChanger);
                     effacerPiecePlateau(occurences);
                     poserPiecePlateau(pieceAChanger,(int) occurences.get(0).x, (int) occurences.get(0).y);
@@ -297,16 +314,12 @@ public class Plateau extends Observable {
      * Renvoie la pièce à qui appartient la case aux coordonnées x,y du plateau.
      */
     public Piece recupererPiece(int x, int y) {
-        if(tableauJeu[x][y].getIndex() != -1)
+        if(tableauJeu[x][y]!= null)
             return piecesPosees.get(tableauJeu[x][y].getIndex());
         else
             return null;
     }
 
-
-    public void effacerLigne(){
-
-    }
 
     //Méthodes relatives à PoolDePiece
     /*

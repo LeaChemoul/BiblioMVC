@@ -60,12 +60,20 @@ public class Piece {
 
 
 
-    public void deleteDecalage(Vec2d position, Vec2d decalage){
-       deleteCase((int) position.x + (int) decalage.x, (int) position.y + (int) decalage.y);
+    public void deleteDecalage(Vec2d decalage){
+       deleteCase((int) decalage.x, (int) decalage.y);
     }
 
     public void deleteCase(int i, int j){
         this.cases[i][j] = 0;
+    }
+
+    public boolean colonneVide(int j){
+        for (int i = 0; i < this.getHauteur(); i++) {
+            if(this.cases[i][j] == 1)
+                return false;
+        }
+        return true;
     }
 
     /**
