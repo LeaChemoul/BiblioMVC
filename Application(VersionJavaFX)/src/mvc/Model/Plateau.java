@@ -49,7 +49,7 @@ public class Plateau extends Observable {
      * @return
      */
     public boolean poserPiecePlateau(Piece piece,int i, int j){
-        //On parcours le plateau de jeu depuis la position (i,j) et les cases de la pièce simultanement.
+//On parcours le plateau de jeu depuis la position (i,j) et les cases de la pièce simultanement.
         //On ajoutera à positionsPlateau les positions de notre plateau à remplir par notre pièce. Evite uen boucle supplémentaire.
         ArrayList<Vec2d> positionsPlateau = new ArrayList<>(); // Les positions (x,y) du plateau où il faudra placer notre pièce
         int index = this.piecesPosees.indexOf(piece);
@@ -57,17 +57,14 @@ public class Plateau extends Observable {
         //cette variable permet de garder en mémoire combien de colonnes de Piece.cases nous avons parcourus avant de trouver la pièce : décalage
         int decalageX = 0, decalageY = 0, nbrCasesParcourues = 0;
         //on parcours le tableau de cases de notre pièce.
+
+
+
         for(int x = 0; x < piece.getCases().length; x++ ){ //Parcours des colonnes
             pieceTrouvee = false;
             decalageY = 0;
-            /*if(!piece.colonneVide(0))
-                pieceTrouvee = true;*/
-            for (int y = 0; y < piece.getCases().length; y++) { //Parcours des lignes
-                if(j+y >= 0 && i+x >= 0
-                        && j+y-decalageY< this.getLargeur() && i+x-decalageX < this.getHauteur() //Si cela ne dépasses pas notre plateau de jeu
-                        //On teste les collisions
-                        && (tableauJeu[i+x-decalageX][j+y-decalageY] == null || //Ou la case est vide et on peut poser notre pièce.
-                        (tableauJeu[i+x-decalageX][j+y-decalageY]!= null && tableauJeu[i+x-decalageX][j+y-decalageY].getIndex() == index))) //Ou c'est une occurence de notre pièce (avant d'être bougée)
+            for (int y = 0; y < piece.getCases()[0].length; y++) { //Parcours des lignes
+                if(peutEtrePosee(i,j,index,decalageX,decalageY,x,y)) //Ou c'est une occurence de notre pièce (avant d'être bougée)
                 {
                     if (piece.getCases()[x][y] == 1){
                         positionsPlateau.add(new Vec2d(i + x - decalageX, j + y -decalageY));
@@ -78,14 +75,14 @@ public class Plateau extends Observable {
                 else if (nbrCasesParcourues<=piece.getTaille()) {
                     break;
                 }
-                else {
+                else{
                     System.out.println("La place est occupée ou en dehors du plateau");
                     return false;
                 }
-                if(!pieceTrouvee)
+                if(!pieceTrouvee && piece.colonneVide(y))
                     decalageY++; //On a toujours pas trouvé notre pièce on décale en ligne
             }
-            if(!pieceTrouvee)
+            if(!pieceTrouvee && piece.ligneVide(x))
                 decalageX++; //On a toujours pas trouvé notre pièce on décale en colonne
         }
         if(!positionsPlateau.isEmpty() && positionsPlateau.size() == piece.getTaille()) //Si on a bien pu tout poser dans le plateau
@@ -99,6 +96,15 @@ public class Plateau extends Observable {
         setChanged();
         notifyObservers();
         return true;
+
+    }
+
+    private boolean peutEtrePosee(int i, int j, int index, int decalageX, int decalageY, int x, int y) {
+        return j+y >= 0 && i+x >= 0
+                && j+y-decalageY< this.getLargeur() && i+x-decalageX < this.getHauteur() //Si cela ne dépasses pas notre plateau de jeu
+                //On teste les collisions
+                && (tableauJeu[i+x-decalageX][j+y-decalageY] == null || //Ou la case est vide et on peut poser notre pièce.
+                (tableauJeu[i+x-decalageX][j+y-decalageY]!= null && tableauJeu[i+x-decalageX][j+y-decalageY].getIndex() == index));
     }
 
     /**
@@ -172,12 +178,16 @@ public class Plateau extends Observable {
         //tester si la place est occupée avant de bouger
         int iter = 1; //L'itérateur qui va compter le nombea de déplacements réalisés.
         ArrayList<Vec2d> positions = occurrencesPiecesPlateau(piece); //Toutes les occurences de notre pièce donnée sur le plateau
+        Vec2d min = minimum(positions);
         if(!positions.isEmpty()){
             if(!collision(positions, direction,this.piecesPosees.indexOf(piece))){ //Si nos positions ne génère pas de collisions
                 effacerPiecePlateau(positions); //On efface la pièce
                 //On la pose aux nouvelles coordonnées.
                 // On la place à partir de la position précédente à laquelle on a ajouté (0,-1) par exemple pour la descendre verticalement
-                this.poserPiecePlateau(piece,(int) positions.get(0).x + direction.x, (int) positions.get(0).y +direction.y);
+                int minX = (this.getTableauJeu()[(int)min.x][(int)min.y] == null)? (int) positions.get(0).x: (int)min.x;
+                int minY = (this.getTableauJeu()[(int)min.x][(int)min.y] == null)? (int) positions.get(0).y: (int)min.y;
+                this.poserPiecePlateau(piece,minX + direction.x, minY + direction.y);
+                int a =0;
             }else{
                 return false;
             }
@@ -185,6 +195,18 @@ public class Plateau extends Observable {
         setChanged();
         notifyObservers();
         return true;
+    }
+
+    public Vec2d minimum(ArrayList<Vec2d> arrayList){
+        int minY =0;
+        int minX =0;
+        for (int i = 0; i < arrayList.size(); i++) {
+            if((int) arrayList.get(i).y < minY)
+                minY = (int) arrayList.get(i).y;
+            if((int) arrayList.get(i).x < minX)
+                minX = (int) arrayList.get(i).x;
+        }
+        return new Vec2d(minX,minY);
     }
 
     public boolean versBas(Piece piece){
@@ -214,7 +236,7 @@ public class Plateau extends Observable {
      * @param piece notre pièce
      * @return
      */
-    public ArrayList<Vec2d> occurrencesPiecesPlateau(Piece piece){
+    synchronized public ArrayList<Vec2d> occurrencesPiecesPlateau(Piece piece){
         int index = this.piecesPosees.indexOf(piece);
         ArrayList<Vec2d> positions = new ArrayList<>();
         for (int i = 0; i < this.hauteur; i++) {

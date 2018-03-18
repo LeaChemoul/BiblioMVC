@@ -47,7 +47,7 @@ public class GrilleVue extends BorderPane{
             }
 
         //CENTER
-        gPane.setGridLinesVisible(false);
+        gPane.setGridLinesVisible(true);
         this.setCenter(gPane);
         this.setPadding(new Insets(10, 20, 10, 20));
 

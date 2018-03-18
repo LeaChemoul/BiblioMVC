@@ -75,6 +75,13 @@ public class Piece {
         }
         return true;
     }
+    public boolean ligneVide(int i){
+        for (int j = 0; j < this.getLargeur(); j++) {
+            if(this.cases[i][j] == 1)
+                return false;
+        }
+        return true;
+    }
 
     /**
      * Tourne une pièce de 90° degré dans sa matrice locale
