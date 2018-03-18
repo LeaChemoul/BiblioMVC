@@ -57,9 +57,6 @@ public class Plateau extends Observable {
         //cette variable permet de garder en mémoire combien de colonnes de Piece.cases nous avons parcourus avant de trouver la pièce : décalage
         int decalageX = 0, decalageY = 0, nbrCasesParcourues = 0;
         //on parcours le tableau de cases de notre pièce.
-
-
-
         for(int x = 0; x < piece.getCases().length; x++ ){ //Parcours des colonnes
             pieceTrouvee = false;
             decalageY = 0;
@@ -71,9 +68,10 @@ public class Plateau extends Observable {
                         pieceTrouvee = true;
                         nbrCasesParcourues ++;
                     }
-                }
-                else if (nbrCasesParcourues<=piece.getTaille()) {
-                    break;
+                }else if(piece.getCases()[x][y] != 1){
+                    if(!pieceTrouvee && piece.colonneVide(y))
+                        decalageY++; //On a toujours pas trouvé notre pièce on décale en ligne
+                    continue;
                 }
                 else{
                     System.out.println("La place est occupée ou en dehors du plateau");
@@ -184,10 +182,7 @@ public class Plateau extends Observable {
                 effacerPiecePlateau(positions); //On efface la pièce
                 //On la pose aux nouvelles coordonnées.
                 // On la place à partir de la position précédente à laquelle on a ajouté (0,-1) par exemple pour la descendre verticalement
-                int minX = (this.getTableauJeu()[(int)min.x][(int)min.y] == null)? (int) positions.get(0).x: (int)min.x;
-                int minY = (this.getTableauJeu()[(int)min.x][(int)min.y] == null)? (int) positions.get(0).y: (int)min.y;
-                this.poserPiecePlateau(piece,minX + direction.x, minY + direction.y);
-                int a =0;
+                this.poserPiecePlateau(piece,(int) min.x + direction.x, (int) min.y + direction.y);
             }else{
                 return false;
             }
@@ -198,8 +193,8 @@ public class Plateau extends Observable {
     }
 
     public Vec2d minimum(ArrayList<Vec2d> arrayList){
-        int minY =0;
-        int minX =0;
+        int minY =(int) arrayList.get(0).y;
+        int minX =(int) arrayList.get(0).x;
         for (int i = 0; i < arrayList.size(); i++) {
             if((int) arrayList.get(i).y < minY)
                 minY = (int) arrayList.get(i).y;
