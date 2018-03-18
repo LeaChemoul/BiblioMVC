@@ -222,6 +222,14 @@ public class Plateau extends Observable {
 
     public void tournerPieceCourante(Direction dir) {
         pieceCourante.rotation(dir);
+        ArrayList<Vec2d> positions = occurrencesPiecesPlateau(pieceCourante); //Toutes les occurences de notre pièce donnée sur le plateau
+        Vec2d min = minimum(positions);
+        effacerPiecePlateau(positions);
+        if(!this.poserPiecePlateau(pieceCourante,(int) min.x, (int) min.y)){
+            pieceCourante.rotation(dir);
+            pieceCourante.rotation(dir);
+            pieceCourante.rotation(dir);
+        }
         setChanged();
         notifyObservers();
     }
