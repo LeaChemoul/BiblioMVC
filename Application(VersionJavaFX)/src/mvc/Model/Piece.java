@@ -491,4 +491,8 @@ public class Piece {
     public void setSensDeplacement(Direction sensDeplacement) {
         this.sensDeplacement = sensDeplacement;
     }
+
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
 }
