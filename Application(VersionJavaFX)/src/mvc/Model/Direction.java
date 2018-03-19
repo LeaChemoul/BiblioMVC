@@ -13,6 +13,25 @@ public enum Direction {
         this.y = y;
     }
 
+    /**
+     * Renvoie la direction opposée ( UP --> DOWN, RIGHT --> LEFT, ... )
+     * @return Direction
+     */
+    public Direction opposee() {
+        switch (this) {
+            case RIGHT:
+                return LEFT;
+            case LEFT:
+                return RIGHT;
+            case UP:
+                return DOWN;
+            case DOWN:
+                return UP;
+            default:
+                return LEFT;
+        }
+    }
+
     public int getX() {
         return this.x;
     }

@@ -80,7 +80,7 @@ public class VueControleur extends Application implements Observer {
 
             //CONTROLLEURS : Quand on clique sur une pièce, elle devient la pièce active du plateau (celle qu'on peut manipuler).
             grillePiece.setOnMouseClicked(event -> {
-                    plateau.setPieceCourante(piece);
+                plateau.setPieceCourante(piece);
                     System.out.println("Piece active changée ! - " + piece.getNom());
                 plateau.getPieceCourante().afficherPiece();
                 });
@@ -116,11 +116,13 @@ public class VueControleur extends Application implements Observer {
                         //Si c'est un click gauche, on pose la pièce
                         if( button==MouseButton.PRIMARY ){
                             //System.out.println("RowIndex = " +grilleJeu.getRowIndex(rect) +" ColIndex = " + grilleJeu.getColumnIndex(rect));
-                            plateau.getPieceCourante().afficherPiece();
+                            //plateau.getPieceCourante().afficherPiece();
                             plateau.poserPiecePlateau(plateau.getPieceCourante(), grilleJeu.getRowIndex(rect), grilleJeu.getColumnIndex(rect));
                         } //Si c'est un click droit, on la tourne
                         else if(button==MouseButton.SECONDARY){
                             plateau.getPieceCourante().rotation(Direction.RIGHT);
+                            plateau.getPieceCourante().afficherPiece();
+                            //plateau.supprimerCase(grilleJeu.getRowIndex(rect), grilleJeu.getColumnIndex(rect));
                         }
 
                     }

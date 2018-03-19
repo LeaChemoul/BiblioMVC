@@ -166,8 +166,8 @@ public class Piece {
      * @param x Coordonnée x de la 'case' à supprimer.
      * @param y Coordonnée y de la 'case' à supprimer.
      */
-    public void supprimer(int x, int y) {
-        if (x < cases.length && y < cases[0].length)
+    public void supprimerCase(int x, int y) {
+        if (x >= 0 && x < cases.length && y >= 0 && y < cases[0].length)
             cases[x][y] = 0;
     }
 
@@ -201,7 +201,6 @@ public class Piece {
         int nbColVide = 0;
         int nbLigVide = 0;
 
-        //afficherPiece();
 
         //On compte le nombre de colonnes et lignes vide.
         //Nb Ligne vides
@@ -227,7 +226,6 @@ public class Piece {
                 croppedCases[i][j] = cases[i+nbLigVide][j+nbColVide];
         }
 
-        //afficherMatrice(croppedCases);
 
         return croppedCases;
     }
@@ -242,7 +240,6 @@ public class Piece {
         afficherPiece();
 
         //On affiche sa couleur
-        //TODO : Créer un COLOR TO STRING. Pour l'instant getCouleur() et getCouleur().toString() renvoie tout les deux un code hexadecimal dégeulasse.
         System.out.println("Couleur de la piece : "+ getCouleur() );
 
         //On affiche son pivot.
@@ -268,31 +265,20 @@ public class Piece {
 
         System.out.println(nom + " -- Dimensions : "+hauteur+"*"+largeur);
 
-        //Ligne bordure au sommet.
-        System.out.print("  -");
-        for ( int j = 0; j < largeur; j++ )
-            System.out.print("---");
-        System.out.println("-");
-
-        for ( int i = 0; i < hauteur; i++ ) {
-            System.out.print("  |");
-            for (int j = 0; j < largeur; j++) {
-                if ( matricePiece[i][j] != 0 )
-                    System.out.print(" X ");
-                else
-                    System.out.print("   ");
-            }
-            System.out.println("|");
-        }
-
-        //Ligne bordure au pied.
-        System.out.print("  -");
-        for ( int j = 0; j < largeur; j++ )
-            System.out.print("---");
-        System.out.println("-");
+        afficherMatrice(cases);
 
     }
 
+    /**
+     * Prends en paramètre une matrice d'int à 2 dim et l'affiche en console.
+     * Si la case = 0 --> Case vide, sinon on pose une X. On a un rendu de ce style :
+     -------
+     |     |
+     |  X  |
+     | XXX |
+     -------
+     * @param mat int[][] que l'on veut afficher en console.
+     */
     public static void afficherMatrice(int[][] mat) {
         //On récupère les dimensions de la pièce.
         int hauteur = mat.length;

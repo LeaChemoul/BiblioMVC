@@ -71,7 +71,8 @@ public class Partie implements Runnable{
                 do {
                     ligne = plateau.ligneASupprimer();
                     if (ligne != -1)
-                        plateau.effacerLigne(ligne);
+                        //plateau.effacerLigne(ligne);
+                        plateau.supprimerLigne(ligne);
                 } while (ligne != -1);
                 if (piecePosee) {
                     nbrRepetitions = this.plateau.getHauteur();

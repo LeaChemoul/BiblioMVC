@@ -4,6 +4,7 @@ import com.sun.javafx.geom.Vec2d;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Observable;
 import java.util.Random;
 
@@ -49,26 +50,29 @@ public class Plateau extends Observable {
      * @return
      */
     public boolean poserPiecePlateau(Piece piece,int i, int j){
-//On parcours le plateau de jeu depuis la position (i,j) et les cases de la pièce simultanement.
+    //On parcours le plateau de jeu depuis la position (i,j) et les cases de la pièce simultanement.
         //On ajoutera à positionsPlateau les positions de notre plateau à remplir par notre pièce. Evite uen boucle supplémentaire.
         ArrayList<Vec2d> positionsPlateau = new ArrayList<>(); // Les positions (x,y) du plateau où il faudra placer notre pièce
-        int index = this.piecesPosees.indexOf(piece);
+        HashMap<Vec2d, Vec2d> positionsLocalPiece = new  HashMap<Vec2d, Vec2d>(); //Se souvient des coordonnées local des pièces
+        int index = -1;
         boolean pieceTrouvee = false;
         //cette variable permet de garder en mémoire combien de colonnes de Piece.cases nous avons parcourus avant de trouver la pièce : décalage
-        int decalageX = 0, decalageY = 0, nbrCasesParcourues = 0;
+        int decalageX = 0, decalageY = 0;
         //on parcours le tableau de cases de notre pièce.
         for(int x = 0; x < piece.getCases().length; x++ ){ //Parcours des colonnes
             pieceTrouvee = false;
             decalageY = 0;
             for (int y = 0; y < piece.getCases()[0].length; y++) { //Parcours des lignes
-                if(peutEtrePosee(i,j,index,decalageX,decalageY,x,y)) //Ou c'est une occurence de notre pièce (avant d'être bougée)
+                //TODO : Index très surement useless dans peutEtrePosee, je propose de supprimer cet argument
+                if( peutEtrePosee(i, j, index,decalageX,decalageY,x,y) ) //Ou c'est une occurence de notre pièce (avant d'être bougée)
                 {
                     if (piece.getCases()[x][y] == 1){
-                        positionsPlateau.add(new Vec2d(i + x - decalageX, j + y -decalageY));
+                        positionsPlateau.add(new Vec2d(i + x - decalageX, j + y - decalageY));
+                        positionsLocalPiece.put(new Vec2d(i + x - decalageX, j + y - decalageY), new Vec2d(x, y));
                         pieceTrouvee = true;
-                        nbrCasesParcourues ++;
                     }
-                }else if(piece.getCases()[x][y] != 1){
+                }
+                else if(piece.getCases()[x][y] != 1){
                     if(!pieceTrouvee && piece.colonneVide(y))
                         decalageY++; //On a toujours pas trouvé notre pièce on décale en ligne
                     continue;
@@ -83,12 +87,16 @@ public class Plateau extends Observable {
             if(!pieceTrouvee && piece.ligneVide(x))
                 decalageX++; //On a toujours pas trouvé notre pièce on décale en colonne
         }
-        if(!positionsPlateau.isEmpty() && positionsPlateau.size() == piece.getTaille()) //Si on a bien pu tout poser dans le plateau
+        if(!positionsPlateau.isEmpty() && positionsPlateau.size() == piece.getTaille()) { //Si on a bien pu tout poser dans le plateau
+            piecesPosees.add(piece);
+            index = piecesPosees.indexOf(piece);
             for (Vec2d position : positionsPlateau) { //On met à jour le plateau en y posant la pièce
                 int ii = (int) position.x;
                 int jj = (int) position.y;
-                this.tableauJeu[ii][jj] = new Case(ii,jj, piece.getCouleur(),index);
+                Vec2d posLoc = positionsLocalPiece.get(position);
+                this.tableauJeu[ii][jj] = new Case(ii, jj, piece.getCouleur(), index, (int) posLoc.x, (int) posLoc.y);
             }
+        }
         else
             return false;
         setChanged();
@@ -102,7 +110,7 @@ public class Plateau extends Observable {
                 && j+y-decalageY< this.getLargeur() && i+x-decalageX < this.getHauteur() //Si cela ne dépasses pas notre plateau de jeu
                 //On teste les collisions
                 && (tableauJeu[i+x-decalageX][j+y-decalageY] == null || //Ou la case est vide et on peut poser notre pièce.
-                (tableauJeu[i+x-decalageX][j+y-decalageY]!= null && tableauJeu[i+x-decalageX][j+y-decalageY].getIndex() == index));
+                (tableauJeu[i+x-decalageX][j+y-decalageY]!= null /* && tableauJeu[i+x-decalageX][j+y-decalageY].getIndex() == index*/ ));
     }
 
     /**
@@ -225,10 +233,8 @@ public class Plateau extends Observable {
         ArrayList<Vec2d> positions = occurrencesPiecesPlateau(pieceCourante); //Toutes les occurences de notre pièce donnée sur le plateau
         Vec2d min = minimum(positions);
         effacerPiecePlateau(positions);
-        if(!this.poserPiecePlateau(pieceCourante,(int) min.x, (int) min.y)){
-            pieceCourante.rotation(dir);
-            pieceCourante.rotation(dir);
-            pieceCourante.rotation(dir);
+        if( !this.poserPiecePlateau(pieceCourante,(int) min.x, (int) min.y) ){
+            pieceCourante.rotation(dir.opposee());
         }
         setChanged();
         notifyObservers();
@@ -270,6 +276,73 @@ public class Plateau extends Observable {
         notifyObservers();
     }
 
+    /**
+     * Supprime la case aux coordonnées (i,j) du plateau. ( y compris dans la pièce. )
+     * @param i int
+     * @param j int
+     */
+    public void supprimerCase(int i, int j) {
+        //On récupère la case à supprimer et la case auquel elle appartient.
+        Piece piece = recupererPiece(i, j);
+        Case caseASuppr = tableauJeu[i][j];
+
+        //Cas erreur
+        if (piece == null) {
+            System.out.println("La piece n'existe pas !");
+            return;
+        }
+        else if (caseASuppr == null) {
+            System.out.println("La pièce à suppr n'existe pas !");
+            return;
+        }
+
+        //On supprime la case de la pièce.
+        piece.supprimerCase( caseASuppr.getxLocal(), caseASuppr.getyLocal() );
+        //On supprime la case du plateau.
+        tableauJeu[i][j] = null;
+
+    }
+
+    /**
+     * Supprime la ligne ii du tableau de jeu, et fais descendre toutes les pièces d'un cran.
+     * @param ii
+     */
+    public void supprimerLigne(int ii) {
+
+        //Cas outOfBound
+        if ( ii < 0 || ii >= tableauJeu.length) {
+            System.out.println("Il n'existe pas de ligne " + ii + " !");
+            return;
+        }
+
+        //On supprime le contenu de la ligne
+        for (int j = 0; j < tableauJeu[0].length; j++)
+            supprimerCase(ii, j);
+
+        boolean ligneVide;
+        //On descend d'une case tout le reste du plateau en partant du bas, on s'arrête prématurément si on tombe sur une ligne vide.
+        for (int i = ii-1; i > 0; i-- ) {
+            ligneVide = true;
+            for (int j = 0; j < tableauJeu[0].length; j++) {
+
+               //System.out.println("i = " + i + ", j = " + j);
+                if ( ligneVide && tableauJeu[i][j] != null )
+                    ligneVide = false;
+
+
+                tableauJeu[i+1][j] = tableauJeu[i][j];
+                tableauJeu[i][j] = null;
+
+            }
+            //Si la ligne était vide on s'arrête tout de suite, il n'y a rien d'autre à redescendre.
+            if (ligneVide)
+                break;
+        }
+
+        setChanged();
+        notifyObservers();
+
+    }
 
     /**
      * Permet de savoir quelle ligne de otre plateau doit être supprimée, c'est à dire qui est complète.
@@ -278,10 +351,10 @@ public class Plateau extends Observable {
     public int ligneASupprimer(){
         boolean estRemplie;
         for (int i = 0; i < this.hauteur ; i++) {
-            estRemplie =true;
+            estRemplie = true;
             for (int j = 0; j < this.largeur; j++) {
                 if(this.tableauJeu[i][j] == null){
-                    estRemplie =false;
+                    estRemplie = false;
                 }
             }
             if(estRemplie){
@@ -339,7 +412,7 @@ public class Plateau extends Observable {
      * Renvoie la pièce à qui appartient la case aux coordonnées x,y du plateau.
      */
     public Piece recupererPiece(int x, int y) {
-        if(tableauJeu[x][y]!= null)
+        if( tableauJeu[x][y]!= null && x >= 0 && y >= 0 && x < tableauJeu.length && y < tableauJeu[0].length)
             return piecesPosees.get(tableauJeu[x][y].getIndex());
         else
             return null;
