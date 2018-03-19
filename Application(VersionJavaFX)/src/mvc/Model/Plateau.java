@@ -162,7 +162,8 @@ public class Plateau extends Observable {
 
         //On crée une pièce à partir des modèles disponibles dans le pool de pièces
         if(piecesSuivantes != null){
-            this.pieceCourante = new Piece(piecesSuivantes.get(0));
+            //TODO : CONSTRUCTEUR A REVOIR
+            this.pieceCourante = new Piece(piecesSuivantes.get(0), true);
             this.pieceCourante.afficherPiece();
             this.piecesPosees.add(pieceCourante);
             setChanged();
@@ -177,7 +178,8 @@ public class Plateau extends Observable {
 
     public boolean newPiece(Piece piece,int i,int j){
         this.pieceCourante = null;
-        this.pieceCourante = new Piece(piece);
+        //TODO : CONSTRUCTEUR A REVOIR
+        this.pieceCourante = new Piece(piece, true);
         this.piecesPosees.add(pieceCourante);
         setChanged();
         notifyObservers();

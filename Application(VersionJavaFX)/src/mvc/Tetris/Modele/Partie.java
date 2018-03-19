@@ -24,7 +24,7 @@ public class Partie implements Runnable{
         //Le nombre de pièces suivantes connues n'excedera jamais 1 pièce
         if(plateau.getPoolDePiece() != null){
             Random random = new Random();
-            Piece pieceSuiv = new Piece(plateau.getPoolDePiece()[random.nextInt(plateau.getPoolDePiece().length)]);
+            Piece pieceSuiv = new Piece(plateau.getPoolDePiece()[random.nextInt(plateau.getPoolDePiece().length)], true);
             plateau.getPiecesSuivantes().clear();
             plateau.getPiecesSuivantes().add(pieceSuiv);
         }

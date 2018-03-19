@@ -41,12 +41,16 @@ public class Piece {
      * Constructeur par copie de la classe.
      * @param piece
      */
-    public Piece(Piece piece){
+    public Piece(Piece piece, boolean couleurAleatoire){
         this.nom = piece.nom;
         this.taille = piece.taille;
-        Random random = new Random();
-        this.couleur = Color.rgb(random.nextInt(255),random.nextInt(255),random.nextInt(255));
-        //this.couleur = piece.couleur;
+
+        if (couleurAleatoire) {
+            Random random = new Random();
+            this.couleur = Color.rgb(random.nextInt(255),random.nextInt(255),random.nextInt(255));
+        }
+        else
+            this.couleur = piece.couleur;
 
         int length = piece.cases.length;
         this.cases = new int[length][length];
@@ -57,6 +61,7 @@ public class Piece {
         }
         this.pivot = piece.pivot;
     }
+
 
 
 

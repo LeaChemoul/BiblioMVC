@@ -7,10 +7,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -19,7 +17,6 @@ import javafx.stage.Stage;
 
 import mvc.Model.*;
 import mvc.Blokus.ModeleBlokus.*;
-import mvc.VueControleur.GrillePiece;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -28,18 +25,18 @@ import java.util.Observer;
 public class VueControleur extends Application implements Observer {
 
 
-    private final int NB_JOUEURS = 2;
+    private final int NB_JOUEURS = 3;
 
     private Plateau plateau = new Plateau(20, 20);
-    private int joueurActif = 1;
-    private Partie partie = new Partie(plateau, 2);
+    private Partie partie = new Partie(plateau, NB_JOUEURS);
 
     private boolean pieceEnSurvol;
 
-    private Piece pieceCourante = null;
     private BorderPane bPane = new BorderPane();
     private GridPane grilleJeu;
-    private ListePiece tileP;
+
+    private ListePiece[] listesPiecesJoueurs = new ListePiece[5];
+    private Text[] textsJoueurs = new Text[4];
 
     private Rectangle[][] tab;
 
@@ -71,13 +68,42 @@ public class VueControleur extends Application implements Observer {
         bPane.setTop(titre);
 
         //------------ RIGHT -- Liste des pièces du joueur actif
-        tileP = new ListePiece(partie.getJoueurActif(), partie);
 
-        //tileP.setAlignment(Pos.TOP_RIGHT);
-        //bPane.setAlignment(tileP, Pos.BOTTOM_RIGHT);
-        bPane.setMargin(tileP, new Insets(20, 0, 0, 10));
-        bPane.setRight(tileP);
+        //On initialise les liste de pièces de chaque joueurs
+        for (int i = 0; i < 4; i++) {
+            listesPiecesJoueurs[i] = new ListePiece( partie.getJoueur(i), partie);
+            bPane.setMargin(listesPiecesJoueurs[i], new Insets(20, 20, 0, 0));
+        }
 
+        //On initialise avec le premier joueur
+        bPane.setRight(listesPiecesJoueurs[0]);
+
+        //LEFT -- Liste des Joueurs.
+
+        //region Liste Joueurs
+        //On utilise un tableau de joueur pour interagir plus facilement en fct du joueur actif.
+        //Texte Titre
+        textsJoueurs[0] = new Text("Liste des Joueurs");
+        textsJoueurs[0].setFont(Font.font("Helvetica", FontWeight.BOLD, 20));
+        //Texte nom des joueurs
+        for ( int i = 1; i < NB_JOUEURS+1; i++) {
+            textsJoueurs[i] = new Text("Joueur "+i);
+            textsJoueurs[i].setFont(Font.font("Helvetica", FontWeight.BOLD,15));
+            textsJoueurs[i].setFill( partie.intToColor(i-1) );
+        }
+
+        VBox vBoxJ = new VBox(5);
+        vBoxJ.setPadding(new Insets(10));
+
+        vBoxJ.setMargin(textsJoueurs[0], new Insets(60, 5, 2, 5));
+        vBoxJ.getChildren().add(textsJoueurs[0]);
+        for ( int i = 1; i < NB_JOUEURS+1; i++) {
+            vBoxJ.setMargin(textsJoueurs[i], new Insets(5, 5, 5, 30));
+            vBoxJ.getChildren().addAll(textsJoueurs[i]);
+        }
+
+        bPane.setLeft(vBoxJ);
+        //endregion
 
         // ------------- CENTER -- Plateau de Jeu
         grilleJeu = new GridPane();
@@ -105,6 +131,7 @@ public class VueControleur extends Application implements Observer {
                             //On pose la pièce courante.
                             partie.jouerPiece(plateau.getPieceCourante(), grilleJeu.getRowIndex(rect), grilleJeu.getColumnIndex(rect));
                             effacerPieceSurvol(grilleJeu.getRowIndex(rect), grilleJeu.getColumnIndex(rect));
+                            partie.joueurSuivant();
                             pieceEnSurvol = false;
                         }
                         //Si c'est un click droit, on la tourne
@@ -112,7 +139,7 @@ public class VueControleur extends Application implements Observer {
                             if ( plateau.getPieceCourante() != null ) {
                                 plateau.getPieceCourante().rotation(Direction.RIGHT);
                                 effacerPieceSurvol(grilleJeu.getRowIndex(rect), grilleJeu.getColumnIndex(rect));
-                                afficherPieceSurvol(plateau.getPieceCourante(), grilleJeu.getRowIndex(rect), grilleJeu.getColumnIndex(rect));
+                                afficherPieceSurvol(grilleJeu.getRowIndex(rect), grilleJeu.getColumnIndex(rect));
                             }
                         }
 
@@ -122,7 +149,7 @@ public class VueControleur extends Application implements Observer {
                 rect.setOnMouseEntered( event -> {
                     //System.out.println("RowIndex = " +grilleJeu.getRowIndex(rect) +" ColIndex = " + grilleJeu.getColumnIndex(rect));
                     if (plateau.getPieceCourante() != null)
-                        afficherPieceSurvol(plateau.getPieceCourante(), grilleJeu.getRowIndex(rect), grilleJeu.getColumnIndex(rect));
+                        afficherPieceSurvol(grilleJeu.getRowIndex(rect), grilleJeu.getColumnIndex(rect));
                 });
                 // Si on ne survole plus une case, on efface la pièce qui y était affiché en survole
                 rect.setOnMouseExited( event -> {
@@ -137,31 +164,6 @@ public class VueControleur extends Application implements Observer {
         bPane.setCenter(grilleJeu);
 
 
-        //LEFT -- Liste des Joueurs.
-
-        //region Liste Joueurs
-        //On utilise un tableau de joueur pour interagir plus facilement en fct du joueur actif.
-        Text[] textsJ = new Text[NB_JOUEURS+1];
-        //Texte Titre
-        textsJ[0] = new Text("Liste des Joueurs");
-        textsJ[0].setFont(Font.font("Helvetica", FontWeight.BOLD, 20));
-        //Texte nom des joueurs
-        for ( int i = 1; i < NB_JOUEURS+1; i++) {
-            textsJ[i] = new Text("Joueur "+i);
-            textsJ[i].setFont(Font.font("Helvetica", 15));
-        }
-
-        VBox vBoxJ = new VBox(5);
-        vBoxJ.setPadding(new Insets(10));
-
-        vBoxJ.setMargin(textsJ[0], new Insets(60, 5, 2, 5));
-        for ( int i = 1; i < NB_JOUEURS+1; i++)
-            vBoxJ.setMargin(textsJ[i], new Insets(5, 5, 5, 30));
-
-        vBoxJ.getChildren().addAll(textsJ);
-        bPane.setLeft(vBoxJ);
-        //endregion
-
         //SCENE
 
 
@@ -174,14 +176,19 @@ public class VueControleur extends Application implements Observer {
         primaryStage.show();
     }
 
+    /**
+     * Efface l'affichage en survol de la pièce courante. Basiquement on rafraichit les cases proches avec le contenu du plateau.
+     * @param row nb_lig de la pièce à effacer.
+     * @param col nb_col de la pièce à effacer.
+     */
     public void effacerPieceSurvol(int row, int col) {
 
         //Si il n'y a pas de pièce à effacer on n'efface rien.
         if ( !pieceEnSurvol || partie.getPieceCourante() == null )
             return;
 
-        for (int i = row-partie.getPieceCourante().getHauteur(); i < row+partie.getPieceCourante().getHauteur(); i++) {
-            for (int j = col-partie.getPieceCourante().getLargeur(); j < col+partie.getPieceCourante().getLargeur(); j++) {
+        for (int i = row/*-partie.getPieceCourante().getHauteur()*/; i < row+partie.getPieceCourante().getHauteur(); i++) {
+            for (int j = col/*-partie.getPieceCourante().getLargeur()*/; j < col+partie.getPieceCourante().getLargeur(); j++) {
 
                 //Si la case visée ne dépasse pas les limites du plateau
                 if ( inBound(i, j, plateau.getHauteur(), plateau.getLargeur()) ) {
@@ -198,12 +205,17 @@ public class VueControleur extends Application implements Observer {
 
     }
 
-    public void afficherPieceSurvol(Piece piece, int row, int col) {
+    /**
+     * Affiche la piece courante par dessus le plateau à partir de la case donnée, dans une couleur différente pour la différencier.
+     * @param row num lig de la case à partir d'où l'afficher
+     * @param col num col de la case à partir d'où l'afficher
+     */
+    public void afficherPieceSurvol(int row, int col) {
 
-        if ( piece == null )
+        if ( plateau.getPieceCourante() == null )
             return;
 
-        int[][] croppedPiece = piece.croppedPiece();
+        int[][] croppedPiece = plateau.getPieceCourante().croppedPiece();
 
         //On modifie la vue pour afficher la pièce par dessus le point de la grille.
         for (int i = 0; i < croppedPiece.length; i++ ) {
@@ -213,7 +225,7 @@ public class VueControleur extends Application implements Observer {
                 if (inBound(row+i, col+j, plateau.getHauteur(), plateau.getLargeur()) ) {
                     //On colorie par dessus le plateau avec la couleur de la piece qu'on veut visualiser.
                     if (croppedPiece[i][j] != 0)
-                        tab[row+i][col+j].setFill(piece.getCouleur());
+                        tab[row+i][col+j].setFill(plateau.getPieceCourante().getCouleur());
                 }
             }
         }
@@ -228,19 +240,26 @@ public class VueControleur extends Application implements Observer {
     @Override
     public void update(Observable o, Object arg) {
 
-        pieceCourante = plateau.getPieceCourante();
 
         if (o instanceof Partie) {
+
+            //Si on reçoit une pièce, on met à jour cette pièce.
             if (arg instanceof Piece) {
-                tileP.supprimerPiece( (Piece)arg );
-                tileP.update();
+                listesPiecesJoueurs[partie.getNumJoueurActif()-1].supprimerPiece( (Piece)arg );
+                listesPiecesJoueurs[partie.getNumJoueurActif()-1].update();
+            }
+            //Si on reçoit un joueur, on mets à jour les listes des joueurs, ça veut aussi dire qu'on change de joueur.
+            else if (arg instanceof JoueurBlokus) {
+                //On met à jour/change la liste de pièce affiché pour celle du nouveau joueur actif
+                bPane.setRight(listesPiecesJoueurs[partie.getJoueurActif().getNumJoueur()-1]);
+                //On change les couleur de la liste des joueurs.
             }
         }
+        //Si on reçoit le plateau, on rafraichit toute la grille de jeu.
         else if (o instanceof Plateau) {
 
 
             //On rafraichit la grille.
-            //On modifie la vue pour afficher la pièce par dessus le point de la grille.
             for (int i = 0; i < plateau.getHauteur(); i++ ) {
                 for (int j = 0; j < plateau.getLargeur(); j++) {
 

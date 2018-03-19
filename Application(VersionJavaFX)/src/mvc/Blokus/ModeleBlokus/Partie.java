@@ -8,32 +8,34 @@ public class Partie extends Observable {
 
     private PieceBuilder builder = new PieceBuilder();
     private Plateau plateau;
-    private Joueur[] joueurs = new Joueur[2]; //Max 4 joueurs
+    private JoueurBlokus[] joueurs = new JoueurBlokus[4]; //Max 4 joueurs
+    int nbJoueurs = 2;
 
     private int numJoueurActif;
-    private Joueur joueurActif;
-
-    private Piece pieceCourante;
+    private JoueurBlokus joueurActif;
 
 
 
     public Partie(Plateau p, int nbJoueur){
 
         this.plateau = p;
+        this.nbJoueurs = nbJoueur;
 
         //On génère les pièces du pool
         genererPieces();
 
         // 2 à 4 Joueurs seulement
-        if ( nbJoueur < 2 ) nbJoueur = 2;
-        else if ( nbJoueur > 4 ) nbJoueur = 4;
+        if ( nbJoueurs < 2 ) nbJoueurs = 2;
+        else if ( nbJoueurs > 4 ) nbJoueurs = 4;
 
         //On attribut à chaque joueur une couleur et sa liste de pièces.
-        for (int i = 0; i < nbJoueur ; i++ ) {
+        for (int i = 0; i < 4 ; i++ ) {
             //On donne une couleur différente pour les pièces de chaque joueurs
             builder.setCouleurAll( intToColor(i) );
-            joueurs[i] = new Joueur(i+1, p, intToColor(i), builder.exporterArrayList());
+            joueurs[i] = new JoueurBlokus(i+1, p, intToColor(i), builder.exporterArrayList());
         }
+
+
         joueurActif = joueurs[0];
 
     }
@@ -42,19 +44,23 @@ public class Partie extends Observable {
     //Méthodes
 
     /**
-     * Modifie numJoueurActif et JoueurActif avec le joueur suivant.
+     * Modifie JoueurActif avec le joueur suivant.
      */
     public void joueurSuivant() {
 
-        numJoueurActif++;
-        if ( numJoueurActif > joueurs.length )
-            numJoueurActif = 1;
-        joueurActif = joueurs[numJoueurActif-1];
+        int numJoueurActif = joueurActif.getNumJoueur();
+        if ( numJoueurActif+1 > nbJoueurs )
+            joueurActif = joueurs[0];
+        else
+            joueurActif = joueurs[numJoueurActif];
 
         setChanged();
         notifyObservers(joueurActif);
     }
 
+    /**
+     * Joue la Piece piece donnée en argument à la case i,j du plateau de jeu.
+     */
     public void jouerPiece(Piece piece, int i, int j) {
 
         //On pose la pièce
@@ -66,13 +72,21 @@ public class Partie extends Observable {
 
     }
 
-    public void supprimerPiece(Joueur j, Piece piece) {
+    /**
+     * Supprime la Piece piece de la liste des pièces du joueur J.
+     * @param j Joueur
+     * @param piece Pièce à supprimer
+     */
+    public void supprimerPiece(JoueurBlokus j, Piece piece) {
         j.supprimerPiece(piece);
 
         setChanged();
         notifyObservers(piece);
     }
 
+    /**
+     * Supprimer la piece courante du plateau.
+     */
     public void supprimerPieceCourante() {
         joueurActif.supprimerPiece(getPieceCourante());
 
@@ -92,7 +106,7 @@ public class Partie extends Observable {
             case 2:
                 return Color.GREEN;
             case 3:
-                return Color.YELLOW;
+                return Color.PINK;
             default:
                 return Color.PURPLE;
         }
@@ -143,14 +157,17 @@ public class Partie extends Observable {
     //Accesseurs
 
 
-    public Joueur getJoueurActif() {
+    public JoueurBlokus getJoueurActif() {
         return joueurActif;
     }
 
-    public void setJoueurActif(Joueur joueurActif) {
+    public void setJoueurActif(JoueurBlokus joueurActif) {
         this.joueurActif = joueurActif;
     }
 
+    public int getNumJoueurActif() {
+        return joueurActif.getNumJoueur();
+    }
     public Piece getPieceCourante() {
         return plateau.getPieceCourante();
     }
@@ -159,9 +176,9 @@ public class Partie extends Observable {
         plateau.setPieceCourante(piece);
     }
 
-    public Joueur getJoueur (int numJ) {
-        if ( numJ > 0 && numJ < joueurs.length )
-            return joueurs[numJ-1];
+    public JoueurBlokus getJoueur (int indexJ) {
+        if ( indexJ >= 0 && indexJ < 4 )
+            return joueurs[indexJ];
         return null;
     }
     public Plateau getPlateau() {

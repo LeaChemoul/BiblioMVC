@@ -7,10 +7,10 @@ import java.util.ArrayList;
 public class Joueur {
 
 
-    private int numJoueur; //Numéro du joueur
-    private Color couleur;
-    private Piece pieceActive; //Piece avec laquelle le joueur peut interagir
-    private ArrayList<Piece> PoolDePiece; //Liste des pièces du joueur, utilisés différemment en fonction du jeu
+    protected int numJoueur; //Numéro du joueur
+    protected Color couleur;
+    protected Piece pieceActive; //Piece avec laquelle le joueur peut interagir
+    protected ArrayList<Piece> PoolDePiece; //Liste des pièces du joueur, utilisés différemment en fonction du jeu
 
 
     /*  TODO : A lire
@@ -18,7 +18,7 @@ public class Joueur {
         Ou alors on supprime cette attribut et on récupère juste les pièces  du joueur, et on le fera jouer à travers Partie
         qui a la classe Plateau.
      */
-    private Plateau plateau;
+    protected Plateau plateau;
 
 
     public Joueur (int num) {

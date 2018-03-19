@@ -26,12 +26,12 @@ import java.util.HashMap;
 
 public class ListePiece extends TilePane{
 
-    private Joueur joueur;
+    private JoueurBlokus joueur;
     private Partie partie;
 
     private HashMap<Piece, GridPane> listeGrillesPieces;
 
-    public ListePiece(Joueur joueur, Partie partie) {
+    public ListePiece(JoueurBlokus joueur, Partie partie) {
         this.joueur = joueur;
         this.partie = partie;
         this.listeGrillesPieces = new HashMap<Piece, GridPane>();
@@ -40,7 +40,7 @@ public class ListePiece extends TilePane{
         for (Piece piece: joueur.getPoolDePiece() ) {
 
             //On crée une gridPane avec la pièce.
-            GridPane grillePiece = new GrillePiece( piece.getCases(), piece.getCouleur(), true,15);
+            GridPane grillePiece = new GrillePiece( piece.getCases(), joueur.getCouleur(), true,15);
             listeGrillesPieces.put(piece, grillePiece);
             grillePiece.setPadding(new Insets(3));
             getChildren().add(grillePiece);
@@ -48,8 +48,8 @@ public class ListePiece extends TilePane{
             //CONTROLLEURS : Quand on clique sur une pièce, elle devient la pièce active du plateau (celle qu'on peut manipuler).
             grillePiece.setOnMouseClicked(event -> {
                 partie.setPieceCourante(piece);
-                System.out.println("Piece active changée ! - " + piece.getNom());
-                partie.getPieceCourante().afficherPiece();
+                //System.out.println("Piece active changée ! - " + piece.getNom());
+                //partie.getPieceCourante().afficherPiece();
             });
         }
     }
@@ -73,7 +73,7 @@ public class ListePiece extends TilePane{
         for (Piece piece: joueur.getPoolDePiece() ) {
 
             //On refait une nouvelle grille à partir de l'état actuel de la pièce.
-            GridPane grillePiece = new GrillePiece( piece.getCases(), piece.getCouleur(), true,15);
+            GridPane grillePiece = new GrillePiece( piece.getCases(), joueur.getCouleur(), true,15);
             grillePiece.setPadding(new Insets(3));
             listeGrillesPieces.put(piece, grillePiece);
 

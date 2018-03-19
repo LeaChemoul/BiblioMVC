@@ -136,7 +136,15 @@ public class PieceBuilder {
      * @return Liste de Pieces
      */
     public ArrayList<Piece> exporterArrayList() {
-        return new ArrayList<Piece>(listePieces.values());
+
+        //Decrepated
+        //return new ArrayList<Piece>(listePieces.values());
+
+        //On procède par copie, en copiant chaque pièce, pour éviter de référencer celle du builder.
+        ArrayList<Piece> listePieceExport = new ArrayList<>();
+        listePieces.forEach( (name, piece) -> listePieceExport.add( new Piece(piece, false) ) );
+
+        return listePieceExport;
     }
 
     //Méthodes booléenes
