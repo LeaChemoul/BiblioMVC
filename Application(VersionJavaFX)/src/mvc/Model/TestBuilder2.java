@@ -10,16 +10,23 @@ public class TestBuilder2 {
     public static void main ( String[] args ) {
 
 
-        /*
+
         Vec2d[] listeVect = new Vec2d[4];
         listeVect[0] = new Vec2d(1,0);
         listeVect[1] = new Vec2d(1,1);
         listeVect[2] = new Vec2d(1,2);
         listeVect[3] = new Vec2d(2,1);
 
-        builder.addPiece("TTetris", listeVect);
-        rotationComplete("TTetris");
         /*
+        builder.addPiece("TTetris", listeVect);
+        builder.getPiece("TTetris").centrerPiece();
+        builder.afficherPiece("TTetris");
+        builder.getPiece("TTetris").centrerPiece();
+        builder.afficherPiece("TTetris");
+        builder.getPiece("TTetris").centrerPiece();
+        builder.afficherPiece("TTetris");
+        rotationComplete("TTetris");
+        */
 
         /*Vec2d[] listeCoor = new Vec2d[] { new Vec2d(0, 1), new Vec2d(0, 2), new Vec2d(0, 3), new Vec2d(0, 0) };
         builder.addPiece("Barre", Color.GREEN, listeCoor);
@@ -49,9 +56,23 @@ public class TestBuilder2 {
         afficherPiece("Angle");
         rotationComplete("Angle"); */
 
+
         System.out.println("    TEST - PIECES BLOKUS");
         builder.clearListePiece();
         genererPiecesBlokus();
+
+
+        builder.getPiece("Piece2-1").afficherPiece();
+        Piece.afficherMatrice( builder.getPiece("Piece2-1").croppedPiece() );
+
+
+        /*
+        builder.getPiece("Piece4-2").croppedPiece();
+        builder.getPiece("Piece4-3").croppedPiece();
+        builder.getPiece("Piece4-4").croppedPiece();
+        builder.getPiece("Piece4-5").croppedPiece();
+        */
+
     }
 
     static public void afficherInfosPiece(String name) {
@@ -66,18 +87,23 @@ public class TestBuilder2 {
 
         System.out.println("    TEST - rotation complete de la piece (POSITION INITIAL) : " + name);
         builder.afficherPiece(name);
+        System.out.println("Pivot = " + builder.getPiece(name).getPivot());
         System.out.println("    rotation droite(1) ");
         builder.getPiece(name).rotation(Direction.RIGHT);
         builder.getPiece(name).afficherPiece();
+        System.out.println("Pivot = " + builder.getPiece(name).getPivot());
         System.out.println("    rotation droite(2) ");
         builder.getPiece(name).rotation(Direction.RIGHT);
         builder.getPiece(name).afficherPiece();
+        System.out.println("Pivot = " + builder.getPiece(name).getPivot());
         System.out.println("    rotation droite(3) ");
         builder.getPiece(name).rotation(Direction.RIGHT);
         builder.getPiece(name).afficherPiece();
+        System.out.println("Pivot = " + builder.getPiece(name).getPivot());
         System.out.println("    rotation droite (TOUR COMPLET) ");
         builder.getPiece(name).rotation(Direction.RIGHT);
         builder.getPiece(name).afficherPiece();
+        System.out.println("Pivot = " + builder.getPiece(name).getPivot());
     }
 
     public static void genererPiecesBlokus() {
@@ -116,7 +142,7 @@ public class TestBuilder2 {
 
 
         //DEBUG
-        builder.afficherPieces();
+        //builder.afficherPieces();
     }
 
 }

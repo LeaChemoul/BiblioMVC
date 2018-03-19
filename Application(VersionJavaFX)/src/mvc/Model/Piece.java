@@ -192,6 +192,46 @@ public class Piece {
     }
 
     /**
+     * Renvoie la matrice local de la pièce rognée de ses premières lignes et colonnes vides.
+     * Utilisé pour l'affichage des pièces afin qu'il soit en accord avec la pose.
+     */
+    public int[][] croppedPiece() {
+        boolean colonneVide = true;
+        boolean ligneVide = true;
+        int nbColVide = 0;
+        int nbLigVide = 0;
+
+        //afficherPiece();
+
+        //On compte le nombre de colonnes et lignes vide.
+        //Nb Ligne vides
+        for (int i = 0; i < cases.length && ligneVide; i++) {
+            for (int j = 0; j < cases[0].length && ligneVide; j++)
+                if ( cases[i][j] != 0)
+                    ligneVide = false;
+            if (ligneVide)
+                nbLigVide++;
+        }
+        for (int j = 0; j < cases[0].length && colonneVide; j++) {
+            for (int i = 0; i < cases.length && colonneVide; i++)
+                if ( cases[i][j] != 0)
+                    colonneVide = false;
+            if (colonneVide)
+                nbColVide++;
+        }
+
+        //On déclare le nouveau tableau à afficher
+        int[][] croppedCases = new int[cases.length-nbLigVide][cases[0].length-nbColVide];
+        for (int i = 0; i < croppedCases.length; i++) {
+            for (int j = 0; j < croppedCases[0].length; j++)
+                croppedCases[i][j] = cases[i+nbLigVide][j+nbColVide];
+        }
+
+        //afficherMatrice(croppedCases);
+
+        return croppedCases;
+    }
+    /**
      * Affichage complet de la pièce, avec nom, matrice, couleur, pivot.
      */
     public void afficherInfosPiece() {
@@ -251,6 +291,35 @@ public class Piece {
             System.out.print("---");
         System.out.println("-");
 
+    }
+
+    public static void afficherMatrice(int[][] mat) {
+        //On récupère les dimensions de la pièce.
+        int hauteur = mat.length;
+        int largeur = mat[0].length;
+
+        //Ligne bordure au sommet.
+        System.out.print("  -");
+        for ( int j = 0; j < largeur; j++ )
+            System.out.print("---");
+        System.out.println("-");
+
+        for ( int i = 0; i < hauteur; i++ ) {
+            System.out.print("  |");
+            for (int j = 0; j < largeur; j++) {
+                if ( mat[i][j] != 0 )
+                    System.out.print(" X ");
+                else
+                    System.out.print("   ");
+            }
+            System.out.println("|");
+        }
+
+        //Ligne bordure au pied.
+        System.out.print("  -");
+        for ( int j = 0; j < largeur; j++ )
+            System.out.print("---");
+        System.out.println("-");
     }
 
 

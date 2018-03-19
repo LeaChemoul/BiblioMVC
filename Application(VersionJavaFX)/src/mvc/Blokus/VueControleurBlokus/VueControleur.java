@@ -1,9 +1,12 @@
 package mvc.Blokus.VueControleurBlokus;
 
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.TilePane;
@@ -70,14 +73,16 @@ public class VueControleur extends Application implements Observer {
         //On remplit une TilePane avec chaque pièce du joueur.
         for (Piece piece: partie.getJoueur(joueurActif).getPoolDePiece()) {
 
-            GridPane grillePiece = new GrillePiece( piece.getCases(), piece.getCouleur(), true ,15);
+            //On crée une gridPane avec la pièce.
+            GridPane grillePiece = new GrillePiece( piece.getCases(), piece.getCouleur(), true,15);
             grillePiece.setPadding(new Insets(3));
             tileP.getChildren().add(grillePiece);
 
             //CONTROLLEURS : Quand on clique sur une pièce, elle devient la pièce active du plateau (celle qu'on peut manipuler).
             grillePiece.setOnMouseClicked(event -> {
                     plateau.setPieceCourante(piece);
-                    System.out.println("Piece active changée ! - " +piece.getNom());
+                    System.out.println("Piece active changée ! - " + piece.getNom());
+                plateau.getPieceCourante().afficherPiece();
                 });
         }
 
@@ -98,16 +103,28 @@ public class VueControleur extends Application implements Observer {
                 rect.setFill(Color.WHITE);
                 tab[i][j] = rect;
                 grilleJeu.add(tab[i][j], j, i);
-                //CONTROLEURs
-                // Si on clique sur une case on essaye de poser la pièce
-                rect.setOnMouseClicked( event -> {
-                    System.out.println("RowIndex = " +grilleJeu.getRowIndex(rect) +" ColIndex = " + grilleJeu.getColumnIndex(rect));
+                //CONTROLEURS
+                // Lors d'un click de souris sur une case du plateau
+                rect.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
 
-                    if (plateau.getPieceCourante() != null) {
-                        plateau.getPieceCourante().afficherPiece();
-                        plateau.poserPiecePlateau(plateau.getPieceCourante(), grilleJeu.getRowIndex(rect), grilleJeu.getColumnIndex(rect));
-                    } });
+                        //Si on a pas de pièce courante avec laquelle interagir on ne fait rien.
+                        if (plateau.getPieceCourante() == null) return;
 
+                        MouseButton button = event.getButton();
+                        //Si c'est un click gauche, on pose la pièce
+                        if( button==MouseButton.PRIMARY ){
+                            //System.out.println("RowIndex = " +grilleJeu.getRowIndex(rect) +" ColIndex = " + grilleJeu.getColumnIndex(rect));
+                            plateau.getPieceCourante().afficherPiece();
+                            plateau.poserPiecePlateau(plateau.getPieceCourante(), grilleJeu.getRowIndex(rect), grilleJeu.getColumnIndex(rect));
+                        } //Si c'est un click droit, on la tourne
+                        else if(button==MouseButton.SECONDARY){
+                            plateau.getPieceCourante().rotation(Direction.RIGHT);
+                        }
+
+                    }
+                });
                 // Si on survole une case avec une pièce active, ça nous montre où elle serait posée.
                 rect.setOnMouseEntered( event -> {
                     //System.out.println("RowIndex = " +grilleJeu.getRowIndex(rect) +" ColIndex = " + grilleJeu.getColumnIndex(rect));
@@ -129,6 +146,7 @@ public class VueControleur extends Application implements Observer {
 
         //LEFT -- Liste des Joueurs.
 
+        //region Liste Joueurs
         //On utilise un tableau de joueur pour interagir plus facilement en fct du joueur actif.
         Text[] textsJ = new Text[NB_JOUEURS+1];
         //Texte Titre
@@ -149,6 +167,7 @@ public class VueControleur extends Application implements Observer {
 
         vBoxJ.getChildren().addAll(textsJ);
         bPane.setLeft(vBoxJ);
+        //endregion
 
         //SCENE
 
@@ -189,14 +208,16 @@ public class VueControleur extends Application implements Observer {
         if ( piece == null )
             return;
 
+        int[][] croppedPiece = piece.croppedPiece();
+
         //On modifie la vue pour afficher la pièce par dessus le point de la grille.
-        for (int i = 0; i < piece.getHauteur(); i++ ) {
-            for (int j = 0; j < piece.getLargeur(); j++) {
+        for (int i = 0; i < croppedPiece.length; i++ ) {
+            for (int j = 0; j < croppedPiece[0].length; j++) {
 
                 //Si la case visée ne dépasse pas les limites du plateau
                 if (inBound(row+i, col+j, plateau.getHauteur(), plateau.getLargeur()) ) {
                     //On colorie par dessus le plateau avec la couleur de la piece qu'on veut visualiser.
-                    if (piece.getCases()[i][j] != 0)
+                    if (croppedPiece[i][j] != 0)
                         tab[row+i][col+j].setFill(piece.getCouleur());
                 }
             }

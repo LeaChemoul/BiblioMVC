@@ -10,17 +10,19 @@ import java.util.ArrayList;
 public class Partie extends Observable {
 
     private PieceBuilder builder = new PieceBuilder();
-    private Plateau plateau;
-    private Joueur[] joueurs = new Joueur[4];
+    private Plateau p;
+    private Joueur[] joueurs = new Joueur[2]; //Max 4 joueurs
 
     private int numJoueurActif;
     private Joueur joueurActif;
+
+    private Piece pieceCourante;
 
 
 
     public Partie(Plateau p, int nbJoueur){
 
-        this.plateau = p;
+        this.p = p;
 
         //On génère les pièces du pool
         genererPieces();
@@ -52,7 +54,7 @@ public class Partie extends Observable {
         joueurActif = joueurs[numJoueurActif-1];
 
         setChanged();
-        notifyObservers();
+        notifyObservers(joueurActif);
     }
 
     //TODO : Laisser ici ou la déplacer en static ailleurs pour etre réutilisable ?
@@ -112,12 +114,20 @@ public class Partie extends Observable {
         //builder.afficherPieces();
     }
 
+
+    //Accesseurs
+
+
+    public Piece getPieceCourante() {
+        return pieceCourante;
+    }
+
     public Joueur getJoueur (int numJ) {
         if ( numJ > 0 && numJ < joueurs.length )
             return joueurs[numJ-1];
         return null;
     }
     public Plateau getPlateau() {
-        return plateau;
+        return p;
     }
 }
