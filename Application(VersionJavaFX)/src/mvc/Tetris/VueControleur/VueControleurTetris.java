@@ -106,10 +106,8 @@ public class VueControleurTetris extends Application implements Observer {
             public void handle(KeyEvent ke){
                 if (ke.getCode().equals(KeyCode.UP)) {
                     //rotation
-
                     if(grille.getP().getPieceCourante() != null)
                         grille.getP().tournerPieceCourante(Direction.RIGHT);
-
 
                 }
                 if (ke.getCode().equals(KeyCode.LEFT)) {
