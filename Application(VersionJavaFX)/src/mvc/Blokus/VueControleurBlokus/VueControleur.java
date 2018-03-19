@@ -7,6 +7,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.TilePane;
@@ -165,6 +166,8 @@ public class VueControleur extends Application implements Observer {
 
 
         Scene scene = new Scene(bPane);
+        scene.setOnScroll(
+                event -> plateau.getPieceCourante().rotation(Direction.RIGHT));
 
         primaryStage.setTitle("BLOKUS");
         primaryStage.setScene(scene);

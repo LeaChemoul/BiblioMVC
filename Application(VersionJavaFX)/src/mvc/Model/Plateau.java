@@ -175,6 +175,15 @@ public class Plateau extends Observable {
         return false;
     }
 
+    public boolean newPiece(Piece piece,int i,int j){
+        this.pieceCourante = null;
+        this.pieceCourante = new Piece(piece);
+        this.piecesPosees.add(pieceCourante);
+        setChanged();
+        notifyObservers();
+        return this.poserPiecePlateau(pieceCourante,0,0);
+    }
+
     /**
      * Prends en charge le déplacement d'une piece sur un plateau
      * @param direction Enum qui determine si on la déplace en haut, a droite, à gauche ou en bas

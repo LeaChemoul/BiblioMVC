@@ -1,4 +1,4 @@
-package mvc.Tetris.VueControleur;
+package mvc.RushHour.VueControleur;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -19,7 +19,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import mvc.Model.Direction;
-import mvc.Tetris.Modele.Partie;
+import mvc.RushHour.Modele.Partie;
 import mvc.VueControleur.GrillePiece;
 import mvc.VueControleur.GrilleVue;
 
@@ -27,15 +27,15 @@ import java.util.Observable;
 import java.util.Observer;
 
 
-public class VueControleurTetris extends Application implements Observer {
+public class VueControleurRH extends Application implements Observer {
 
     private Partie partie;
-    GrilleVue grille = new GrilleVue(10,20);
+    GrilleVue grille = new GrilleVue(6,6);
 
     @Override
     public void start(Stage primaryStage){
         //TOP
-        Text titre = new Text("--- Tetris ---");
+        Text titre = new Text("--- Rush Hour ---");
         titre.setFont(Font.font("Helvetica", FontWeight.BOLD, 20));
         titre.setFill(Color.MEDIUMPURPLE);
         grille.setAlignment(titre, Pos.CENTER);
@@ -50,26 +50,15 @@ public class VueControleurTetris extends Application implements Observer {
         startButton.setText("Commencer");
         grille.setRight(startButton);
 
-        //LEFT
-        GrillePiece grillePiecePieceSuivante = new GrillePiece(partie.getPlateau().getPiecesSuivantes().get(0).getCases(),Color.BLUE,false,25);
-        grillePiecePieceSuivante.setPadding(new Insets(30));
-
-        grille.setLeft(grillePiecePieceSuivante);
-
-
         grille.setPadding(new Insets(20));
         startButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                partie.deroulement();
+                partie.initialiser();
+                grille.getP().setPieceCourante(null);
             }
         });
-        startButton.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent e) {
-                startButton.setEffect(shadow);
-            }
-        });
+
 
 
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -91,9 +80,7 @@ public class VueControleurTetris extends Application implements Observer {
                 tab[i][j].setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent event) {
-                        //dans le tetris rien à faire
-                        //dans le blockus recupération de la case et placement d'une pièce
-                        //dans le puzzle recupération de la case et déplacement d'une pièce
+
                     }
                 });
             }
@@ -105,10 +92,8 @@ public class VueControleurTetris extends Application implements Observer {
             @Override
             public void handle(KeyEvent ke){
                 if (ke.getCode().equals(KeyCode.UP)) {
-                    //rotation
                     if(grille.getP().getPieceCourante() != null)
-                        grille.getP().tournerPieceCourante(Direction.RIGHT);
-
+                        grille.getP().versHaut(grille.getP().getPieceCourante());
                 }
                 if (ke.getCode().equals(KeyCode.LEFT)) {
                     if(grille.getP().getPieceCourante() != null)
@@ -138,9 +123,6 @@ public class VueControleurTetris extends Application implements Observer {
 
     @Override
     synchronized public void update(Observable o, Object arg) {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
                 for(int a = 0; a< grille.getP().getLargeur(); a++)
                     for(int b = 0; b< grille.getP().getHauteur(); b++){
 
@@ -148,13 +130,6 @@ public class VueControleurTetris extends Application implements Observer {
                             grille.getTab()[a][b].setFill(grille.getP().getTableauJeu()[b][a].getCouleur());
                         else
                             grille.getTab()[a][b].setFill(Color.WHITE);
-
-                        //Mise a jour de la pièce suivante affichée
-                        GrillePiece grillePiecePieceSuivante = new GrillePiece(partie.getPlateau().getPiecesSuivantes().get(0).getCases(),Color.BLUE,false,30);
-                        grillePiecePieceSuivante.setPadding(new Insets(30));
-                        grille.setLeft(grillePiecePieceSuivante);
                     }
             }
-        });
-    }
 }

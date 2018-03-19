@@ -30,15 +30,6 @@ public class Partie implements Runnable{
         }
     }
 
-    public void partieFinie(){
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Information Dialog");
-        alert.setHeaderText(null);
-        alert.setContentText("I have a great message for you!");
-
-        alert.showAndWait();
-    }
-
     public void deroulement(){
         new Thread(this).start();
     }
@@ -71,7 +62,6 @@ public class Partie implements Runnable{
                 do {
                     ligne = plateau.ligneASupprimer();
                     if (ligne != -1)
-                        //plateau.effacerLigne(ligne);
                         plateau.supprimerLigne(ligne);
                 } while (ligne != -1);
                 if (piecePosee) {
