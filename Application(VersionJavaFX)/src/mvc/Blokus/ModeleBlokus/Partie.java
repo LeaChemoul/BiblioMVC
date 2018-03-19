@@ -1,16 +1,13 @@
 package mvc.Blokus.ModeleBlokus;
 
-import com.sun.javafx.geom.Vec2d;
 import java.util.Observable;
 import javafx.scene.paint.Color;
 import mvc.Model.*;
 
-import java.util.ArrayList;
-
 public class Partie extends Observable {
 
     private PieceBuilder builder = new PieceBuilder();
-    private Plateau p;
+    private Plateau plateau;
     private Joueur[] joueurs = new Joueur[2]; //Max 4 joueurs
 
     private int numJoueurActif;
@@ -22,7 +19,7 @@ public class Partie extends Observable {
 
     public Partie(Plateau p, int nbJoueur){
 
-        this.p = p;
+        this.plateau = p;
 
         //On génère les pièces du pool
         genererPieces();
@@ -37,6 +34,7 @@ public class Partie extends Observable {
             builder.setCouleurAll( intToColor(i) );
             joueurs[i] = new Joueur(i+1, p, intToColor(i), builder.exporterArrayList());
         }
+        joueurActif = joueurs[0];
 
     }
 
@@ -55,6 +53,33 @@ public class Partie extends Observable {
 
         setChanged();
         notifyObservers(joueurActif);
+    }
+
+    public void jouerPiece(Piece piece, int i, int j) {
+
+        //On pose la pièce
+        plateau.poserPiecePlateau(piece, i, j);
+        //On la supprime de la liste des pièces du joueur
+        supprimerPiece(joueurActif, piece);
+        //Il n'y a alors plus de pièce courantes
+        plateau.setPieceCourante(null);
+
+    }
+
+    public void supprimerPiece(Joueur j, Piece piece) {
+        j.supprimerPiece(piece);
+
+        setChanged();
+        notifyObservers(piece);
+    }
+
+    public void supprimerPieceCourante() {
+        joueurActif.supprimerPiece(getPieceCourante());
+
+        setChanged();
+        notifyObservers(getPieceCourante());
+
+        setPieceCourante(null);
     }
 
     //TODO : Laisser ici ou la déplacer en static ailleurs pour etre réutilisable ?
@@ -118,8 +143,20 @@ public class Partie extends Observable {
     //Accesseurs
 
 
+    public Joueur getJoueurActif() {
+        return joueurActif;
+    }
+
+    public void setJoueurActif(Joueur joueurActif) {
+        this.joueurActif = joueurActif;
+    }
+
     public Piece getPieceCourante() {
-        return pieceCourante;
+        return plateau.getPieceCourante();
+    }
+
+    public void setPieceCourante(Piece piece) {
+        plateau.setPieceCourante(piece);
     }
 
     public Joueur getJoueur (int numJ) {
@@ -128,6 +165,6 @@ public class Partie extends Observable {
         return null;
     }
     public Plateau getPlateau() {
-        return p;
+        return plateau;
     }
 }

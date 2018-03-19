@@ -33,10 +33,12 @@ public class VueControleur extends Application implements Observer {
     private int joueurActif = 1;
     private Partie partie = new Partie(plateau, 2);
 
-    private Piece pieceEnSurvol;
+    private boolean pieceEnSurvol;
 
+    private Piece pieceCourante = null;
     private BorderPane bPane = new BorderPane();
     private GridPane grilleJeu;
+    private ListePiece tileP;
 
     private Rectangle[][] tab;
 
@@ -68,23 +70,7 @@ public class VueControleur extends Application implements Observer {
         bPane.setTop(titre);
 
         //------------ RIGHT -- Liste des pièces du joueur actif
-        TilePane tileP = new TilePane();
-
-        //On remplit une TilePane avec chaque pièce du joueur.
-        for (Piece piece: partie.getJoueur(joueurActif).getPoolDePiece()) {
-
-            //On crée une gridPane avec la pièce.
-            GridPane grillePiece = new GrillePiece( piece.getCases(), piece.getCouleur(), true,15);
-            grillePiece.setPadding(new Insets(3));
-            tileP.getChildren().add(grillePiece);
-
-            //CONTROLLEURS : Quand on clique sur une pièce, elle devient la pièce active du plateau (celle qu'on peut manipuler).
-            grillePiece.setOnMouseClicked(event -> {
-                plateau.setPieceCourante(piece);
-                    System.out.println("Piece active changée ! - " + piece.getNom());
-                plateau.getPieceCourante().afficherPiece();
-                });
-        }
+        tileP = new ListePiece(partie.getJoueurActif(), partie);
 
         //tileP.setAlignment(Pos.TOP_RIGHT);
         //bPane.setAlignment(tileP, Pos.BOTTOM_RIGHT);
@@ -114,15 +100,19 @@ public class VueControleur extends Application implements Observer {
 
                         MouseButton button = event.getButton();
                         //Si c'est un click gauche, on pose la pièce
-                        if( button==MouseButton.PRIMARY ){
-                            //System.out.println("RowIndex = " +grilleJeu.getRowIndex(rect) +" ColIndex = " + grilleJeu.getColumnIndex(rect));
-                            //plateau.getPieceCourante().afficherPiece();
-                            plateau.poserPiecePlateau(plateau.getPieceCourante(), grilleJeu.getRowIndex(rect), grilleJeu.getColumnIndex(rect));
-                        } //Si c'est un click droit, on la tourne
-                        else if(button==MouseButton.SECONDARY){
-                            plateau.getPieceCourante().rotation(Direction.RIGHT);
-                            plateau.getPieceCourante().afficherPiece();
-                            //plateau.supprimerCase(grilleJeu.getRowIndex(rect), grilleJeu.getColumnIndex(rect));
+                        if( button == MouseButton.PRIMARY ) {
+                            //On pose la pièce courante.
+                            partie.jouerPiece(plateau.getPieceCourante(), grilleJeu.getRowIndex(rect), grilleJeu.getColumnIndex(rect));
+                            effacerPieceSurvol(grilleJeu.getRowIndex(rect), grilleJeu.getColumnIndex(rect));
+                            pieceEnSurvol = false;
+                        }
+                        //Si c'est un click droit, on la tourne
+                        else if( button == MouseButton.SECONDARY ) {
+                            if ( plateau.getPieceCourante() != null ) {
+                                plateau.getPieceCourante().rotation(Direction.RIGHT);
+                                effacerPieceSurvol(grilleJeu.getRowIndex(rect), grilleJeu.getColumnIndex(rect));
+                                afficherPieceSurvol(plateau.getPieceCourante(), grilleJeu.getRowIndex(rect), grilleJeu.getColumnIndex(rect));
+                            }
                         }
 
                     }
@@ -140,7 +130,7 @@ public class VueControleur extends Application implements Observer {
 
             }
         grilleJeu.setGridLinesVisible(true);
-        grilleJeu.setPadding(new Insets(10, -120, 10, 20));
+        grilleJeu.setPadding(new Insets(10, 0, 10, 20));
 
         //bPane.setAlignment(grilleJeu, Pos.CENTER_RIGHT);
         bPane.setCenter(grilleJeu);
@@ -184,11 +174,11 @@ public class VueControleur extends Application implements Observer {
     public void effacerPieceSurvol(int row, int col) {
 
         //Si il n'y a pas de pièce à effacer on n'efface rien.
-        if ( pieceEnSurvol == null )
+        if ( !pieceEnSurvol || partie.getPieceCourante() == null )
             return;
 
-        for (int i = row-pieceEnSurvol.getHauteur(); i < row+pieceEnSurvol.getHauteur(); i++) {
-            for (int j = col-pieceEnSurvol.getLargeur(); j < col+pieceEnSurvol.getLargeur(); j++) {
+        for (int i = row-partie.getPieceCourante().getHauteur(); i < row+partie.getPieceCourante().getHauteur(); i++) {
+            for (int j = col-partie.getPieceCourante().getLargeur(); j < col+partie.getPieceCourante().getLargeur(); j++) {
 
                 //Si la case visée ne dépasse pas les limites du plateau
                 if ( inBound(i, j, plateau.getHauteur(), plateau.getLargeur()) ) {
@@ -201,7 +191,7 @@ public class VueControleur extends Application implements Observer {
                 }
             }
         }
-        pieceEnSurvol = null;
+        pieceEnSurvol = false;
 
     }
 
@@ -224,50 +214,26 @@ public class VueControleur extends Application implements Observer {
                 }
             }
         }
-        pieceEnSurvol = piece;
+        pieceEnSurvol = true;
 
     }
 
     public boolean inBound(int i, int j, int iMax, int jMax) {
         return ( i >= 0 && j >= 0 && i < iMax && j < jMax);
     }
+
     @Override
     public void update(Observable o, Object arg) {
 
-        if (o instanceof Partie) {
+        pieceCourante = plateau.getPieceCourante();
 
+        if (o instanceof Partie) {
+            if (arg instanceof Piece) {
+                tileP.supprimerPiece( (Piece)arg );
+                tileP.update();
+            }
         }
         else if (o instanceof Plateau) {
-
-            //DEBUG GRILLE
-            /*
-            System.out.print("  -");
-            for ( int j = 0; j < plateau.getLargeur(); j++ )
-                System.out.print("---");
-            System.out.println("-");
-
-            for ( int i = 0; i < plateau.getHauteur(); i++ ) {
-                System.out.print("  |");
-                for (int j = 0; j < plateau.getLargeur(); j++) {
-                    //Si la case est égale à 0, elle est vide. (Convention actuelle. A CHANGER ?)
-                    if ( plateau.getTableauJeu()[i][j] != null )
-                        System.out.print(" X|");
-                    else
-                        System.out.print("  |");
-                }
-                System.out.println("|");
-                System.out.print("  -");
-                for ( int j = 0; j < plateau.getLargeur(); j++ )
-                    System.out.print("---");
-                System.out.println("-");
-            }
-
-            //Ligne bordure au pied.
-            System.out.print("  -");
-            for ( int j = 0; j < plateau.getLargeur(); j++ )
-                System.out.print("---");
-            System.out.println("-");
-            */
 
 
             //On rafraichit la grille.
