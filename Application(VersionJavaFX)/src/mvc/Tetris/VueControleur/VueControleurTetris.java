@@ -85,21 +85,6 @@ public class VueControleurTetris extends Application implements Observer {
 
         Scene scene = new Scene(grille, Color.WHITE);
 
-        for (int i = 0; i < grille.getLargeur(); i++) {
-            for (int j = 0; j < grille.getHauteur() ; j++) {
-                Rectangle[][] tab = grille.getTab();
-                tab[i][j].setOnMouseClicked(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent event) {
-                        //dans le tetris rien à faire
-                        //dans le blockus recupération de la case et placement d'une pièce
-                        //dans le puzzle recupération de la case et déplacement d'une pièce
-                    }
-                });
-            }
-        }
-
-
         //EVENEMENTS LIES AUX TOUCHES CLAVIER
         scene.setOnKeyPressed(new EventHandler<KeyEvent>(){
             @Override
