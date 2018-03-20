@@ -97,7 +97,7 @@ public class Partie extends Observable {
     }
 
     //TODO : Laisser ici ou la déplacer en static ailleurs pour etre réutilisable ?
-    public Color intToColor(int n) {
+    public static Color intToColor(int n) {
         switch (n) {
             case 0:
                 return Color.RED;

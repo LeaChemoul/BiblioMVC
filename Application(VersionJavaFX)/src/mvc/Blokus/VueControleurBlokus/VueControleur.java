@@ -5,6 +5,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -25,10 +26,10 @@ import java.util.Observer;
 public class VueControleur extends Application implements Observer {
 
 
-    private final int NB_JOUEURS = 3;
+    private int NbJoueurs;
 
     private Plateau plateau = new Plateau(20, 20);
-    private Partie partie = new Partie(plateau, NB_JOUEURS);
+    private Partie partie = new Partie(plateau, 4);
 
     private boolean pieceEnSurvol;
 
@@ -72,8 +73,6 @@ public class VueControleur extends Application implements Observer {
 
         //------------- RIGHT -- Liste des pièces du joueur actif
 
-        
-
         //region Liste de Pièces
         //On initialise les liste de pièces de chaque joueurs
         for (int i = 0; i < 4; i++) {
@@ -82,7 +81,7 @@ public class VueControleur extends Application implements Observer {
         }
 
         //On initialise avec le premier joueur
-        bPane.setRight(listesPiecesJoueurs[0]);
+        //bPane.setRight(listesPiecesJoueurs[0]);
         //endregion
 
         //------------- LEFT -- Liste des Joueurs.
@@ -93,7 +92,7 @@ public class VueControleur extends Application implements Observer {
         //Texte Titre
         textsJoueurs[0] = new Text("Liste des Joueurs");
         textsJoueurs[0].setFont(Font.font("Helvetica", FontWeight.BOLD, 20));
-        for ( int i = 1; i < NB_JOUEURS+1; i++) {
+        for (int i = 1; i < NbJoueurs +1; i++) {
 
             textsJoueurs[i] = new Text("Joueur " + i );
             //Le nom du joueur actif ( le premier joueur ) est écrit plus gros.
@@ -110,12 +109,31 @@ public class VueControleur extends Application implements Observer {
 
         vBoxJ.setMargin(textsJoueurs[0], new Insets(60, 5, 2, 5));
         vBoxJ.getChildren().add(textsJoueurs[0]);
-        for ( int i = 1; i < NB_JOUEURS+1; i++) {
+        for (int i = 1; i < NbJoueurs +1; i++) {
             vBoxJ.setMargin(textsJoueurs[i], new Insets(5, 5, 5, 30));
             vBoxJ.getChildren().addAll(textsJoueurs[i]);
         }
 
-        bPane.setLeft(vBoxJ);
+        //bPane.setLeft(vBoxJ);
+        //endregion
+
+        //region choix nb joueurs
+        VBox vbox = new VBox();
+
+        Text textChoixJoueurs = new Text("Choississez le nombre de joueurs");
+        vbox.getChildren().add(textChoixJoueurs);
+
+        for (int i = 2; i <= 4; i++) {
+            Button choixNbJoueur = new Button(i + " Joueurs");
+            final int nb = i;
+            choixNbJoueur.setOnMouseClicked(event -> {
+                NbJoueurs = nb;
+                bPane.setRight(listesPiecesJoueurs[0]);
+                bPane.setLeft(vBoxJ);
+            });
+            vbox.getChildren().add(choixNbJoueur);
+        }
+        bPane.setLeft(vbox);
         //endregion
 
         // ------------ CENTER -- Plateau de Jeu
@@ -267,7 +285,7 @@ public class VueControleur extends Application implements Observer {
             //Si on reçoit un joueur, on mets à jour les listes des joueurs, ça veut aussi dire qu'on change de joueur.
             else if (arg instanceof JoueurBlokus) {
 
-                for (int i = 1; i < NB_JOUEURS+1; i++) {
+                for (int i = 1; i < NbJoueurs +1; i++) {
                     if ( i == partie.getNumJoueurActif() )
                         textsJoueurs[i].setFont(Font.font("Helvetica", FontWeight.BOLD, 20));
                     else
