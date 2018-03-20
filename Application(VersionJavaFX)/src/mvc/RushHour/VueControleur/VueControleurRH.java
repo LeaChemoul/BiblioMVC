@@ -1,5 +1,6 @@
 package mvc.RushHour.VueControleur;
 
+import com.sun.javafx.geom.Vec2d;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -18,11 +19,10 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import mvc.Model.Direction;
 import mvc.RushHour.Modele.Partie;
-import mvc.VueControleur.GrillePiece;
 import mvc.VueControleur.GrilleVue;
 
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -30,7 +30,7 @@ import java.util.Observer;
 public class VueControleurRH extends Application implements Observer {
 
     private Partie partie;
-    GrilleVue grille = new GrilleVue(6,6);
+    GrilleVue grille = new GrilleVue(6,6,50);
 
     @Override
     public void start(Stage primaryStage){
@@ -44,7 +44,6 @@ public class VueControleurRH extends Application implements Observer {
 
         //RIGHT
         Button startButton = new Button();
-        DropShadow shadow = new DropShadow();
         startButton.setPadding(new Insets(10));
         startButton.setStyle("-fx-font: 22 arial; -fx-base: #b6e7c9;");
         startButton.setText("Commencer");
@@ -77,10 +76,18 @@ public class VueControleurRH extends Application implements Observer {
         for (int i = 0; i < grille.getLargeur(); i++) {
             for (int j = 0; j < grille.getHauteur() ; j++) {
                 Rectangle[][] tab = grille.getTab();
+                int finalI = i;
+                int finalJ = j;
                 tab[i][j].setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent event) {
-
+                        ArrayList<Vec2d> positions = grille.getP().occurrencesPiecesPlateau( grille.getP().recupererPiece(finalJ,finalI));
+                        effacerBordures();
+                        for (int k = 0; k < positions.size(); k++) {
+                            grille.getP().recupererPiece(finalJ,finalI).setBordure(Color.BLUE);
+                            tab[(int) positions.get(k).y][(int) positions.get(k).x].setStroke(Color.BLUE);
+                        }
+                        grille.getP().setPieceCourante(grille.getP().recupererPiece(finalJ,finalI));
                     }
                 });
             }
@@ -123,13 +130,26 @@ public class VueControleurRH extends Application implements Observer {
 
     @Override
     synchronized public void update(Observable o, Object arg) {
+                effacerBordures();
                 for(int a = 0; a< grille.getP().getLargeur(); a++)
                     for(int b = 0; b< grille.getP().getHauteur(); b++){
 
-                        if(grille.getP().getTableauJeu()[b][a] != null)
+                        if(grille.getP().getTableauJeu()[b][a] != null){
                             grille.getTab()[a][b].setFill(grille.getP().getTableauJeu()[b][a].getCouleur());
-                        else
+                            grille.getTab()[a][b].setStroke(grille.getP().recupererPiece(b,a).getBordure());
+                        }
+                        else{
                             grille.getTab()[a][b].setFill(Color.WHITE);
+                            grille.getTab()[a][b].setStroke(null);
+                        }
                     }
+            }
+
+            public void effacerBordures(){
+                for (int i = 0; i < grille.getHauteur(); i++) {
+                    for (int j = 0; j < grille.getLargeur(); j++) {
+                        grille.getTab()[i][j].setStroke(null);
+                    }
+                }
             }
 }

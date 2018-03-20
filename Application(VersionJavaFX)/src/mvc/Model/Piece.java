@@ -18,6 +18,8 @@ public class Piece {
 
     private int[][] cases;
 
+    private Color bordure;
+
 
     //Nécessaire pour le RushHour, permet de savoir si la pièce peut se déplacer verticalement ( UP/DOWN ) ou horizontalement ( LEFT/RIGHT )
     private Direction sensDeplacement;
@@ -27,6 +29,7 @@ public class Piece {
         this.nom = nom;
         this.couleur = Color.BLACK; //Couleur par défaut.
         this.cases = cases;
+        this.bordure = Color.TRANSPARENT;
         calculPivotEtTaille();
     }
 
@@ -34,6 +37,7 @@ public class Piece {
         this.nom = nom;
         this.couleur = couleur;
         this.cases = cases;
+        this.bordure = Color.TRANSPARENT;
         calculPivotEtTaille();
     }
 
@@ -60,6 +64,7 @@ public class Piece {
             }
         }
         this.pivot = piece.pivot;
+        this.bordure = piece.bordure;
     }
 
 
@@ -499,5 +504,13 @@ public class Piece {
 
     public void setNom(String nom) {
         this.nom = nom;
+    }
+
+    public Color getBordure() {
+        return bordure;
+    }
+
+    public void setBordure(Color bordure) {
+        this.bordure = bordure;
     }
 }

@@ -30,7 +30,7 @@ import java.util.Observer;
 public class VueControleurTetris extends Application implements Observer {
 
     private Partie partie;
-    GrilleVue grille = new GrilleVue(10,20);
+    GrilleVue grille = new GrilleVue(10,20,30);
 
     @Override
     public void start(Stage primaryStage){

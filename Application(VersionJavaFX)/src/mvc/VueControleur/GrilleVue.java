@@ -24,7 +24,7 @@ public class GrilleVue extends BorderPane{
     private Plateau p;
     private Rectangle[][] tab;
 
-    public GrilleVue(int a, int b) {
+    public GrilleVue(int a, int b,int rectSize) {
         this.largeur = a;
         this.hauteur = b;
         
@@ -40,8 +40,8 @@ public class GrilleVue extends BorderPane{
         for(int i = 0; i< largeur; i++)
             for(int j = 0; j< hauteur; j++){
                 tab[i][j] = new Rectangle();
-                tab[i][j].setHeight(40);
-                tab[i][j].setWidth(40);
+                tab[i][j].setHeight(rectSize);
+                tab[i][j].setWidth(rectSize);
                 tab[i][j].setFill(Color.WHITE);
                 gPane.add(tab[i][j],i, j);
             }

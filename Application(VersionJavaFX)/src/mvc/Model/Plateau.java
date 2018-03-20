@@ -49,7 +49,7 @@ public class Plateau extends Observable {
      * @param j
      * @return
      */
-    public boolean poserPiecePlateau(Piece piece,int i, int j){
+    synchronized public boolean poserPiecePlateau(Piece piece,int i, int j){
     //On parcours le plateau de jeu depuis la position (i,j) et les cases de la pièce simultanement.
         //On ajoutera à positionsPlateau les positions de notre plateau à remplir par notre pièce. Evite uen boucle supplémentaire.
         ArrayList<Vec2d> positionsPlateau = new ArrayList<>(); // Les positions (x,y) du plateau où il faudra placer notre pièce
@@ -114,47 +114,6 @@ public class Plateau extends Observable {
     }
 
     /**
-     * On pose une pièce sur le plateau de jeu en commencant par son pivot.
-     * @param piece piece a poser
-     * @param i ligne du plateau
-     * @param j colonne du plateau
-     * @return
-     */
-    public boolean poserPiecePlateauPivot(Piece piece,int i,int j){
-        Vec2d pivot = piece.getPivot();
-        int a = (int) pivot.x;
-        int b = (int) pivot.y;
-        int index = this.piecesPosees.indexOf(piece);
-        ArrayList<Vec2d> positionsPlateau = new ArrayList<>(); // Les positions (x,y) du plateau où il faudra placer notre pièce
-
-        for (int k = -piece.getHauteur()+1; k < piece.getHauteur(); k++) {
-            for (int l = -piece.getLargeur()+1; l < piece.getLargeur() ; l++) {
-                if(i+k >= 0 && i+k < piece.getHauteur() && j+l >= 0 && j+l < piece.getLargeur()
-                    && (tableauJeu[i+k][j+l] == null || //Ou la case est vide et on peut poser notre pièce.
-                        (tableauJeu[i+k][j+l]!= null && tableauJeu[i+k][j+l].getIndex() == index))) //Ou c'est une occurence de notre pièce (avant d'être bougée)
-                {
-                    if (piece.getCases()[a+k][b+l] == 1){
-                        positionsPlateau.add(new Vec2d(a+k, b+l));
-                    }
-                }else{
-                    return false;
-                }
-
-            }
-        }
-
-        for (Vec2d position : positionsPlateau) { //On met à jour le plateau en y posant la pièce
-            int ii = (int) position.x;
-            int jj = (int) position.y;
-            this.tableauJeu[ii][jj] = new Case(ii,jj, piece.getCouleur(),index);
-        }
-
-        setChanged();
-        notifyObservers();
-        return true;
-    }
-
-    /**
      * On crée une nouvelle instance de pièce qu'on pose sur notre plateau de jeu.
      */
     public boolean newPiece(){
@@ -183,7 +142,7 @@ public class Plateau extends Observable {
         this.piecesPosees.add(pieceCourante);
         setChanged();
         notifyObservers();
-        return this.poserPiecePlateau(pieceCourante,0,0);
+        return this.poserPiecePlateau(pieceCourante,i,j);
     }
 
     /**
@@ -196,7 +155,7 @@ public class Plateau extends Observable {
         int iter = 1; //L'itérateur qui va compter le nombea de déplacements réalisés.
         ArrayList<Vec2d> positions = occurrencesPiecesPlateau(piece); //Toutes les occurences de notre pièce donnée sur le plateau
         Vec2d min = minimum(positions);
-        if(!positions.isEmpty()){
+        if(!positions.isEmpty() && min != null){
             if(!collision(positions, direction,this.piecesPosees.indexOf(piece))){ //Si nos positions ne génère pas de collisions
                 effacerPiecePlateau(positions); //On efface la pièce
                 //On la pose aux nouvelles coordonnées.
@@ -212,15 +171,18 @@ public class Plateau extends Observable {
     }
 
     public Vec2d minimum(ArrayList<Vec2d> arrayList){
-        int minY =(int) arrayList.get(0).y;
-        int minX =(int) arrayList.get(0).x;
-        for (int i = 0; i < arrayList.size(); i++) {
-            if((int) arrayList.get(i).y < minY)
-                minY = (int) arrayList.get(i).y;
-            if((int) arrayList.get(i).x < minX)
-                minX = (int) arrayList.get(i).x;
+        if(arrayList!= null && !arrayList.isEmpty()){
+            int minY =(int) arrayList.get(0).y;
+            int minX =(int) arrayList.get(0).x;
+            for (int i = 0; i < arrayList.size(); i++) {
+                if((int) arrayList.get(i).y < minY)
+                    minY = (int) arrayList.get(i).y;
+                if((int) arrayList.get(i).x < minX)
+                    minX = (int) arrayList.get(i).x;
+            }
+            return new Vec2d(minX,minY);
         }
-        return new Vec2d(minX,minY);
+        return null;
     }
 
     public boolean versBas(Piece piece){
@@ -244,7 +206,7 @@ public class Plateau extends Observable {
         ArrayList<Vec2d> positions = occurrencesPiecesPlateau(pieceCourante); //Toutes les occurences de notre pièce donnée sur le plateau
         Vec2d min = minimum(positions);
         effacerPiecePlateau(positions);
-        if( !this.poserPiecePlateau(pieceCourante,(int) min.x, (int) min.y) ){
+        if(pieceCourante != null && !this.poserPiecePlateau(pieceCourante,(int) min.x, (int) min.y) ){
             pieceCourante.rotation(dir.opposee());
         }
         setChanged();

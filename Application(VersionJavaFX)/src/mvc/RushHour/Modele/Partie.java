@@ -20,22 +20,24 @@ public class Partie{
 
     public void initialiser(){
         HashMap<String, Piece> pieceHashMap = generateurPieces.createPieces();
+        plateau.setPoolDePiece(pieceHashMap.values().toArray(new Piece[0]));
+
         this.plateau.newPiece(pieceHashMap.get("2RushHourV"),0,0);
         this.plateau.getPieceCourante().setNom("2RushHourV1");
 
         this.plateau.newPiece(pieceHashMap.get("2RushHourV"),2,0);
-        this.plateau.getPieceCourante().setNom("2RushHourV12");
+        this.plateau.getPieceCourante().setNom("2RushHourV2");
 
-        /*this.plateau.newPiece(pieceHashMap.get("2RushHourH"),4,0);
+        this.plateau.newPiece(pieceHashMap.get("2RushHourH"),4,0);
         this.plateau.getPieceCourante().setNom("2RushHourH1");
 
         this.plateau.newPiece(pieceHashMap.get("3RushHourH"),5,0);
         this.plateau.getPieceCourante().setNom("3RushHourH1");
 
-        this.plateau.newPiece(pieceHashMap.get("2RushHourV"),4,2);
+        this.plateau.newPiece(pieceHashMap.get("2RushHourV"),3,2);
         this.plateau.getPieceCourante().setNom("2RushHourV3");
 
-        this.plateau.newPiece(pieceHashMap.get("2RushHourH"),4,3);
+        this.plateau.newPiece(pieceHashMap.get("2RushHourH"),3,3);
         this.plateau.getPieceCourante().setNom("2RushHourH2");
 
         this.plateau.newPiece(pieceHashMap.get("3RushHourV"),3,5);
@@ -53,7 +55,7 @@ public class Partie{
         //Piece a bouger
         this.plateau.newPiece(pieceHashMap.get("2RushHourH"),2,1);
         this.plateau.getPieceCourante().setCouleur(Color.RED);
-        this.plateau.getPieceCourante().setNom("2RushHourH5");*/
+        this.plateau.getPieceCourante().setNom("2RushHourH5");
 
     }
 
