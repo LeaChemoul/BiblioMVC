@@ -109,8 +109,8 @@ public class Plateau extends Observable {
         return j+y >= 0 && i+x >= 0
                 && j+y-decalageY< this.getLargeur() && i+x-decalageX < this.getHauteur() //Si cela ne dépasses pas notre plateau de jeu
                 //On teste les collisions
-                && (tableauJeu[i+x-decalageX][j+y-decalageY] == null || //Ou la case est vide et on peut poser notre pièce.
-                (tableauJeu[i+x-decalageX][j+y-decalageY]!= null /* && tableauJeu[i+x-decalageX][j+y-decalageY].getIndex() == index*/ ));
+                && (tableauJeu[i+x-decalageX][j+y-decalageY] == null); //Ou la case est vide et on peut poser notre pièce.
+                //(tableauJeu[i+x-decalageX][j+y-decalageY]!= null /* && tableauJeu[i+x-decalageX][j+y-decalageY].getIndex() == index*/ ));
     }
 
     /**
@@ -135,10 +135,10 @@ public class Plateau extends Observable {
         return false;
     }
 
-    public boolean newPiece(Piece piece,int i,int j){
+    public boolean newPiece(Piece piece,int i,int j,boolean h){
         this.pieceCourante = null;
         //TODO : CONSTRUCTEUR A REVOIR
-        this.pieceCourante = new Piece(piece, true);
+        this.pieceCourante = new Piece(piece, true,h);
         this.piecesPosees.add(pieceCourante);
         setChanged();
         notifyObservers();

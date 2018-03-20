@@ -18,32 +18,33 @@ public class Partie{
         this.plateau = p;
     }
 
+
     public void initialiser(){
         HashMap<String, Piece> pieceHashMap = generateurPieces.createPieces();
         plateau.setPoolDePiece(pieceHashMap.values().toArray(new Piece[0]));
 
-        this.plateau.newPiece(pieceHashMap.get("2RushHourV"),0,0);
+        this.plateau.newPiece(pieceHashMap.get("2RushHourV"),0,0,false);
 
-        this.plateau.newPiece(pieceHashMap.get("2RushHourV"),2,0);
+        this.plateau.newPiece(pieceHashMap.get("2RushHourV"),2,0,false);
 
-        this.plateau.newPiece(pieceHashMap.get("2RushHourH"),4,0);
+        this.plateau.newPiece(pieceHashMap.get("2RushHourH"),4,0,true);
 
-        this.plateau.newPiece(pieceHashMap.get("3RushHourH"),5,0);
+        this.plateau.newPiece(pieceHashMap.get("3RushHourH"),5,0,true);
 
-        this.plateau.newPiece(pieceHashMap.get("2RushHourV"),3,2);
+        this.plateau.newPiece(pieceHashMap.get("2RushHourV"),3,2,false);
 
-        this.plateau.newPiece(pieceHashMap.get("2RushHourH"),3,3);
+        this.plateau.newPiece(pieceHashMap.get("2RushHourH"),3,3,true);
 
-        this.plateau.newPiece(pieceHashMap.get("3RushHourV"),3,5);
+        this.plateau.newPiece(pieceHashMap.get("3RushHourV"),3,5,false);
 
-        this.plateau.newPiece(pieceHashMap.get("2RushHourH"),0,4);
+        this.plateau.newPiece(pieceHashMap.get("2RushHourH"),0,4,true);
 
-        this.plateau.newPiece(pieceHashMap.get("2RushHourH"),1,4);
+        this.plateau.newPiece(pieceHashMap.get("2RushHourH"),1,4,true);
 
-        this.plateau.newPiece(pieceHashMap.get("3RushHourV"),0,3);
+        this.plateau.newPiece(pieceHashMap.get("3RushHourV"),0,3,false);
 
         //Piece a bouger
-        this.plateau.newPiece(pieceHashMap.get("2RushHourH"),2,1);
+        this.plateau.newPiece(pieceHashMap.get("2RushHourH"),2,1,true);
         this.plateau.getPieceCourante().setCouleur(Color.RED);
     }
 

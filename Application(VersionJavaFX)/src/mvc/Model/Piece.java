@@ -20,6 +20,8 @@ public class Piece {
 
     private Color bordure;
 
+    private boolean horizontal;
+
     public Piece(String nom, int[][] cases) {
         this.nom = nom;
         this.couleur = Color.BLACK; //Couleur par défaut.
@@ -34,6 +36,11 @@ public class Piece {
         this.cases = cases;
         this.bordure = Color.TRANSPARENT;
         calculPivotEtTaille();
+    }
+
+    public Piece(Piece piece, boolean couleurAleatoire,boolean h){
+        this(piece,couleurAleatoire);
+        this.horizontal = h;
     }
 
     /**
@@ -502,4 +509,7 @@ public class Piece {
         this.bordure = bordure;
     }
 
+    public boolean isHorizontal() {
+        return horizontal;
+    }
 }

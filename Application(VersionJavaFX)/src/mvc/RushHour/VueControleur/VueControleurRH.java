@@ -98,22 +98,22 @@ public class VueControleurRH extends Application implements Observer {
         scene.setOnKeyPressed(new EventHandler<KeyEvent>(){
             @Override
             public void handle(KeyEvent ke){
-                if (ke.getCode().equals(KeyCode.UP)) {
+                if (ke.getCode().equals(KeyCode.UP) && !grille.getP().getPieceCourante().isHorizontal()) {
                     if(grille.getP().getPieceCourante() != null)
                         grille.getP().versHaut(grille.getP().getPieceCourante());
                 }
-                if (ke.getCode().equals(KeyCode.LEFT)) {
+                if (ke.getCode().equals(KeyCode.LEFT) && grille.getP().getPieceCourante().isHorizontal()) {
                     if(grille.getP().getPieceCourante() != null)
                         grille.getP().versGauche(grille.getP().getPieceCourante());
                     //bouger à gauche la pièce courante du plateau si possible
                 }
 
-                if (ke.getCode().equals(KeyCode.RIGHT)) {
+                if (ke.getCode().equals(KeyCode.RIGHT) && grille.getP().getPieceCourante().isHorizontal()) {
                     if(grille.getP().getPieceCourante() != null)
                         grille.getP().versDroite(grille.getP().getPieceCourante());
                     //bouger à droite la pièce courante du plateau si possible
                 }
-                if (ke.getCode().equals(KeyCode.DOWN)) {
+                if (ke.getCode().equals(KeyCode.DOWN) && !grille.getP().getPieceCourante().isHorizontal()) {
                     if(grille.getP().getPieceCourante() != null)
                         grille.getP().versBas(grille.getP().getPieceCourante());
                 }
