@@ -20,7 +20,7 @@ public class PieceBuilder {
      * @param couleur Couleur de la Pièce
      * @param tabV Coordonnées des cases qui composent la pièce.
      */
-    public void addPiece (String name, Color couleur, Vec2d[] tabV ) {
+    public void addPiece (String name, Color couleur, Vec2d[] tabV ,boolean horizontal) {
 
         //ON CALCULE LA TAILLE REQUISE DE LA MATRICE
         int maxX = 0;
@@ -60,7 +60,7 @@ public class PieceBuilder {
 
         //On génère la pièce et on l'ajoute à notre liste de piece.
         //Le calcul de la taille, du pivot, et le centrage de la pièce sont pris en charge par le constructeur de la Piece.
-        Piece piece = new Piece(name, couleur, matricePiece);
+        Piece piece = new Piece(name, couleur, matricePiece,horizontal);
         piece.centrerPiece();
 
         //Si il y avait déjà une pièce avec le même nom, on l'écrase et on informe l'utilisateur..
@@ -75,8 +75,8 @@ public class PieceBuilder {
      * @param name Nom de la Pièce
      * @param tabV Coordonnées des cases qui composent la pièce.
      */
-    public void addPiece (String name, Vec2d[] tabV ) {
-        addPiece(name, Color.BLACK, tabV);
+    public void addPiece (String name, Vec2d[] tabV) {
+        addPiece(name, Color.BLACK, tabV,true);
     }
 
     /**
@@ -101,8 +101,8 @@ public class PieceBuilder {
         addPiece(name, arrayDoubleToVec2D(tabCoor));
     }
 
-    public void addPiece(String name, Color couleur, double[] tabCoor) {
-        addPiece(name, couleur, arrayDoubleToVec2D(tabCoor));
+    public void addPiece(String name, Color couleur, double[] tabCoor,boolean horizontal) {
+        addPiece(name, couleur, arrayDoubleToVec2D(tabCoor),horizontal);
     }
 
 

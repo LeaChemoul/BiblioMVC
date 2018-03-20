@@ -18,7 +18,7 @@ class PieceTest {
         listeVect[1] = new Vec2d(1,2);
         listeVect[2] = new Vec2d(3,2);
         listeVect[3] = new Vec2d(1,3);
-        pieceBuilder.addPiece("test",Color.rgb(120,150,1),new double[]{0,0, 1,0, 2,0, 2,1, 2,2});
+        pieceBuilder.addPiece("test",Color.rgb(120,150,1),new double[]{0,0, 1,0, 2,0, 2,1, 2,2},true);
         pieceBuilder.afficherPiece("test");
         pieceBuilder.getPiece("test").rotation(Direction.DOWN);
         pieceBuilder.getPiece("test").rotation(Direction.DOWN);

@@ -20,9 +20,7 @@ public class Piece {
 
     private Color bordure;
 
-
-    //Nécessaire pour le RushHour, permet de savoir si la pièce peut se déplacer verticalement ( UP/DOWN ) ou horizontalement ( LEFT/RIGHT )
-    private Direction sensDeplacement;
+    private boolean horizontal;
 
 
     public Piece(String nom, int[][] cases) {
@@ -30,14 +28,16 @@ public class Piece {
         this.couleur = Color.BLACK; //Couleur par défaut.
         this.cases = cases;
         this.bordure = Color.TRANSPARENT;
+        horizontal = true;
         calculPivotEtTaille();
     }
 
-    public Piece(String nom, Color couleur, int[][] cases) {
+    public Piece(String nom, Color couleur, int[][] cases, boolean h) {
         this.nom = nom;
         this.couleur = couleur;
         this.cases = cases;
         this.bordure = Color.TRANSPARENT;
+        this.horizontal = h;
         calculPivotEtTaille();
     }
 
@@ -51,7 +51,7 @@ public class Piece {
 
         if (couleurAleatoire) {
             Random random = new Random();
-            this.couleur = Color.rgb(random.nextInt(255),random.nextInt(255),random.nextInt(255));
+            this.couleur = Color.hsb(random.nextInt(),0.80,0.94);
         }
         else
             this.couleur = piece.couleur;
@@ -495,13 +495,6 @@ public class Piece {
         this.taille = taille;
     }
 
-    public Direction getSensDeplacement() {
-        return sensDeplacement;
-    }
-    public void setSensDeplacement(Direction sensDeplacement) {
-        this.sensDeplacement = sensDeplacement;
-    }
-
     public void setNom(String nom) {
         this.nom = nom;
     }
@@ -512,5 +505,13 @@ public class Piece {
 
     public void setBordure(Color bordure) {
         this.bordure = bordure;
+    }
+
+    public boolean isHorizontal() {
+        return horizontal;
+    }
+
+    public void setHorizontal(boolean horizontal) {
+        this.horizontal = horizontal;
     }
 }

@@ -15,16 +15,16 @@ public class TestBuilder {
 
         System.out.println("    TEST - Remplissage de la liste du Builder avec deux nouvelles pieces + Affichage toute une liste");
         Vec2d[] listeCoor = new Vec2d[] { new Vec2d(0, 1), new Vec2d(0, 2), new Vec2d(0, 3), new Vec2d(0, 0) };
-        builder.addPiece("Barre", Color.GREEN, listeCoor);
+        builder.addPiece("Barre", Color.GREEN, listeCoor,true);
 
         listeCoor = new Vec2d[] { new Vec2d(1, 1), new Vec2d(2, 0), new Vec2d(2, 1), new Vec2d(2, 2) };
-        builder.addPiece("Tetro", Color.BLUE, listeCoor);
+        builder.addPiece("Tetro", Color.BLUE, listeCoor,true);
 
         builder.afficherPieces();
 
         System.out.println("    TEST - Remplacer une piece par une autre avec le même nom : ");
         listeCoor = new Vec2d[] { new Vec2d(0, 0), new Vec2d(1, 0), new Vec2d(0, 1), new Vec2d(1, 1) };
-        builder.addPiece("Barre", Color.RED, listeCoor);
+        builder.addPiece("Barre", Color.RED, listeCoor,true);
 
         System.out.println("    TEST - Afficher une seule piece de la liste : ");
         builder.afficherPiece("Barre");
@@ -37,7 +37,7 @@ public class TestBuilder {
 
         System.out.println("    TEST - Ajout nouvelle Piece + Affichage Liste : ");
         listeCoor = new Vec2d[] { new Vec2d(0, 1), new Vec2d(1, 0), new Vec2d(1, 1), new Vec2d(2, 0) };
-        builder.addPiece("Zigzag1", Color.RED, listeCoor);
+        builder.addPiece("Zigzag1", Color.RED, listeCoor,true);
         builder.afficherPieces();
 
         System.out.println("    TEST - Vider Liste + Vérification : ");
@@ -49,9 +49,9 @@ public class TestBuilder {
 
 
         listeCoor = new Vec2d[] { new Vec2d(0, 1), new Vec2d(1, 0), new Vec2d(1, 1), new Vec2d(2, 0) };
-        builder.addPiece("Zigzag1", Color.RED, listeCoor);
+        builder.addPiece("Zigzag1", Color.RED, listeCoor,true);
         listeCoor = new Vec2d[] { new Vec2d(0, 0), new Vec2d(1, 0), new Vec2d(2, 0), new Vec2d(3, 0) };
-        builder.addPiece("Barre",  Color.RED, listeCoor);
+        builder.addPiece("Barre",  Color.RED, listeCoor,true);
 
         System.out.println("    TEST - Exporter liste (Fonctionne si aucun message d'erreur) ");
         Piece[] listeDesPieces = builder.exporterArray();
@@ -91,7 +91,7 @@ public class TestBuilder {
 
         System.out.println("    TEST - Translations ");
         listeCoor = new Vec2d[] { new Vec2d(1, 1), new Vec2d(1, 2), new Vec2d(2, 1), new Vec2d(2, 2) };
-        builder.addPiece("Cube", Color.RED, listeCoor);
+        builder.addPiece("Cube", Color.RED, listeCoor,true);
         builder.afficherPiece("Cube");
         System.out.println("    TEST - Translations UP");
         builder.getPiece("Cube").translater(Direction.UP);
