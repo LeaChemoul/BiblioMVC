@@ -38,9 +38,10 @@ public class Piece {
         calculPivotEtTaille();
     }
 
-    public Piece(Piece piece, boolean couleurAleatoire,boolean h){
+    public Piece(Piece piece, boolean couleurAleatoire,boolean h,Color couleur){
         this(piece,couleurAleatoire);
         this.horizontal = h;
+        this.couleur = couleur;
     }
 
     /**

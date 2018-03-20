@@ -135,10 +135,10 @@ public class Plateau extends Observable {
         return false;
     }
 
-    public boolean newPiece(Piece piece,int i,int j,boolean h){
+    public boolean newPiece(Piece piece,int i,int j,boolean h, Color couleur){
         this.pieceCourante = null;
         //TODO : CONSTRUCTEUR A REVOIR
-        this.pieceCourante = new Piece(piece, true,h);
+        this.pieceCourante = new Piece(piece, false,h, couleur);
         this.piecesPosees.add(pieceCourante);
         setChanged();
         notifyObservers();

@@ -8,10 +8,13 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
@@ -47,7 +50,15 @@ public class VueControleurRH extends Application implements Observer {
         startButton.setPadding(new Insets(10));
         startButton.setStyle("-fx-font: 22 arial; -fx-base: #b6e7c9;");
         startButton.setText("Commencer");
-        grille.setRight(startButton);
+
+        Label sortieText = new Label("<== Sortie");
+        sortieText.setStyle("-fx-font: 22 arial; -fx-base: #b6e7c9;");
+        sortieText.setPadding(new Insets(65,10,0,0));
+
+        GridPane rightPane = new GridPane();
+        rightPane.add(startButton,0,0);
+        rightPane.add(sortieText,0,2);
+        grille.setRight(rightPane);
 
         grille.setPadding(new Insets(20));
         startButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
