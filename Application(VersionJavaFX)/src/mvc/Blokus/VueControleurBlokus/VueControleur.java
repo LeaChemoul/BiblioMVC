@@ -61,14 +61,20 @@ public class VueControleur extends Application implements Observer {
 
 
         // ------------ TOP -- Un Titre
+
+        //region titre
         Text titre = new Text("--- BLOKUS ---");
         titre.setFont(Font.font("Helvetica", FontWeight.BOLD, 20));
         titre.setFill(Color.MEDIUMPURPLE);
         bPane.setAlignment(titre, Pos.CENTER);
         bPane.setTop(titre);
+        //endregion
 
-        //------------ RIGHT -- Liste des pièces du joueur actif
+        //------------- RIGHT -- Liste des pièces du joueur actif
 
+        
+
+        //region Liste de Pièces
         //On initialise les liste de pièces de chaque joueurs
         for (int i = 0; i < 4; i++) {
             listesPiecesJoueurs[i] = new ListePiece( partie.getJoueur(i), partie);
@@ -77,18 +83,25 @@ public class VueControleur extends Application implements Observer {
 
         //On initialise avec le premier joueur
         bPane.setRight(listesPiecesJoueurs[0]);
+        //endregion
 
-        //LEFT -- Liste des Joueurs.
+        //------------- LEFT -- Liste des Joueurs.
 
         //region Liste Joueurs
+
         //On utilise un tableau de joueur pour interagir plus facilement en fct du joueur actif.
         //Texte Titre
         textsJoueurs[0] = new Text("Liste des Joueurs");
         textsJoueurs[0].setFont(Font.font("Helvetica", FontWeight.BOLD, 20));
-        //Texte nom des joueurs
         for ( int i = 1; i < NB_JOUEURS+1; i++) {
-            textsJoueurs[i] = new Text("Joueur "+i);
-            textsJoueurs[i].setFont(Font.font("Helvetica", FontWeight.BOLD,15));
+
+            textsJoueurs[i] = new Text("Joueur " + i );
+            //Le nom du joueur actif ( le premier joueur ) est écrit plus gros.
+            if ( i == 1 )
+                textsJoueurs[i].setFont(Font.font("Helvetica", FontWeight.BOLD,20));
+            else
+                textsJoueurs[i].setFont(Font.font("Helvetica", FontWeight.BOLD, 15));
+
             textsJoueurs[i].setFill( partie.intToColor(i-1) );
         }
 
@@ -105,7 +118,9 @@ public class VueControleur extends Application implements Observer {
         bPane.setLeft(vBoxJ);
         //endregion
 
-        // ------------- CENTER -- Plateau de Jeu
+        // ------------ CENTER -- Plateau de Jeu
+
+        //region Plateau Jeu
         grilleJeu = new GridPane();
         tab = new Rectangle[plateau.getHauteur()][plateau.getLargeur()];
         for(int i = 0; i < plateau.getHauteur(); i++)
@@ -116,7 +131,7 @@ public class VueControleur extends Application implements Observer {
                 rect.setFill(Color.WHITE);
                 tab[i][j] = rect;
                 grilleJeu.add(tab[i][j], j, i);
-                //CONTROLEURS
+                //CONTROLLEURS
                 // Lors d'un click de souris sur une case du plateau
                 rect.setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
@@ -160,12 +175,13 @@ public class VueControleur extends Application implements Observer {
         grilleJeu.setGridLinesVisible(true);
         grilleJeu.setPadding(new Insets(10, 0, 10, 20));
 
-        //bPane.setAlignment(grilleJeu, Pos.CENTER_RIGHT);
+
         bPane.setCenter(grilleJeu);
+        //endregion
+
 
 
         //SCENE
-
 
         Scene scene = new Scene(bPane);
         scene.setOnScroll(
@@ -250,6 +266,14 @@ public class VueControleur extends Application implements Observer {
             }
             //Si on reçoit un joueur, on mets à jour les listes des joueurs, ça veut aussi dire qu'on change de joueur.
             else if (arg instanceof JoueurBlokus) {
+
+                for (int i = 1; i < NB_JOUEURS+1; i++) {
+                    if ( i == partie.getNumJoueurActif() )
+                        textsJoueurs[i].setFont(Font.font("Helvetica", FontWeight.BOLD, 20));
+                    else
+                        textsJoueurs[i].setFont(Font.font("Helvetica", FontWeight.BOLD, 15));
+                }
+
                 //On met à jour/change la liste de pièce affiché pour celle du nouveau joueur actif
                 bPane.setRight(listesPiecesJoueurs[partie.getJoueurActif().getNumJoueur()-1]);
                 //On change les couleur de la liste des joueurs.

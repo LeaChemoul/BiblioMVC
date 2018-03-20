@@ -39,7 +39,6 @@ public class JoueurBlokus extends Joueur {
                 coinDepartX = plateau.getHauteur() - 1;
                 coinDepartY = 0;
                 break;
-
         }
     }
 }

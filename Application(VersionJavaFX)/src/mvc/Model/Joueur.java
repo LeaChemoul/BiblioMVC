@@ -60,7 +60,9 @@ public class Joueur {
     }
 
 
-
+    public boolean poolIsEmpty() {
+        return PoolDePiece.isEmpty();
+    }
     //Accesseurs
 
     public ArrayList<Piece> getPoolDePiece() {

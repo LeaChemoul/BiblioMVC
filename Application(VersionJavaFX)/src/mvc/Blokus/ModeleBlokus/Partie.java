@@ -112,6 +112,10 @@ public class Partie extends Observable {
         }
     }
 
+    public boolean aGagne(Joueur joueur) {
+        return joueur.poolIsEmpty();
+    }
+
     /**
      * Génération du pool de pièces des joueurs, propre au blokus, en utilisant le PieceBuilder.
      * @return La liste de Piece de toutes les pieces utilisées pour une partie de Blokus.
