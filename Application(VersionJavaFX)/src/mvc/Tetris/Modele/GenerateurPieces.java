@@ -13,6 +13,10 @@ public class GenerateurPieces {
     public GenerateurPieces() {
     }
 
+    /**
+     * Création des pièces propres au Tetris
+     * @return La liste des pièces sous forme de HashMap
+     */
     public HashMap<String, Piece> createPieces(){
 
         pieceBuilder.addPiece("OTetris", null,new double[]{1,1, 1,2, 2,1, 2,2});

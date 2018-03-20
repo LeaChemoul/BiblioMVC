@@ -22,29 +22,20 @@ public class Partie{
         this.plateau = p;
     }
 
-
     public void initialiser(){
         HashMap<String, Piece> pieceHashMap = generateurPieces.createPieces();
         plateau.setPoolDePiece(pieceHashMap.values().toArray(new Piece[0]));
 
+        //Création d'une configuration particulière
         this.plateau.newPiece(pieceHashMap.get("2RushHourV"),0,0,false,genererCouleur());
-
         this.plateau.newPiece(pieceHashMap.get("2RushHourV"),2,0,false,genererCouleur());
-
         this.plateau.newPiece(pieceHashMap.get("2RushHourH"),4,0,true,genererCouleur());
-
         this.plateau.newPiece(pieceHashMap.get("3RushHourH"),5,0,true,genererCouleur());
-
         this.plateau.newPiece(pieceHashMap.get("2RushHourV"),3,2,false,genererCouleur());
-
         this.plateau.newPiece(pieceHashMap.get("2RushHourH"),3,3,true,genererCouleur());
-
         this.plateau.newPiece(pieceHashMap.get("3RushHourV"),3,5,false,genererCouleur());
-
         this.plateau.newPiece(pieceHashMap.get("2RushHourH"),0,4,true,genererCouleur());
-
         this.plateau.newPiece(pieceHashMap.get("2RushHourH"),1,4,true,genererCouleur());
-
         this.plateau.newPiece(pieceHashMap.get("3RushHourV"),0,3,false,genererCouleur());
 
         //Piece a bouger
@@ -55,11 +46,15 @@ public class Partie{
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Information Dialog");
         alert.setHeaderText(null);
-        alert.setContentText("I have a great message for you!");
+        alert.setContentText("BRAVO !");
 
         alert.showAndWait();
     }
 
+    /**
+     * Les couleurs des pièces du RUSH HOUR seront générées par cette fonction.
+     * @return Couleure aléatoire parmi un groupe prédéfini.
+     */
     public Color genererCouleur(){
         ArrayList<Color> colorArrayList = new ArrayList<>();
         colorArrayList.add(Color.rgb(255,116,0));

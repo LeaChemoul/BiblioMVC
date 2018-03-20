@@ -150,7 +150,7 @@ public class Plateau extends Observable {
      * @param direction Enum qui determine si on la déplace en haut, a droite, à gauche ou en bas
      * @param piece Piece à déplacer
      */
-    public boolean deplacer(Direction direction, Piece piece){
+    private boolean deplacer(Direction direction, Piece piece){
         //tester si la place est occupée avant de bouger
         int iter = 1; //L'itérateur qui va compter le nombea de déplacements réalisés.
         ArrayList<Vec2d> positions = occurrencesPiecesPlateau(piece); //Toutes les occurences de notre pièce donnée sur le plateau
@@ -170,15 +170,15 @@ public class Plateau extends Observable {
         return true;
     }
 
-    public Vec2d minimum(ArrayList<Vec2d> arrayList){
+    private Vec2d minimum(ArrayList<Vec2d> arrayList){
         if(arrayList!= null && !arrayList.isEmpty()){
             int minY =(int) arrayList.get(0).y;
             int minX =(int) arrayList.get(0).x;
-            for (int i = 0; i < arrayList.size(); i++) {
-                if((int) arrayList.get(i).y < minY)
-                    minY = (int) arrayList.get(i).y;
-                if((int) arrayList.get(i).x < minX)
-                    minX = (int) arrayList.get(i).x;
+            for (Vec2d anArrayList : arrayList) {
+                if ((int) anArrayList.y < minY)
+                    minY = (int) anArrayList.y;
+                if ((int) anArrayList.x < minX)
+                    minX = (int) anArrayList.x;
             }
             return new Vec2d(minX,minY);
         }

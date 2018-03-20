@@ -47,7 +47,7 @@ public class Partie implements Runnable{
                     Thread.sleep(400);
                     boolean aEuLieu = plateau.versBas(plateau.getPieceCourante());
                     if (!aEuLieu)
-                        nbrRepetitions = 0;
+                        nbrRepetitions = 0; //Si la descente n'a pas eu lieu s'est qu'elle était impossible
                     else
                         nbrRepetitions--;
 
@@ -57,13 +57,17 @@ public class Partie implements Runnable{
             } else {
 
                 boolean piecePosee = plateau.newPiece();
-                this.pieceSuivante();
+                this.pieceSuivante(); //Création de la pièce suivante
+
+                //Suppresion des lignes
                 int ligne = 0;
                 do {
                     ligne = plateau.ligneASupprimer();
                     if (ligne != -1)
                         plateau.supprimerLigne(ligne);
                 } while (ligne != -1);
+
+                //Test de fin de partie
                 if (piecePosee) {
                     nbrRepetitions = this.plateau.getHauteur();
                 }else{

@@ -37,15 +37,16 @@ public class VueControleurRH extends Application implements Observer {
 
     @Override
     public void start(Stage primaryStage){
-        //TOP
-        Text titre = new Text("--- Rush Hour ---");
+        //TOP : Titre
+        Text titre = new Text("-- Rush Hour --");
         titre.setFont(Font.font("Helvetica", FontWeight.BOLD, 20));
         titre.setFill(Color.MEDIUMPURPLE);
         grille.setAlignment(titre, Pos.CENTER);
         grille.setTop(titre);
         partie = new Partie(grille.getP());
 
-        //RIGHT
+        //---------------------------------------------------------------------
+        //RIGHT : Bouton de départ
         Button startButton = new Button();
         startButton.setPadding(new Insets(10));
         startButton.setStyle("-fx-font: 22 arial; -fx-base: #b6e7c9;");
@@ -59,8 +60,12 @@ public class VueControleurRH extends Application implements Observer {
         rightPane.add(startButton,0,0);
         rightPane.add(sortieText,0,2);
         grille.setRight(rightPane);
-
         grille.setPadding(new Insets(20));
+
+        //---------------------------------------------------------------------
+        //EVENEMENTS
+
+        //Bouton commencer
         startButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -69,8 +74,7 @@ public class VueControleurRH extends Application implements Observer {
             }
         });
 
-
-
+        //A la fermeture de la fenêtre
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent t) {
@@ -79,33 +83,24 @@ public class VueControleurRH extends Application implements Observer {
             }
         });
 
-        // la vue observe les "update" du modèle, et réalise les mises à jour graphiques
+        //La vue observe les "update" du modèle, et réalise les mises à jour graphiques
         partie.getPlateau().addObserver(this);
 
         Scene scene = new Scene(grille, Color.WHITE);
 
-        for (int i = 0; i < grille.getLargeur(); i++) {
-            for (int j = 0; j < grille.getHauteur() ; j++) {
-                Rectangle[][] tab = grille.getTab();
-                int finalI = i;
-                int finalJ = j;
-                tab[i][j].setOnMouseClicked(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent event) {
-                        ArrayList<Vec2d> positions = grille.getP().occurrencesPiecesPlateau( grille.getP().recupererPiece(finalJ,finalI));
-                        effacerBordures();
-                        for (int k = 0; k < positions.size(); k++) {
-                            grille.getP().recupererPiece(finalJ,finalI).setBordure(Color.BLUE);
-                            tab[(int) positions.get(k).y][(int) positions.get(k).x].setStroke(Color.BLUE);
-                        }
-                        grille.getP().setPieceCourante(grille.getP().recupererPiece(finalJ,finalI));
-                    }
-                });
-            }
-        }
+        //Evenements liés au clqiue sur les cases
+        initialiserCases();
 
 
         //EVENEMENTS LIES AUX TOUCHES CLAVIER
+        initialiserEvenementsClavier(scene);
+
+        primaryStage.setTitle("Jeu Plateau");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    private void initialiserEvenementsClavier(Scene scene) {
         scene.setOnKeyPressed(new EventHandler<KeyEvent>(){
             @Override
             public void handle(KeyEvent ke){
@@ -130,22 +125,46 @@ public class VueControleurRH extends Application implements Observer {
                 }
             }
         });
-
-        primaryStage.setTitle("Jeu Plateau");
-        primaryStage.setScene(scene);
-        primaryStage.show();
     }
 
-    public static void main(String[] args) {
-        launch(args);
+    /**
+     * Création de l'evenement en réponse au clqiue sur une case
+     */
+    private void initialiserCases() {
+        for (int i = 0; i < grille.getLargeur(); i++) {
+            for (int j = 0; j < grille.getHauteur() ; j++) {
+                Rectangle[][] tab = grille.getTab();
+                int finalI = i;
+                int finalJ = j;
+                tab[i][j].setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        ArrayList<Vec2d> positions = grille.getP().occurrencesPiecesPlateau( grille.getP().recupererPiece(finalJ,finalI));
+                        effacerBordures();
+                        for (Vec2d position : positions) {
+                            grille.getP().recupererPiece(finalJ, finalI).setBordure(Color.BLUE);
+                            tab[(int) position.y][(int) position.x].setStroke(Color.BLUE);
+                        }
+                        grille.getP().setPieceCourante(grille.getP().recupererPiece(finalJ,finalI));
+                    }
+                });
+            }
+        }
     }
 
+    /**
+     * Fonction appellée après le notify observer.
+     * Met à jour la vue.
+     * @param o L'element observable, ici notre plateau de jeu
+     * @param arg
+     */
     @Override
     synchronized public void update(Observable o, Object arg) {
                 effacerBordures();
                 for(int a = 0; a< grille.getP().getLargeur(); a++)
                     for(int b = 0; b< grille.getP().getHauteur(); b++){
 
+                        //On met à jour les couleurs des cases du plateau (decrivant les pièces presentes)
                         if(grille.getP().getTableauJeu()[b][a] != null){
                             grille.getTab()[a][b].setFill(grille.getP().getTableauJeu()[b][a].getCouleur());
                             grille.getTab()[a][b].setStroke(grille.getP().recupererPiece(b,a).getBordure());
@@ -157,13 +176,21 @@ public class VueControleurRH extends Application implements Observer {
                     }
             }
 
-            public void effacerBordures(){
-                for (int i = 0; i < grille.getHauteur(); i++) {
-                    for (int j = 0; j < grille.getLargeur(); j++) {
-                        grille.getTab()[i][j].setStroke(null);
-                        if(grille.getP().recupererPiece(i,j) != null && grille.getP().recupererPiece(i,j)!=grille.getP().getPieceCourante())
-                            grille.getP().recupererPiece(i,j).setBordure(Color.TRANSPARENT);
-                    }
-                }
+    /**
+     * Efface les bordures des pièces qui ne sont pas al pière courante selectionnée par le joueur.
+     */
+    private void effacerBordures(){
+        for (int i = 0; i < grille.getHauteur(); i++) {
+            for (int j = 0; j < grille.getLargeur(); j++) {
+                grille.getTab()[i][j].setStroke(null);
+                if(grille.getP().recupererPiece(i,j) != null && grille.getP().recupererPiece(i,j)!=grille.getP().getPieceCourante())
+                    grille.getP().recupererPiece(i,j).setBordure(Color.TRANSPARENT);
             }
+        }
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+
 }
