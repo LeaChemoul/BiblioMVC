@@ -38,9 +38,12 @@ public class ListeJoueur extends VBox {
         setMargin(textsJoueurs[0], new Insets(60, 5, 2, 5));
         getChildren().add(textsJoueurs[0]);
         for (int i = 1; i < nbJoueurs +1; i++) {
-            setMargin(textsJoueurs[i], new Insets(5, 5, 5, 30));
+            setMargin(textsJoueurs[i], new Insets(5, 5, 5, 40));
             getChildren().addAll(textsJoueurs[i]);
         }
+
+        setMinWidth(200);
+        //setPrefWidth(200);
     }
 
     public void update(int numJoueurActif) {

@@ -37,6 +37,7 @@ public class VueControleur extends Application implements Observer {
     private GridPane grilleJeu;
 
     private ListePiece[] listesPiecesJoueurs = new ListePiece[5];
+    private ListeJoueur listeJoueurs;
     private Text[] textsJoueurs = new Text[4];
 
     private Rectangle[][] tab;
@@ -74,65 +75,51 @@ public class VueControleur extends Application implements Observer {
         //------------- RIGHT -- Liste des pièces du joueur actif
 
         //region Liste de Pièces
+
         //On initialise les liste de pièces de chaque joueurs
         for (int i = 0; i < 4; i++) {
             listesPiecesJoueurs[i] = new ListePiece( partie.getJoueur(i), partie);
-            bPane.setMargin(listesPiecesJoueurs[i], new Insets(20, 20, 0, 0));
+            bPane.setMargin(listesPiecesJoueurs[i], new Insets(20));
+            listesPiecesJoueurs[i].setAlignment(Pos.TOP_LEFT);
         }
+        //On l'ajoute pas encore à la bPane, on attend le choix du nombre de joueur,
+        //donc on l'ajoutera via un controlleur.
 
-        //On initialise avec le premier joueur
-        //bPane.setRight(listesPiecesJoueurs[0]);
         //endregion
 
         //------------- LEFT -- Liste des Joueurs.
 
         //region Liste Joueurs
 
-        //On utilise un tableau de joueur pour interagir plus facilement en fct du joueur actif.
-        //Texte Titre
-        textsJoueurs[0] = new Text("Liste des Joueurs");
-        textsJoueurs[0].setFont(Font.font("Helvetica", FontWeight.BOLD, 20));
-        for (int i = 1; i < NbJoueurs +1; i++) {
-
-            textsJoueurs[i] = new Text("Joueur " + i );
-            //Le nom du joueur actif ( le premier joueur ) est écrit plus gros.
-            if ( i == 1 )
-                textsJoueurs[i].setFont(Font.font("Helvetica", FontWeight.BOLD,20));
-            else
-                textsJoueurs[i].setFont(Font.font("Helvetica", FontWeight.BOLD, 15));
-
-            textsJoueurs[i].setFill( partie.intToColor(i-1) );
-        }
-
-        VBox vBoxJ = new VBox(5);
-        vBoxJ.setPadding(new Insets(10));
-
-        vBoxJ.setMargin(textsJoueurs[0], new Insets(60, 5, 2, 5));
-        vBoxJ.getChildren().add(textsJoueurs[0]);
-        for (int i = 1; i < NbJoueurs +1; i++) {
-            vBoxJ.setMargin(textsJoueurs[i], new Insets(5, 5, 5, 30));
-            vBoxJ.getChildren().addAll(textsJoueurs[i]);
-        }
-
-        //bPane.setLeft(vBoxJ);
-        //endregion
-
         //region choix nb joueurs
         VBox vbox = new VBox();
 
-        Text textChoixJoueurs = new Text("Choississez le nombre de joueurs");
-        vbox.getChildren().add(textChoixJoueurs);
+        Text textChoix = new Text("   Choississez un\nnombre de joueurs :");
+        textChoix.setFont(Font.font("Helvetica", FontWeight.BOLD, 16));
+        vbox.setPadding(new Insets(60, 0, 10, 25));
+        vbox.getChildren().add(textChoix);
 
         for (int i = 2; i <= 4; i++) {
-            Button choixNbJoueur = new Button(i + " Joueurs");
+
+            Button btChoix = new Button(i + " Joueurs");
             final int nb = i;
-            choixNbJoueur.setOnMouseClicked(event -> {
+            //Lorsqu'on click sur un bouton, on redéfini le nb de joueurs de partie,
+            //et on affiche la liste des joueurs en fct de celui-ci + la liste de pièce du premier joueur.
+            btChoix.setOnMouseClicked(event -> {
                 NbJoueurs = nb;
+                partie.setNbJoueurs(nb);
+                listeJoueurs = new ListeJoueur(nb);
+                bPane.setLeft(listeJoueurs);
                 bPane.setRight(listesPiecesJoueurs[0]);
-                bPane.setLeft(vBoxJ);
             });
-            vbox.getChildren().add(choixNbJoueur);
+            btChoix.setPadding(new Insets(10));
+            vbox.setMargin(btChoix, new Insets(10, 5, 5, 40));
+            vbox.getChildren().add(btChoix);
         }
+
+        //Pour éviter d'avoir un changement de taille de la région lorsqu'on la changera avec la liste de joueurs.
+        vbox.setMinWidth(200);
+
         bPane.setLeft(vbox);
         //endregion
 
@@ -193,15 +180,16 @@ public class VueControleur extends Application implements Observer {
         grilleJeu.setGridLinesVisible(true);
         grilleJeu.setPadding(new Insets(10, 0, 10, 20));
 
-
         bPane.setCenter(grilleJeu);
+
         //endregion
 
-
+        //Résout le problème de gap entre le plateau de jeu et les listes de pièces.
+        bPane.setMinSize(1100, 700);
 
         //SCENE
 
-        Scene scene = new Scene(bPane);
+        Scene scene = new Scene(bPane, 1100, 700);
         scene.setOnScroll(
                 event -> plateau.getPieceCourante().rotation(Direction.RIGHT));
 
@@ -218,15 +206,16 @@ public class VueControleur extends Application implements Observer {
     public void effacerPieceSurvol(int row, int col) {
 
         //Si il n'y a pas de pièce à effacer on n'efface rien.
-        if ( !pieceEnSurvol || partie.getPieceCourante() == null )
+        if ( partie.getPieceCourante() == null )
             return;
 
-        for (int i = row/*-partie.getPieceCourante().getHauteur()*/; i < row+partie.getPieceCourante().getHauteur(); i++) {
-            for (int j = col/*-partie.getPieceCourante().getLargeur()*/; j < col+partie.getPieceCourante().getLargeur(); j++) {
+        //On agit seulement sur les cases qui font la taille de la pièce, pour éviter trop de traitement mémoire.
+        for (int i = row; i < row+partie.getPieceCourante().getHauteur(); i++) {
+            for (int j = col; j < col+partie.getPieceCourante().getLargeur(); j++) {
 
                 //Si la case visée ne dépasse pas les limites du plateau
-                if ( inBound(i, j, plateau.getHauteur(), plateau.getLargeur()) ) {
-
+                if ( inBound(i, j, plateau.getHauteur(), plateau.getLargeur()) )
+                {
                     //On rétablit les couleurs d'origines du plateau.
                     if (plateau.getTableauJeu()[i][j] != null)
                         tab[i][j].setFill(plateau.getTableauJeu()[i][j].getCouleur());
@@ -285,15 +274,11 @@ public class VueControleur extends Application implements Observer {
             //Si on reçoit un joueur, on mets à jour les listes des joueurs, ça veut aussi dire qu'on change de joueur.
             else if (arg instanceof JoueurBlokus) {
 
-                for (int i = 1; i < NbJoueurs +1; i++) {
-                    if ( i == partie.getNumJoueurActif() )
-                        textsJoueurs[i].setFont(Font.font("Helvetica", FontWeight.BOLD, 20));
-                    else
-                        textsJoueurs[i].setFont(Font.font("Helvetica", FontWeight.BOLD, 15));
-                }
+                listeJoueurs.update( partie.getNumJoueurActif() );
 
                 //On met à jour/change la liste de pièce affiché pour celle du nouveau joueur actif
                 bPane.setRight(listesPiecesJoueurs[partie.getJoueurActif().getNumJoueur()-1]);
+
                 //On change les couleur de la liste des joueurs.
             }
         }

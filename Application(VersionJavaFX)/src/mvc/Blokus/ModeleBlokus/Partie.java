@@ -161,6 +161,10 @@ public class Partie extends Observable {
     //Accesseurs
 
 
+    public void setNbJoueurs(int nbJoueurs) {
+        this.nbJoueurs = nbJoueurs;
+    }
+
     public JoueurBlokus getJoueurActif() {
         return joueurActif;
     }
