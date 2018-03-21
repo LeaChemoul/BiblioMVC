@@ -152,9 +152,9 @@ public class VueControleur extends Application implements Observer {
                         //Si c'est un click gauche, on pose la pièce
                         if( button == MouseButton.PRIMARY ) {
                             //On pose la pièce courante.
-                            partie.jouerPiece(plateau.getPieceCourante(), grilleJeu.getRowIndex(rect), grilleJeu.getColumnIndex(rect));
-                            effacerPieceSurvol(grilleJeu.getRowIndex(rect), grilleJeu.getColumnIndex(rect));
-                            partie.joueurSuivant();
+                            if ( partie.jouerPiece(plateau.getPieceCourante(), grilleJeu.getRowIndex(rect), grilleJeu.getColumnIndex(rect)) ) {
+                                effacerPieceSurvol(grilleJeu.getRowIndex(rect), grilleJeu.getColumnIndex(rect));
+                            }
                         }
                         //Si c'est un click droit, on la tourne
                         else if( button == MouseButton.SECONDARY ) {

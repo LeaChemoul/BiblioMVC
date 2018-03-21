@@ -63,22 +63,31 @@ public class Partie extends Observable {
      */
     public boolean jouerPiece(Piece piece, int i, int j) {
 
+        boolean peutJouer = false;
 
-        if ( peutPoserPiece(joueurActif, piece, i, j) ) {
+        //Si c'est le premier coup du joueur
+        if ( joueurActif.isPremierCoup() && toucheCoinJoueur(joueurActif, piece, i, j) ) {
+            joueurActif.setPremierCoup(false);
+            peutJouer = true;
+        }
+        else if ( !joueurActif.isPremierCoup() && peutPoserPiece(joueurActif, piece, i, j) ){
+            peutJouer = true;
+        }
+        else {
+            System.out.println("Vous ne pouvez pas jouer ce coup !");
+        }
+
+        if ( peutJouer ) {
             //On pose la pièce
             plateau.poserPiecePlateau(piece, i, j);
             //On la supprime de la liste des pièces du joueur
             supprimerPiece(joueurActif, piece);
             //Il n'y a alors plus de pièce courantes
             plateau.setPieceCourante(null);
-
-            return true;
+            joueurSuivant();
         }
-        else {
-            System.out.println("Vous ne pouvez pas poser cette pièce ici !");
 
-            return false;
-        }
+        return peutJouer;
 
     }
 
@@ -89,41 +98,48 @@ public class Partie extends Observable {
         // - La pièce ne peut pas toucher directement une autre pièce du même joueur.
         // - La pièce doit toucher en "diagonale" au moins une autre pièce du même joueur.
 
-        //On crée un masque de collision pour la zone du plateau, un int[][] de la meme taille que la matrice de la pièce,
-        // On la superposera à la matrice de la pièce pour savoir si on peut poser la pièce ici, et on comparera les cases de la pièce
-        // à la valeur de la case du masque correspondante, tel que :
-        // 0 = Aucune restriction
-        // 1 = Cases qui doivent être vide côté pièce ( Cases correspondant à la pièce ou ses cases voisines directes )
-        // 2 = Cases où au moins une doit être touché par la pièce.
-
-        int[][] masque = new int[piece.getHauteur()][piece.getLargeur()];
-        int[][] matPiece = piece.getCases();
-        boolean collision = false;
+        int[][] matPiece = piece.croppedPiece();
+        int hauteur = matPiece.length;
+        int largeur = matPiece[0].length;
         boolean estDiago = false;
+        int num_lig, num_col;
 
-        for (int i = 0; i < piece.getHauteur(); i++) {
-            for (int j = 0; j < piece.getLargeur(); j++) {
+        for (int i = 0; i < hauteur; i++) {
+            for (int j = 0; j < largeur; j++) {
 
-                //Si un des bouts de la pièce est hors plateau, on ne peut pas poser la pièce.
-                if ( isHorsPlateau( i + i_row, j + j_col ) && piece.getCases()[i][j] != 0)
-                    return false;
+                num_lig = i + i_row;
+                num_col = j + j_col;
 
-                //Si la case est adjacente à une autre
-                if ( isAdjacentePieceAllie( joueur.getCouleur(), i + i_row, j + j_col) )
-                    //On regarde si notre case la touche
-                    if ( matPiece[i][j] != 0 )
+                //Si un des bouts de la pièce
+                if (matPiece[i][j] != 0) {
+                    //est hors plateau, on ne peut pas poser la pièce.
+                    if ( isHorsPlateau( num_lig, num_col ) ) {
+                        System.out.println("case hors plateau");
                         return false;
-                //Sinon, si elle est diagonale ( La loi de l'adjacence écrase celle de la diagonale )
-                else if ( isDiagonalePieceAllie( joueur.getCouleur(), i + i_row, j + j_col) )
-                    if ( matPiece[i][j] != 0 )
+                    }
+                    //est adjacente à une case allié
+                    else if ( isAdjacentePieceAllie( joueur.getCouleur(), num_lig, num_col) ) {
+                        System.out.println("case adj allie");
+                        return false;
+                    }
+                    //est au dessus une autre piece
+                    else if ( plateau.getTableauJeu()[num_lig][num_col] != null ) {
+                        System.out.println("Par dessus une case");
+                        return false;
+                    }
+                    //est en diagonale d'une case allie
+                    else if ( isDiagonalePieceAllie( joueur.getCouleur(), num_lig, num_col) )
                         estDiago = true;
-                //Sinon la case est libre.
 
+                }
             }
         }
 
         //Si il y a une collision, on a déjà renvoyé false à ce point.
         //On vérifie donc juste si il y a une case qui touche diagonalement celle de la pièce.
+
+        if (!estDiago)
+            System.out.println("Pas de case diag allie");
         return estDiago;
 
 
@@ -133,10 +149,8 @@ public class Partie extends Observable {
         Case[][] matP = plateau.getTableauJeu();
         boolean isAdjPiece = false;
 
-        //Cas erreur
         if ( isHorsPlateau(i, j) ) {
-            System.out.println("Erreur ! Case hors plateau !");
-            return true;
+            return false;
         }
 
         //Case Nord
@@ -159,10 +173,8 @@ public class Partie extends Observable {
         Case[][] matP = plateau.getTableauJeu();
         boolean isDiagPiece = false;
 
-        //Cas erreur
         if ( isHorsPlateau(i, j) ) {
-            System.out.println("Erreur ! Case hors plateau !");
-            return true;
+            return false;
         }
 
         //Case Nord-Ouest
@@ -181,6 +193,43 @@ public class Partie extends Observable {
         return isDiagPiece;
     }
 
+    public boolean toucheCoinJoueur(JoueurBlokus joueur, Piece piece, int i_row, int j_col) {
+
+        int[][] matPiece = piece.croppedPiece();
+        int hauteur = matPiece.length;
+        int largeur = matPiece[0].length;
+
+        int num_lig, num_col;
+
+        boolean toucheCoin = false;
+        for (int i = 0; i < hauteur; i++) {
+            for (int j = 0; j < largeur; j++) {
+                num_lig = i + i_row;
+                num_col = j + j_col;
+
+                //Si un bout de la pièce
+                if ( matPiece[i][j] != 0  ) {
+                    //touche le coin d'un joueur
+                    if (num_lig == joueur.getCoinDepartX() && num_col == joueur.getCoinDepartY())
+                        toucheCoin = true;
+                    //est hors du plateau
+                    if (isHorsPlateau(num_lig, num_col)) {
+                        System.out.println(" (i,j) = " + matPiece[i][j] + " hors plateau ! ( toucheCoin )");
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return toucheCoin;
+    }
+
+    /**
+     * Renvoie false si la case (i,j) n'est pas dans les limites du plateau
+     * @param i num ligne plateau
+     * @param j num colonne plateau
+     * @return vrai si la case appartient au plateau, faux sinon.
+     */
     public boolean isHorsPlateau(int i, int j) {
         return i < 0 || j < 0 || i >= plateau.getHauteur() || j >= plateau.getLargeur();
     }
