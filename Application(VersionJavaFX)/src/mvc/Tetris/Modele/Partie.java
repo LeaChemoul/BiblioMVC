@@ -20,6 +20,9 @@ public class Partie implements Runnable{
         pieceSuivante();
     }
 
+    /**
+     * Met à jour la pièce suivante de la partie.
+     */
     public void pieceSuivante(){
         //Le nombre de pièces suivantes connues n'excedera jamais 1 pièce
         if(plateau.getPoolDePiece() != null){
@@ -38,6 +41,9 @@ public class Partie implements Runnable{
         return plateau;
     }
 
+    /**
+     * Methode appellée au lancement du thread.
+     */
     @Override
     public void run() {
         int nbrRepetitions = 0;

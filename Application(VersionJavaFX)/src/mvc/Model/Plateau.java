@@ -14,7 +14,6 @@ public class Plateau extends Observable {
     private int hauteur;
     private int largeur;
     private Case[][] tableauJeu;
-    private int[][] test;
 
     //Liste des pièces présentes sur le plateau.
     private ArrayList<Piece> piecesPosees;
@@ -135,18 +134,11 @@ public class Plateau extends Observable {
 
     public boolean newPiece(Piece piece,int i,int j,boolean h, Color couleur){
         this.pieceCourante = null;
-        //TODO : CONSTRUCTEUR A REVOIR
         this.pieceCourante = new Piece(piece, false,h, couleur);
         this.piecesPosees.add(pieceCourante);
         setChanged();
         notifyObservers();
         return this.poserPiecePlateau(pieceCourante,i,j);
-    }
-
-    public void effacerCase(int i, int j){
-        this.tableauJeu[i][j] = null;
-        setChanged();
-        notifyObservers();
     }
 
     /**
@@ -174,6 +166,11 @@ public class Plateau extends Observable {
         return true;
     }
 
+    /**
+     * Retourne la première coordonnée (x,y) d'une pièce sur le plateau (en partant du haut à gauche)
+     * @param arrayList tableau de coordonnées
+     * @return
+     */
     private Vec2d minimum(ArrayList<Vec2d> arrayList){
         if(arrayList!= null && !arrayList.isEmpty()){
             int minY =(int) arrayList.get(0).y;
@@ -205,14 +202,20 @@ public class Plateau extends Observable {
         return this.deplacer(Direction.UP, piece);
     }
 
+    /**
+     * Rotation de la pièce courante.
+     * @param dir direction de la rotation.
+     */
     public void tournerPieceCourante(Direction dir) {
         pieceCourante.rotation(dir);
         ArrayList<Vec2d> positions = occurrencesPiecesPlateau(pieceCourante); //Toutes les occurences de notre pièce donnée sur le plateau
         Vec2d min = minimum(positions);
-        effacerPiecePlateau(positions);
-        if(pieceCourante != null && !this.poserPiecePlateau(pieceCourante,(int) min.x, (int) min.y) ){
-            pieceCourante.rotation(dir.opposee());
+        if(pieceCourante != null && peutEtrePosee((int) min.x,(int) min.y,this.piecesPosees.indexOf(this.pieceCourante),0,0,0,0)){
+            effacerPiecePlateau(positions);
+            this.poserPiecePlateau(pieceCourante,(int) min.x, (int) min.y);
         }
+        else
+            pieceCourante.rotation(dir.opposee());
         setChanged();
         notifyObservers();
     }
@@ -235,7 +238,14 @@ public class Plateau extends Observable {
         return positions;
     }
 
-    public boolean collision(ArrayList<Vec2d> occurrences, Direction dir, int index){
+    /**
+     * Determine si le mouvement d'une pièce dans une direction génère une collision (bords du plateau ou autre pièce)
+     * @param occurrences coordonnées des occurences de la pièce sur le plateau
+     * @param dir la direction du mouvement
+     * @param index l'index de la pièce dans la liste des pièces posées
+     * @return vrai si il y a collision
+     */
+    private boolean collision(ArrayList<Vec2d> occurrences, Direction dir, int index){
         for (Vec2d occurrence : occurrences){
             int a = (int) occurrence.x + dir.x;
             int b = (int) occurrence.y + dir.y;
@@ -245,7 +255,11 @@ public class Plateau extends Observable {
         return false;
     }
 
-    public void effacerPiecePlateau(ArrayList<Vec2d> occurrences){
+    /**
+     * Efface les occurences d'une pièce sur le plateau.
+     * @param occurrences cooredonnées de la pièce a supprimer (Vect2D)
+     */
+    private void effacerPiecePlateau(ArrayList<Vec2d> occurrences){
         for (Vec2d occurrence : occurrences) {
             this.getTableauJeu()[(int) occurrence.x][(int) occurrence.y] = null;
         }
@@ -255,10 +269,10 @@ public class Plateau extends Observable {
 
     /**
      * Supprime la case aux coordonnées (i,j) du plateau. ( y compris dans la pièce. )
-     * @param i int
-     * @param j int
+     * @param i colonne
+     * @param j ligne
      */
-    public void supprimerCase(int i, int j) {
+    private void supprimerCase(int i, int j) {
         //On récupère la case à supprimer et la case auquel elle appartient.
         Piece piece = recupererPiece(i, j);
         Case caseASuppr = tableauJeu[i][j];
@@ -321,6 +335,24 @@ public class Plateau extends Observable {
 
     }
 
+    public void descendreLigne(int ligne){
+        //Descente des pièces d'une ligne si possible
+        for (int j = 0; j < this.largeur; j++) {
+            if(this.getTableauJeu()[ligne][j]!=null)
+            {
+                int index = this.getTableauJeu()[ligne][j].getIndex();
+                while(this.versBas(this.getPiecesPosees().get(index)));
+            }
+
+        }
+    }
+
+    public void mettreAJourLignes(){
+        for (int i = getHauteur()-1; i >= 0 ; i--) {
+            descendreLigne(i);
+        }
+    }
+
     /**
      * Permet de savoir quelle ligne de otre plateau doit être supprimée, c'est à dire qui est complète.
      * @return ligne complète
@@ -341,32 +373,25 @@ public class Plateau extends Observable {
         return -1; //Si aucune ligne est remplie
     }
 
-    //Retourne le decalage d'une case sur notre plateau
-    // vis à vis de la première occurence de la pièce en paratnt de en haut à gauche du plateau.
-    public Vec2d decalagePremiereCase(Piece piece, Vec2d pos){
-        ArrayList<Vec2d> occurences = this.occurrencesPiecesPlateau(piece);
-        //première occurence par rapport à laquelle on va calculer notre décalage
-        int firstX = (int) occurences.get(0).x;
-        int firstY = (int) occurences.get(0).y;
-        for (Vec2d occurence : occurences) {
-            //On compare la position de chaque case de la pièce par rapport à la position donnée
-            int a = (int) occurence.x;
-            int b = (int) occurence.y;
-            if (a == (int) pos.x && b == (int) pos.y) {
-                return new Vec2d(a - firstX, b - firstY);
-            }
-        }
-        return  null;
-    }
-
     /**
      * Renvoie la pièce à qui appartient la case aux coordonnées x,y du plateau.
      */
     public Piece recupererPiece(int x, int y) {
-        if( tableauJeu[x][y]!= null && x >= 0 && y >= 0 && x < tableauJeu.length && y < tableauJeu[0].length)
+        if(tableauJeu[x][y] != null && x < tableauJeu.length && y < tableauJeu[0].length)
             return piecesPosees.get(tableauJeu[x][y].getIndex());
         else
             return null;
+    }
+
+    public void reinitialiser(){
+        for (int i = 0; i < this.hauteur; i++) {
+            for (int j = 0; j < this.largeur; j++) {
+                this.getTableauJeu()[i][j]=null;
+            }
+        }
+        this.setPieceCourante(null);
+        this.getPiecesSuivantes().clear();
+        this.getPiecesPosees().clear();
     }
 
     //Méthodes relatives à PoolDePiece

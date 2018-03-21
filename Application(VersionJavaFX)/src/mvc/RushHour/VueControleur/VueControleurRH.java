@@ -52,12 +52,18 @@ public class VueControleurRH extends Application implements Observer {
         startButton.setStyle("-fx-font: 22 arial; -fx-base: #b6e7c9;");
         startButton.setText("Commencer");
 
+        Button replayButton = new Button();
+        replayButton.setPadding(new Insets(10));
+        replayButton.setStyle("-fx-font: 22 arial; -fx-base: #b6e7c9;");
+        replayButton.setText("Rejouer");
+
         Label sortieText = new Label("<== Sortie");
         sortieText.setStyle("-fx-font: 22 arial; -fx-base: #b6e7c9;");
-        sortieText.setPadding(new Insets(65,10,0,0));
+        sortieText.setPadding(new Insets(25,10,0,0));
 
         GridPane rightPane = new GridPane();
         rightPane.add(startButton,0,0);
+        rightPane.add(replayButton,0,1);
         rightPane.add(sortieText,0,2);
         grille.setRight(rightPane);
         grille.setPadding(new Insets(20));
@@ -68,9 +74,21 @@ public class VueControleurRH extends Application implements Observer {
 
         //---------------------------------------------------------------------
         //Bouton commencer
+        replayButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                partie.getPlateau().reinitialiser();
+                partie.initialiser();
+                grille.getP().setPieceCourante(null);
+            }
+        });
+
+        //---------------------------------------------------------------------
+        //Bouton rejouer
         startButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                partie.getPlateau();
                 partie.initialiser();
                 grille.getP().setPieceCourante(null);
             }
@@ -101,6 +119,8 @@ public class VueControleurRH extends Application implements Observer {
 
         primaryStage.setTitle("Jeu Plateau");
         primaryStage.setScene(scene);
+        primaryStage.setResizable(false);
+
         primaryStage.show();
     }
 
