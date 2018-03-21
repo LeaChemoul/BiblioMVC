@@ -9,12 +9,12 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
@@ -41,7 +41,7 @@ public class VueControleurRH extends Application implements Observer {
         Text titre = new Text("-- Rush Hour --");
         titre.setFont(Font.font("Helvetica", FontWeight.BOLD, 20));
         titre.setFill(Color.MEDIUMPURPLE);
-        grille.setAlignment(titre, Pos.CENTER);
+        BorderPane.setAlignment(titre, Pos.CENTER);
         grille.setTop(titre);
         partie = new Partie(grille.getP());
 
@@ -64,7 +64,9 @@ public class VueControleurRH extends Application implements Observer {
 
         //---------------------------------------------------------------------
         //EVENEMENTS
+        //---------------------------------------------------------------------
 
+        //---------------------------------------------------------------------
         //Bouton commencer
         startButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -74,6 +76,7 @@ public class VueControleurRH extends Application implements Observer {
             }
         });
 
+        //---------------------------------------------------------------------
         //A la fermeture de la fenêtre
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
@@ -88,7 +91,8 @@ public class VueControleurRH extends Application implements Observer {
 
         Scene scene = new Scene(grille, Color.WHITE);
 
-        //Evenements liés au clqiue sur les cases
+        //---------------------------------------------------------------------
+        //Evenements liés au clique sur les cases
         initialiserCases();
 
 
@@ -100,26 +104,30 @@ public class VueControleurRH extends Application implements Observer {
         primaryStage.show();
     }
 
+    /**
+     * Gestion des evenements claviers liés aux flêches de déplacement.
+     * @param scene scene sur laquelle on souhaite appliquer les evenements
+     */
     private void initialiserEvenementsClavier(Scene scene) {
         scene.setOnKeyPressed(new EventHandler<KeyEvent>(){
             @Override
             public void handle(KeyEvent ke){
-                if (ke.getCode().equals(KeyCode.UP) && !grille.getP().getPieceCourante().isHorizontal()) {
+                if (!partie.isEstFinie() && ke.getCode().equals(KeyCode.UP) && !grille.getP().getPieceCourante().isHorizontal()) {
                     if(grille.getP().getPieceCourante() != null)
                         grille.getP().versHaut(grille.getP().getPieceCourante());
                 }
-                if (ke.getCode().equals(KeyCode.LEFT) && grille.getP().getPieceCourante().isHorizontal()) {
+                if (!partie.isEstFinie() && ke.getCode().equals(KeyCode.LEFT) && grille.getP().getPieceCourante().isHorizontal()) {
                     if(grille.getP().getPieceCourante() != null)
                         grille.getP().versGauche(grille.getP().getPieceCourante());
                     //bouger à gauche la pièce courante du plateau si possible
                 }
 
-                if (ke.getCode().equals(KeyCode.RIGHT) && grille.getP().getPieceCourante().isHorizontal()) {
+                if (!partie.isEstFinie() && ke.getCode().equals(KeyCode.RIGHT) && grille.getP().getPieceCourante().isHorizontal()) {
                     if(grille.getP().getPieceCourante() != null)
                         grille.getP().versDroite(grille.getP().getPieceCourante());
                     //bouger à droite la pièce courante du plateau si possible
                 }
-                if (ke.getCode().equals(KeyCode.DOWN) && !grille.getP().getPieceCourante().isHorizontal()) {
+                if (!partie.isEstFinie() && ke.getCode().equals(KeyCode.DOWN) && !grille.getP().getPieceCourante().isHorizontal()) {
                     if(grille.getP().getPieceCourante() != null)
                         grille.getP().versBas(grille.getP().getPieceCourante());
                 }
@@ -128,7 +136,7 @@ public class VueControleurRH extends Application implements Observer {
     }
 
     /**
-     * Création de l'evenement en réponse au clqiue sur une case
+     * Création de l'evenement en réponse au clique sur une case
      */
     private void initialiserCases() {
         for (int i = 0; i < grille.getLargeur(); i++) {
@@ -148,7 +156,53 @@ public class VueControleurRH extends Application implements Observer {
                         grille.getP().setPieceCourante(grille.getP().recupererPiece(finalJ,finalI));
                     }
                 });
+
+                tab[i][j].setOnDragDetected(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent mouseEvent) {
+                        Rectangle cell = (Rectangle) mouseEvent.getSource();
+                        cell.startFullDrag();
+                    }
+                });
+
+                tab[i][j].setOnMouseDragEntered(new EventHandler<MouseDragEvent>() {
+                    @Override
+                    public void handle(MouseDragEvent mouseDragEvent) {
+                        //poser la pièce a l'endroit
+                        bougerPiece(finalJ, finalI);
+                    }
+                });
+
+                tab[i][j].setOnMouseDragReleased(new EventHandler<MouseDragEvent>() {
+                    @Override
+                    public void handle(MouseDragEvent mouseDragEvent) {
+                        //poser la pièce a l'endroit
+                        bougerPiece(finalJ, finalI);
+                    }
+                });
             }
+        }
+    }
+
+    /**
+     * Déplacement de la pièce vers la case concernée.
+     * @param finalJ la ligne du déplacement
+     * @param finalI la colonne du déplacement
+     */
+    private void bougerPiece(int finalJ, int finalI) {
+        if(!partie.isEstFinie() && grille.getP().getPieceCourante()!=null){
+            ArrayList<Vec2d> positionsAvant = grille.getP().occurrencesPiecesPlateau(grille.getP().getPieceCourante());
+
+            //Premier if : Si la pièce est horizontale et que la case vers laquelle on souhaite
+            // la déplacer se situe sur la même ligne mais une colonne différente.
+            if(positionsAvant.get(0).y <finalI && grille.getP().getPieceCourante().isHorizontal())
+                grille.getP().versDroite(grille.getP().getPieceCourante());
+            else if(positionsAvant.get(0).y > finalI && grille.getP().getPieceCourante().isHorizontal())
+                grille.getP().versGauche(grille.getP().getPieceCourante());
+            else if(positionsAvant.get(0).x < finalJ && !grille.getP().getPieceCourante().isHorizontal())
+                grille.getP().versBas(grille.getP().getPieceCourante());
+            else if(positionsAvant.get(0).x > finalJ && !grille.getP().getPieceCourante().isHorizontal())
+                grille.getP().versHaut(grille.getP().getPieceCourante());
         }
     }
 
@@ -173,6 +227,7 @@ public class VueControleurRH extends Application implements Observer {
                             grille.getTab()[a][b].setFill(Color.WHITE);
                             grille.getTab()[a][b].setStroke(null);
                         }
+                        partie.partieFinie();
                     }
             }
 

@@ -54,7 +54,7 @@ public class Plateau extends Observable {
         //On ajoutera à positionsPlateau les positions de notre plateau à remplir par notre pièce. Evite uen boucle supplémentaire.
         ArrayList<Vec2d> positionsPlateau = new ArrayList<>(); // Les positions (x,y) du plateau où il faudra placer notre pièce
         HashMap<Vec2d, Vec2d> positionsLocalPiece = new  HashMap<Vec2d, Vec2d>(); //Se souvient des coordonnées local des pièces
-        int index = -1;
+        int index = this.piecesPosees.indexOf(piece);
         boolean pieceTrouvee = false;
         //cette variable permet de garder en mémoire combien de colonnes de Piece.cases nous avons parcourus avant de trouver la pièce : décalage
         int decalageX = 0, decalageY = 0;
@@ -63,7 +63,6 @@ public class Plateau extends Observable {
             pieceTrouvee = false;
             decalageY = 0;
             for (int y = 0; y < piece.getCases()[0].length; y++) { //Parcours des lignes
-                //TODO : Index très surement useless dans peutEtrePosee, je propose de supprimer cet argument
                 if( peutEtrePosee(i, j, index,decalageX,decalageY,x,y) ) //Ou c'est une occurence de notre pièce (avant d'être bougée)
                 {
                     if (piece.getCases()[x][y] == 1){
@@ -88,7 +87,6 @@ public class Plateau extends Observable {
                 decalageX++; //On a toujours pas trouvé notre pièce on décale en colonne
         }
         if(!positionsPlateau.isEmpty() && positionsPlateau.size() == piece.getTaille()) { //Si on a bien pu tout poser dans le plateau
-            piecesPosees.add(piece);
             index = piecesPosees.indexOf(piece);
             for (Vec2d position : positionsPlateau) { //On met à jour le plateau en y posant la pièce
                 int ii = (int) position.x;
@@ -109,8 +107,8 @@ public class Plateau extends Observable {
         return j+y >= 0 && i+x >= 0
                 && j+y-decalageY< this.getLargeur() && i+x-decalageX < this.getHauteur() //Si cela ne dépasses pas notre plateau de jeu
                 //On teste les collisions
-                && (tableauJeu[i+x-decalageX][j+y-decalageY] == null); //Ou la case est vide et on peut poser notre pièce.
-                //(tableauJeu[i+x-decalageX][j+y-decalageY]!= null /* && tableauJeu[i+x-decalageX][j+y-decalageY].getIndex() == index*/ ));
+                && ((tableauJeu[i+x-decalageX][j+y-decalageY] == null) || //Ou la case est vide et on peut poser notre pièce.
+                (tableauJeu[i+x-decalageX][j+y-decalageY]!= null && tableauJeu[i+x-decalageX][j+y-decalageY].getIndex() == index));
     }
 
     /**
@@ -143,6 +141,12 @@ public class Plateau extends Observable {
         setChanged();
         notifyObservers();
         return this.poserPiecePlateau(pieceCourante,i,j);
+    }
+
+    public void effacerCase(int i, int j){
+        this.tableauJeu[i][j] = null;
+        setChanged();
+        notifyObservers();
     }
 
     /**
@@ -337,32 +341,6 @@ public class Plateau extends Observable {
         return -1; //Si aucune ligne est remplie
     }
 
-    /**
-     * Efface la ligne entrée en paramètre de la fonction.
-     * @param ligne ligne à supprimer
-     */
-    public void effacerLigne(int ligne){
-        //TODO Pour la ligne considerée mettre à jour les pièces puis descendre celles au-dessus
-        //Pour chaque pièce à descendre, la desecendre jusqu'en abs avec un while
-        ArrayList<Piece> ontEteDescendues = new ArrayList<>();
-        for (int j = 0; j < this.getHauteur() ; j++) {
-            Piece pieceAChanger = recupererPiece(ligne,j);
-            if(pieceAChanger != null){
-                Vec2d decalage = decalagePremiereCase(pieceAChanger,new Vec2d(ligne,j));
-                if(decalage != null){
-                    pieceAChanger.deleteDecalage(decalage);
-                    ArrayList<Vec2d> occurences = occurrencesPiecesPlateau(pieceAChanger);
-                    effacerPiecePlateau(occurences);
-                    poserPiecePlateau(pieceAChanger,(int) occurences.get(0).x, (int) occurences.get(0).y);
-
-                    setChanged();
-                    notifyObservers();
-                }
-            }
-        }
-
-    }
-
     //Retourne le decalage d'une case sur notre plateau
     // vis à vis de la première occurence de la pièce en paratnt de en haut à gauche du plateau.
     public Vec2d decalagePremiereCase(Piece piece, Vec2d pos){
@@ -432,5 +410,9 @@ public class Plateau extends Observable {
 
     public ArrayList<Piece> getPiecesSuivantes() {
         return piecesSuivantes;
+    }
+
+    public ArrayList<Piece> getPiecesPosees() {
+        return piecesPosees;
     }
 }

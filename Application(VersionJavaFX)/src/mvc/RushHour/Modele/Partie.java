@@ -32,23 +32,31 @@ public class Partie{
         this.plateau.newPiece(pieceHashMap.get("2RushHourH"),4,0,true,genererCouleur());
         this.plateau.newPiece(pieceHashMap.get("3RushHourH"),5,0,true,genererCouleur());
         this.plateau.newPiece(pieceHashMap.get("2RushHourV"),3,2,false,genererCouleur());
-        this.plateau.newPiece(pieceHashMap.get("2RushHourH"),3,3,true,genererCouleur());
+        /*this.plateau.newPiece(pieceHashMap.get("2RushHourH"),3,3,true,genererCouleur());
         this.plateau.newPiece(pieceHashMap.get("3RushHourV"),3,5,false,genererCouleur());
         this.plateau.newPiece(pieceHashMap.get("2RushHourH"),0,4,true,genererCouleur());
         this.plateau.newPiece(pieceHashMap.get("2RushHourH"),1,4,true,genererCouleur());
-        this.plateau.newPiece(pieceHashMap.get("3RushHourV"),0,3,false,genererCouleur());
+        this.plateau.newPiece(pieceHashMap.get("3RushHourV"),0,3,false,genererCouleur());*/
 
         //Piece a bouger
+        //On considère que la dernière pièce de ma liste de pièce est la pièce gagnante
         this.plateau.newPiece(pieceHashMap.get("2RushHourH"),2,1,true, Color.RED);
     }
 
     public void partieFinie(){
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Information Dialog");
-        alert.setHeaderText(null);
-        alert.setContentText("BRAVO !");
+        //On considère que la pièce qu'il faut faire sortir et la dernière pièce de notre liste de pièces.
+        //D'où son index qui sera toujours this.plateau.getPiecesPosees().size()-1
+        if(!this.estFinie && this.plateau.getTableauJeu()[(int)this.sortie.x][(int)this.sortie.y]!= null &&
+                this.plateau.getTableauJeu()[(int)this.sortie.x][(int)this.sortie.y].getIndex() == this.plateau.getPiecesPosees().size()-1){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("BRAVO");
+            alert.setHeaderText(null);
+            alert.setContentText("La pièce est sortie, vous avez gagné !");
 
-        alert.showAndWait();
+            alert.show();
+
+            this.estFinie = true;
+        }
     }
 
     /**
@@ -70,5 +78,9 @@ public class Partie{
 
     public Plateau getPlateau() {
         return plateau;
+    }
+
+    public boolean isEstFinie() {
+        return estFinie;
     }
 }
