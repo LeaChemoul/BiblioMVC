@@ -14,6 +14,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.*;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 
 import mvc.Model.*;
@@ -31,14 +32,14 @@ public class VueControleur extends Application implements Observer {
     private Plateau plateau = new Plateau(20, 20);
     private Partie partie = new Partie(plateau, 4);
 
-    private boolean pieceEnSurvol;
 
     private BorderPane bPane = new BorderPane();
     private GridPane grilleJeu;
 
     private ListePiece[] listesPiecesJoueurs = new ListePiece[5];
     private ListeJoueur listeJoueurs;
-    private Text[] textsJoueurs = new Text[4];
+
+    //private Text[] textsJoueurs = new Text[4];
 
     private Rectangle[][] tab;
 
@@ -111,6 +112,8 @@ public class VueControleur extends Application implements Observer {
                 listeJoueurs = new ListeJoueur(nb);
                 bPane.setLeft(listeJoueurs);
                 bPane.setRight(listesPiecesJoueurs[0]);
+
+                colorierCoins();
             });
             btChoix.setPadding(new Insets(10));
             vbox.setMargin(btChoix, new Insets(10, 5, 5, 40));
@@ -152,7 +155,6 @@ public class VueControleur extends Application implements Observer {
                             partie.jouerPiece(plateau.getPieceCourante(), grilleJeu.getRowIndex(rect), grilleJeu.getColumnIndex(rect));
                             effacerPieceSurvol(grilleJeu.getRowIndex(rect), grilleJeu.getColumnIndex(rect));
                             partie.joueurSuivant();
-                            pieceEnSurvol = false;
                         }
                         //Si c'est un click droit, on la tourne
                         else if( button == MouseButton.SECONDARY ) {
@@ -184,14 +186,30 @@ public class VueControleur extends Application implements Observer {
 
         //endregion
 
+        // ------------ BOTTOM -- Bouton abandon
+        Button btAbandon = new Button("Abandonner");
+        btAbandon.setPadding(new Insets(10));
+        btAbandon.setOnMouseClicked( event -> {
+            partie.getJoueurActif().setaAbandone(true);
+            listeJoueurs.setAbandon(partie.getNumJoueurActif());
+            System.out.println("Joueur " + partie.getNumJoueurActif() + " a abandonné !");
+
+            partie.joueurSuivant();
+        });
+        bPane.setMargin(btAbandon, new Insets(5));
+        bPane.setAlignment(btAbandon, Pos.CENTER);
+        bPane.setBottom(btAbandon);
+
         //Résout le problème de gap entre le plateau de jeu et les listes de pièces.
         bPane.setMinSize(1100, 700);
 
         //SCENE
 
         Scene scene = new Scene(bPane, 1100, 700);
-        scene.setOnScroll(
-                event -> plateau.getPieceCourante().rotation(Direction.RIGHT));
+        scene.setOnScroll( event -> {
+        if ( plateau.getPieceCourante() != null )
+            plateau.getPieceCourante().rotation(Direction.RIGHT);
+        });
 
         primaryStage.setTitle("BLOKUS");
         primaryStage.setScene(scene);
@@ -205,13 +223,15 @@ public class VueControleur extends Application implements Observer {
      */
     public void effacerPieceSurvol(int row, int col) {
 
+        Piece pieceCourante = plateau.getPieceCourante();
+
         //Si il n'y a pas de pièce à effacer on n'efface rien.
-        if ( partie.getPieceCourante() == null )
+        if ( pieceCourante == null )
             return;
 
         //On agit seulement sur les cases qui font la taille de la pièce, pour éviter trop de traitement mémoire.
-        for (int i = row; i < row+partie.getPieceCourante().getHauteur(); i++) {
-            for (int j = col; j < col+partie.getPieceCourante().getLargeur(); j++) {
+        for (int i = row; i < row + pieceCourante.getHauteur(); i++) {
+            for (int j = col; j < col + pieceCourante.getLargeur(); j++) {
 
                 //Si la case visée ne dépasse pas les limites du plateau
                 if ( inBound(i, j, plateau.getHauteur(), plateau.getLargeur()) )
@@ -222,9 +242,11 @@ public class VueControleur extends Application implements Observer {
                     else
                         tab[i][j].setFill(Color.WHITE);
                 }
+
             }
         }
-        pieceEnSurvol = false;
+
+        colorierCoins();
 
     }
 
@@ -235,10 +257,12 @@ public class VueControleur extends Application implements Observer {
      */
     public void afficherPieceSurvol(int row, int col) {
 
-        if ( plateau.getPieceCourante() == null )
+        Piece pieceCourante = plateau.getPieceCourante();
+
+        if ( pieceCourante == null )
             return;
 
-        int[][] croppedPiece = plateau.getPieceCourante().croppedPiece();
+        int[][] croppedPiece = pieceCourante.croppedPiece();
 
         //On modifie la vue pour afficher la pièce par dessus le point de la grille.
         for (int i = 0; i < croppedPiece.length; i++ ) {
@@ -248,12 +272,19 @@ public class VueControleur extends Application implements Observer {
                 if (inBound(row+i, col+j, plateau.getHauteur(), plateau.getLargeur()) ) {
                     //On colorie par dessus le plateau avec la couleur de la piece qu'on veut visualiser.
                     if (croppedPiece[i][j] != 0)
-                        tab[row+i][col+j].setFill(plateau.getPieceCourante().getCouleur());
+                        tab[row+i][col+j].setFill(pieceCourante.getCouleur());
                 }
             }
         }
-        pieceEnSurvol = true;
 
+    }
+
+    public void colorierCoins() {
+        //On colorie les coins en fonction du nombre de joueurs
+        for (int i = 0; i < NbJoueurs; i++) {
+            JoueurBlokus joueur = partie.getJoueur(i);
+            tab[ joueur.getCoinDepartX() ] [joueur.getCoinDepartY() ].setFill(joueur.getCouleur());
+        }
     }
 
     public boolean inBound(int i, int j, int iMax, int jMax) {
@@ -290,13 +321,16 @@ public class VueControleur extends Application implements Observer {
             for (int i = 0; i < plateau.getHauteur(); i++ ) {
                 for (int j = 0; j < plateau.getLargeur(); j++) {
 
-                    if(plateau.getTableauJeu()[i][j] != null)
+                    //Case non vide
+                    if (plateau.getTableauJeu()[i][j] != null)
                         tab[i][j].setFill(plateau.getTableauJeu()[i][j].getCouleur());
-                    else
+                    else //Case vide
                         tab[i][j].setFill(Color.WHITE);
 
                 }
             }
+
+            colorierCoins();
 
 
         }

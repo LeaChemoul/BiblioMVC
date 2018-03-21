@@ -106,9 +106,9 @@ public class Partie extends Observable {
             case 2:
                 return Color.GREEN;
             case 3:
-                return Color.PINK;
-            default:
                 return Color.PURPLE;
+            default:
+                return Color.GREY;
         }
     }
 

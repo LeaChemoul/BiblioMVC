@@ -48,20 +48,18 @@ public class ListePiece extends TilePane{
             //CONTROLLEURS : Quand on clique sur une pièce, elle devient la pièce active du plateau (celle qu'on peut manipuler).
             grillePiece.setOnMouseClicked(event -> {
                 partie.setPieceCourante(piece);
-                //System.out.println("Piece active changée ! - " + piece.getNom());
-                //partie.getPieceCourante().afficherPiece();
             });
         }
     }
 
     public void supprimerPiece(Piece piece) {
-        //getChildren().remove(listeGrillesPieces.remove(piece));
         getChildren().remove(listeGrillesPieces.get(piece));
         listeGrillesPieces.remove(piece);
     }
     public void supprimerGrille(GridPane grid) {
         getChildren().remove(grid);
     }
+
 
     public void update() {
 
