@@ -72,6 +72,36 @@ public class Partie extends Observable {
 
     }
 
+    public boolean peutPoserPiece(JoueurBlokus Joueur, Piece piece, int i_row, int j_col,) {
+
+        //Les règles pour poser une pièce au Blokus :
+        // - On peut pas poser une pièce sur une autre
+        // - La pièce ne peut pas toucher directement une autre pièce du même joueur.
+        // - La pièce doit toucher en "diagonale" au moins une autre pièce du même joueur.
+
+        //On crée un masque de collision pour la zone du plateau, un int[][] de la meme taille que la matrice de la pièce,
+        // On la superposera à la matrice de la pièce pour savoir si on peut poser la pièce ici, et on comparera les cases de la pièce
+        // à la valeur de la case du masque correspondante, tel que :
+        // 0 = Aucune restriction
+        // 1 = Cases qui doivent être vide côté pièce ( Cases correspondant à la pièce ou ses cases voisines directes )
+        // 2 = Cases où au moins une doit être touché par la pièce.
+
+        int[][] masque = new int[piece.getHauteur()][piece.getLargeur()];
+        for (int i = 0; i < piece.getHauteur(); i++) {
+            for (int j = 0; j < piece.getLargeur(); j++) {
+
+                //Si la case est bien dans le plateau.
+                if ( i_row >= 0 && j_col >= 0 && i_row < plateau.getHauteur() && j_col < plateau.getLargeur() ) {
+
+                }
+
+            }
+        }
+
+
+        return true;
+    }
+
     /**
      * Supprime la Piece piece de la liste des pièces du joueur J.
      * @param j Joueur
