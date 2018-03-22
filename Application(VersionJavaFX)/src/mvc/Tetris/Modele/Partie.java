@@ -1,6 +1,5 @@
 package mvc.Tetris.Modele;
 
-import javafx.scene.control.Alert;
 import mvc.Model.Piece;
 import mvc.Model.Plateau;
 
@@ -23,7 +22,7 @@ public class Partie implements Runnable{
     /**
      * Met à jour la pièce suivante de la partie.
      */
-    public void pieceSuivante(){
+    private void pieceSuivante(){
         //Le nombre de pièces suivantes connues n'excedera jamais 1 pièce
         if(plateau.getPoolDePiece() != null){
             Random random = new Random();

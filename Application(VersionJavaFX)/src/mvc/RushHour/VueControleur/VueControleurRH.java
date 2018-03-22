@@ -6,6 +6,7 @@ import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -15,6 +16,8 @@ import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
@@ -33,6 +36,7 @@ import java.util.Observer;
 public class VueControleurRH extends Application implements Observer {
 
     private Partie partie;
+    private MediaPlayer mediaPlayer;
     GrilleVue grille = new GrilleVue(6,6,50);
 
     @Override
@@ -46,7 +50,7 @@ public class VueControleurRH extends Application implements Observer {
         partie = new Partie(grille.getP());
 
         //---------------------------------------------------------------------
-        //RIGHT : Bouton de départ
+        //RIGHT : Bouton de départ et pour rejouer
         Button startButton = new Button();
         startButton.setPadding(new Insets(10));
         startButton.setStyle("-fx-font: 22 arial; -fx-base: #b6e7c9;");
@@ -111,11 +115,16 @@ public class VueControleurRH extends Application implements Observer {
 
         //---------------------------------------------------------------------
         //Evenements liés au clique sur les cases
-        initialiserCases();
+        initialiserCases(scene);
 
 
         //EVENEMENTS LIES AUX TOUCHES CLAVIER
         initialiserEvenementsClavier(scene);
+
+        //SON
+        /*String currentDir = System.getProperty("user.dir");
+        currentDir.replace(" ","1%20");
+        this.mediaPlayer = new MediaPlayer(new Media(currentDir + "\\sound\\mouvement.wav"));*/
 
         primaryStage.setTitle("Jeu Plateau");
         primaryStage.setScene(scene);
@@ -158,7 +167,7 @@ public class VueControleurRH extends Application implements Observer {
     /**
      * Création de l'evenement en réponse au clique sur une case
      */
-    private void initialiserCases() {
+    private void initialiserCases(Scene scene) {
         for (int i = 0; i < grille.getLargeur(); i++) {
             for (int j = 0; j < grille.getHauteur() ; j++) {
                 Rectangle[][] tab = grille.getTab();
@@ -167,21 +176,27 @@ public class VueControleurRH extends Application implements Observer {
                 tab[i][j].setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent event) {
-                        ArrayList<Vec2d> positions = grille.getP().occurrencesPiecesPlateau( grille.getP().recupererPiece(finalJ,finalI));
-                        effacerBordures();
-                        for (Vec2d position : positions) {
-                            grille.getP().recupererPiece(finalJ, finalI).setBordure(Color.BLUE);
-                            tab[(int) position.y][(int) position.x].setStroke(Color.BLUE);
-                        }
-                        grille.getP().setPieceCourante(grille.getP().recupererPiece(finalJ,finalI));
+                        setCurrentPiece(finalJ, finalI, tab);
                     }
                 });
 
+                tab[i][j].setOnMouseEntered(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        setCurrentPiece(finalJ, finalI, tab);
+                        if(grille.getP().getTableauJeu()[finalJ][finalI] != null)
+                            scene.setCursor(Cursor.OPEN_HAND);
+                        else
+                            scene.setCursor(Cursor.DEFAULT);
+                    }
+                });
                 tab[i][j].setOnDragDetected(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent mouseEvent) {
                         Rectangle cell = (Rectangle) mouseEvent.getSource();
                         cell.startFullDrag();
+                        scene.setCursor(Cursor.CLOSED_HAND);
+
                     }
                 });
 
@@ -190,6 +205,8 @@ public class VueControleurRH extends Application implements Observer {
                     public void handle(MouseDragEvent mouseDragEvent) {
                         //poser la pièce a l'endroit
                         bougerPiece(finalJ, finalI);
+                        scene.setCursor(Cursor.CLOSED_HAND);
+                        //mediaPlayer.play();
                     }
                 });
 
@@ -198,10 +215,21 @@ public class VueControleurRH extends Application implements Observer {
                     public void handle(MouseDragEvent mouseDragEvent) {
                         //poser la pièce a l'endroit
                         bougerPiece(finalJ, finalI);
+                        scene.setCursor(Cursor.DEFAULT);
                     }
                 });
             }
         }
+    }
+
+    private void setCurrentPiece(int finalJ, int finalI, Rectangle[][] tab) {
+        ArrayList<Vec2d> positions = grille.getP().occurrencesPiecesPlateau( grille.getP().recupererPiece(finalJ,finalI));
+        effacerBordures();
+        for (Vec2d position : positions) {
+            grille.getP().recupererPiece(finalJ, finalI).setBordure(Color.BLUE);
+            tab[(int) position.y][(int) position.x].setStroke(Color.BLUE);
+        }
+        grille.getP().setPieceCourante(grille.getP().recupererPiece(finalJ,finalI));
     }
 
     /**
