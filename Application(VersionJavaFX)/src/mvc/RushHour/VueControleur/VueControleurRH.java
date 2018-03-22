@@ -28,6 +28,7 @@ import javafx.stage.WindowEvent;
 import mvc.RushHour.Modele.Partie;
 import mvc.VueControleur.GrilleVue;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
@@ -50,14 +51,26 @@ public class VueControleurRH extends Application implements Observer {
         partie = new Partie(grille.getP());
 
         //---------------------------------------------------------------------
+        //LEFT : regles du jeu
+        Label reglesText = new Label("Le but du jeu est d'extraire la \n" +
+                "voiture rouge de la grille en \n" +
+                "la faisant atteindre la sortie \n" +
+                "indiquée à droite.");
+        reglesText.setStyle("-fx-font: 13 arial; -fx-base: #b6e7c9;");
+        reglesText.setPadding(new Insets(25,10,0,0));
+        grille.setLeft(reglesText);
+
+        //---------------------------------------------------------------------
         //RIGHT : Bouton de départ et pour rejouer
         Button startButton = new Button();
         startButton.setPadding(new Insets(10));
         startButton.setStyle("-fx-font: 22 arial; -fx-base: #b6e7c9;");
+        startButton.setCursor(Cursor.HAND);
         startButton.setText("Commencer");
 
         Button replayButton = new Button();
         replayButton.setPadding(new Insets(10));
+        replayButton.setCursor(Cursor.HAND);
         replayButton.setStyle("-fx-font: 22 arial; -fx-base: #b6e7c9;");
         replayButton.setText("Rejouer");
 
@@ -122,9 +135,10 @@ public class VueControleurRH extends Application implements Observer {
         initialiserEvenementsClavier(scene);
 
         //SON
-        /*String currentDir = System.getProperty("user.dir");
-        currentDir.replace(" ","1%20");
-        this.mediaPlayer = new MediaPlayer(new Media(currentDir + "\\sound\\mouvement.wav"));*/
+        String path = new File(System.getProperty("user.dir") + "/sound/mouvement.wav").getAbsolutePath();
+        Media media = new Media(new File(path).toURI().toString());
+        this.mediaPlayer = new MediaPlayer(media);
+
 
         primaryStage.setTitle("Jeu Plateau");
         primaryStage.setScene(scene);
@@ -196,7 +210,6 @@ public class VueControleurRH extends Application implements Observer {
                         Rectangle cell = (Rectangle) mouseEvent.getSource();
                         cell.startFullDrag();
                         scene.setCursor(Cursor.CLOSED_HAND);
-
                     }
                 });
 
@@ -206,7 +219,6 @@ public class VueControleurRH extends Application implements Observer {
                         //poser la pièce a l'endroit
                         bougerPiece(finalJ, finalI);
                         scene.setCursor(Cursor.CLOSED_HAND);
-                        //mediaPlayer.play();
                     }
                 });
 
@@ -216,6 +228,9 @@ public class VueControleurRH extends Application implements Observer {
                         //poser la pièce a l'endroit
                         bougerPiece(finalJ, finalI);
                         scene.setCursor(Cursor.DEFAULT);
+
+                        mediaPlayer.stop();
+                        mediaPlayer.play();
                     }
                 });
             }
@@ -273,7 +288,7 @@ public class VueControleurRH extends Application implements Observer {
                         }
                         else{
                             grille.getTab()[a][b].setFill(Color.WHITE);
-                            grille.getTab()[a][b].setStroke(null);
+                            grille.getTab()[a][b].setStroke(Color.TRANSPARENT);
                         }
                         partie.partieFinie();
                     }
@@ -285,7 +300,7 @@ public class VueControleurRH extends Application implements Observer {
     private void effacerBordures(){
         for (int i = 0; i < grille.getHauteur(); i++) {
             for (int j = 0; j < grille.getLargeur(); j++) {
-                grille.getTab()[i][j].setStroke(null);
+                grille.getTab()[i][j].setStroke(Color.TRANSPARENT);
                 if(grille.getP().recupererPiece(i,j) != null && grille.getP().recupererPiece(i,j)!=grille.getP().getPieceCourante())
                     grille.getP().recupererPiece(i,j).setBordure(Color.TRANSPARENT);
             }
