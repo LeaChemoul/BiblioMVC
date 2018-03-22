@@ -208,11 +208,15 @@ public class Plateau extends Observable {
      */
     public void tournerPieceCourante(Direction dir) {
         pieceCourante.rotation(dir);
-        ArrayList<Vec2d> positions = occurrencesPiecesPlateau(pieceCourante); //Toutes les occurences de notre pièce donnée sur le plateau
-        Vec2d min = minimum(positions);
+        ArrayList<Vec2d> positionsAvant = occurrencesPiecesPlateau(pieceCourante); //Toutes les occurences de notre pièce donnée sur le plateau
+        Vec2d min = minimum(positionsAvant);
         if(pieceCourante != null && peutEtrePosee((int) min.x,(int) min.y,this.piecesPosees.indexOf(this.pieceCourante),0,0,0,0)){
-            effacerPiecePlateau(positions);
-            this.poserPiecePlateau(pieceCourante,(int) min.x, (int) min.y);
+            effacerPiecePlateau(positionsAvant);
+            if(!this.poserPiecePlateau(pieceCourante,(int) min.x, (int) min.y)){
+                pieceCourante.rotation(dir.opposee());
+                this.poserPiecePlateau(pieceCourante,(int) min.x, (int) min.y);
+            }
+
         }
         else
             pieceCourante.rotation(dir.opposee());
@@ -260,8 +264,10 @@ public class Plateau extends Observable {
      * @param occurrences cooredonnées de la pièce a supprimer (Vect2D)
      */
     private void effacerPiecePlateau(ArrayList<Vec2d> occurrences){
-        for (Vec2d occurrence : occurrences) {
-            this.getTableauJeu()[(int) occurrence.x][(int) occurrence.y] = null;
+        if(occurrences != null){
+            for (Vec2d occurrence : occurrences) {
+                this.getTableauJeu()[(int) occurrence.x][(int) occurrence.y] = null;
+            }
         }
         setChanged();
         notifyObservers();

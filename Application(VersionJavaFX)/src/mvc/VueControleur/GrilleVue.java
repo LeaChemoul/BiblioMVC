@@ -1,6 +1,7 @@
 package mvc.VueControleur;
 
 
+import java.io.File;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -11,6 +12,8 @@ import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import mvc.Model.Plateau;
@@ -23,6 +26,7 @@ public class GrilleVue extends BorderPane{
     private int hauteur;
     private Plateau p;
     private Rectangle[][] tab;
+    private MediaPlayer mediaPlayer;
 
     public GrilleVue(int a, int b,int rectSize) {
         this.largeur = a;
@@ -46,6 +50,12 @@ public class GrilleVue extends BorderPane{
                 gPane.add(tab[i][j],i, j);
             }
 
+
+        //SON
+        String path = new File(System.getProperty("user.dir") + "/sound/mouvement.wav").getAbsolutePath();
+        Media media = new Media(new File(path).toURI().toString());
+        this.mediaPlayer = new MediaPlayer(media);
+
         //CENTER
         gPane.setGridLinesVisible(true);
         this.setCenter(gPane);
@@ -67,5 +77,9 @@ public class GrilleVue extends BorderPane{
 
     public int getHauteur() {
         return hauteur;
+    }
+
+    public MediaPlayer getMediaPlayer() {
+        return mediaPlayer;
     }
 }

@@ -37,7 +37,6 @@ import java.util.Observer;
 public class VueControleurRH extends Application implements Observer {
 
     private Partie partie;
-    private MediaPlayer mediaPlayer;
     GrilleVue grille = new GrilleVue(6,6,50);
 
     @Override
@@ -134,12 +133,6 @@ public class VueControleurRH extends Application implements Observer {
         //EVENEMENTS LIES AUX TOUCHES CLAVIER
         initialiserEvenementsClavier(scene);
 
-        //SON
-        String path = new File(System.getProperty("user.dir") + "/sound/mouvement.wav").getAbsolutePath();
-        Media media = new Media(new File(path).toURI().toString());
-        this.mediaPlayer = new MediaPlayer(media);
-
-
         primaryStage.setTitle("Jeu Plateau");
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
@@ -229,8 +222,9 @@ public class VueControleurRH extends Application implements Observer {
                         bougerPiece(finalJ, finalI);
                         scene.setCursor(Cursor.DEFAULT);
 
-                        mediaPlayer.stop();
-                        mediaPlayer.play();
+                        //Declenchement du son depuis le model
+                        grille.getMediaPlayer().stop();
+                        grille.getMediaPlayer().play();
                     }
                 });
             }
