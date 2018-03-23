@@ -79,7 +79,7 @@ public class ListePiece extends TilePane{
             grillePiece.setOnMouseClicked(event -> {
                 partie.setPieceCourante(piece);
                 System.out.println("Piece active changée ! - " + piece.getNom());
-                partie.getPieceCourante().afficherPiece();
+                //partie.getPieceCourante().afficherPiece();
             });
 
             //On la rajoute à gridPane.

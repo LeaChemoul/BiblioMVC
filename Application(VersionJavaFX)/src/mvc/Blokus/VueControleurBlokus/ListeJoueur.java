@@ -11,21 +11,20 @@ public class ListeJoueur extends VBox {
 
 
     private Text[] textsJoueurs;
-    private Boolean[] joueurAbandon;
     private int nbJoueurs;
+    private Partie partie;
 
-    public ListeJoueur(int nbJoueurs) {
+    public ListeJoueur(Partie partie, int nbJoueurs) {
 
+        this.partie = partie;
         this.nbJoueurs = nbJoueurs;
 
         textsJoueurs = new Text[nbJoueurs+1];
-        joueurAbandon = new Boolean[nbJoueurs];
 
         textsJoueurs[0] = new Text("Liste des Joueurs");
         textsJoueurs[0].setFont(Font.font("Helvetica", FontWeight.BOLD, 20));
         for (int i = 1; i < nbJoueurs +1; i++) {
 
-            joueurAbandon[i-1] = false;
             textsJoueurs[i] = new Text("Joueur " + i );
             //Le nom du joueur actif ( le premier joueur ) est écrit plus gros.
             if ( i == 1 )
@@ -48,9 +47,11 @@ public class ListeJoueur extends VBox {
         setMinWidth(200);
     }
 
+    /**
+     * Change le texte du joueur numJoueur par un texte d'abandon.
+     * @param numJoueur
+     */
     public void setAbandon(int numJoueur) {
-        //On retiens que le joueur a abandonné
-        joueurAbandon[numJoueur-1] = true;
 
         getChildren().removeAll(textsJoueurs);
 
@@ -69,7 +70,7 @@ public class ListeJoueur extends VBox {
         for (int i = 1; i < nbJoueurs+1; i++) {
 
             //Si le joueur n'a pas abandonné
-            if ( !joueurAbandon[numJoueurActif-1] ) {
+            if ( !partie.getJoueur(numJoueurActif-1).isaAbandone() ) {
 
                 if ( i == numJoueurActif )
                     textsJoueurs[i].setFont(Font.font("Helvetica", FontWeight.BOLD, 20));

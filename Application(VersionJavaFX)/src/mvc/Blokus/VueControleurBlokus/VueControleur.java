@@ -1,6 +1,8 @@
 package mvc.Blokus.VueControleurBlokus;
 
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -12,8 +14,10 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.*;
+import javafx.stage.Modality;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 
@@ -38,8 +42,8 @@ public class VueControleur extends Application implements Observer {
 
     private ListePiece[] listesPiecesJoueurs = new ListePiece[5];
     private ListeJoueur listeJoueurs;
+    private Popup popupVictoire;
 
-    //private Text[] textsJoueurs = new Text[4];
 
     private Rectangle[][] tab;
 
@@ -60,10 +64,50 @@ public class VueControleur extends Application implements Observer {
         partie.getPlateau().addObserver(this);
         partie.addObserver(this);
 
+        //---------------------------------------------------------------------
+        //----- POPUP VICTOIRE
+
+        Stage popupStage = new Stage();
+
+        //---------------
+        //Le contenu du Popup : Un message de victoire et un bouton pour quitter.
+        VBox popupBox = new VBox();
+
+        //Bouton pour quitter
+        Button btQuitter = new Button("Quitter le jeu");
+        btQuitter.setPadding(new Insets(10));
+        btQuitter.setOnMouseClicked( event -> {
+            popupStage.close();
+            primaryStage.close();
+        });
+
+        //Message Victoire
+        Text textVictoire = new Text();
+        textVictoire.setFont(Font.font("Helvetica", FontWeight.BOLD, 16));
+
+        popupBox.setAlignment(Pos.CENTER);
+        popupBox.setSpacing(20);
+        popupBox.getChildren().addAll( textVictoire, btQuitter );
+
+        //---------------
+        //On prépare le popup : C'est une nouvelle scène sur un nouveau stage.
+        Scene popupScene = new Scene(popupBox, 200, 120);
+
+        popupStage.close();
+        popupStage.setScene(popupScene);
+            //Cette ligne sert à rendre le stage un popup.
+        popupStage.initModality(Modality.APPLICATION_MODAL);
+        popupStage.setTitle("Bravo !");
+
+        popupStage.setOnCloseRequest(e -> Platform.exit());
+
+
+
+
         //Préparation de la scene de la grille de jeu.
 
-
-        // ------------ TOP -- Un Titre
+        //---------------------------------------------------------------------
+        // ------------ TOP -- Le Titre
 
         //region titre
         Text titre = new Text("--- BLOKUS ---");
@@ -73,22 +117,24 @@ public class VueControleur extends Application implements Observer {
         bPane.setTop(titre);
         //endregion
 
+        //---------------------------------------------------------------------
         //------------- RIGHT -- Liste des pièces du joueur actif
 
         //region Liste de Pièces
 
-        //On initialise les liste de pièces de chaque joueurs
+        //On initialise les liste de pièces de tout les joueurs
         for (int i = 0; i < 4; i++) {
             listesPiecesJoueurs[i] = new ListePiece( partie.getJoueur(i), partie);
             bPane.setMargin(listesPiecesJoueurs[i], new Insets(20));
             listesPiecesJoueurs[i].setAlignment(Pos.TOP_LEFT);
         }
-        //On l'ajoute pas encore à la bPane, on attend le choix du nombre de joueur,
-        //donc on l'ajoutera via un controlleur.
+        //On l'ajoute pas encore à bPane, on attend le choix du nombre de joueur,
+        //  on l'ajoutera via un controlleur.
 
         //endregion
 
-        //------------- LEFT -- Liste des Joueurs.
+        //---------------------------------------------------------------------
+        //------------- LEFT -- Choix Nb Joueur & Liste des Joueurs.
 
         //region Liste Joueurs
 
@@ -109,7 +155,8 @@ public class VueControleur extends Application implements Observer {
             btChoix.setOnMouseClicked(event -> {
                 NbJoueurs = nb;
                 partie.setNbJoueurs(nb);
-                listeJoueurs = new ListeJoueur(nb);
+                partie.setNbJoueursRestant(nb);
+                listeJoueurs = new ListeJoueur(partie, nb);
                 bPane.setLeft(listeJoueurs);
                 bPane.setRight(listesPiecesJoueurs[0]);
 
@@ -126,6 +173,7 @@ public class VueControleur extends Application implements Observer {
         bPane.setLeft(vbox);
         //endregion
 
+        //---------------------------------------------------------------------
         // ------------ CENTER -- Plateau de Jeu
 
         //region Plateau Jeu
@@ -151,11 +199,25 @@ public class VueControleur extends Application implements Observer {
                         MouseButton button = event.getButton();
                         //Si c'est un click gauche, on pose la pièce
                         if( button == MouseButton.PRIMARY ) {
-                            //On pose la pièce courante.
+
+                            //On pose la pièce courante, si on réussi :
                             if ( partie.jouerPiece(plateau.getPieceCourante(), grilleJeu.getRowIndex(rect), grilleJeu.getColumnIndex(rect)) ) {
                                 effacerPieceSurvol(grilleJeu.getRowIndex(rect), grilleJeu.getColumnIndex(rect));
+
+                                //Si il y a un gagnant, message de victoire
+                                JoueurBlokus joueurGagnant = partie.joueurGagnant();
+                                if ( joueurGagnant != null ) {
+                                    System.out.println("Joueur " + joueurGagnant.getNumJoueur() + " a gagné !");
+                                    textVictoire.setText("Le joueur " + joueurGagnant.getNumJoueur() + " a gagné !");
+                                    textVictoire.setFill(joueurGagnant.getCouleur());
+                                    popupStage.showAndWait();
+                                }
+                                else //On passe au joueur suivant.
+                                    partie.joueurSuivant();
                             }
+
                         }
+
                         //Si c'est un click droit, on la tourne
                         else if( button == MouseButton.SECONDARY ) {
                             if ( plateau.getPieceCourante() != null ) {
@@ -186,16 +248,33 @@ public class VueControleur extends Application implements Observer {
 
         //endregion
 
+        //---------------------------------------------------------------------
         // ------------ BOTTOM -- Bouton abandon
         Button btAbandon = new Button("Abandonner");
         btAbandon.setPadding(new Insets(10));
         btAbandon.setOnMouseClicked( event -> {
-            partie.getJoueurActif().setaAbandone(true);
-            listeJoueurs.setAbandon(partie.getNumJoueurActif());
+            if (partie.abandonner(partie.getJoueurActif()))
+                listeJoueurs.setAbandon(partie.getNumJoueurActif());
             System.out.println("Joueur " + partie.getNumJoueurActif() + " a abandonné !");
 
-            partie.joueurSuivant();
+            partie.supprimerPieceCourante();
+
+            //Si il y a un gagnant, message de victoire
+            JoueurBlokus joueurGagnant = partie.joueurGagnant();
+            if (joueurGagnant != null) {
+                System.out.println("Joueur " + joueurGagnant.getNumJoueur() + " a gagné !");
+                textVictoire.setText("Le joueur " + joueurGagnant.getNumJoueur() + " a gagné !");
+                textVictoire.setFill(joueurGagnant.getCouleur());
+                popupStage.showAndWait();
+            }
+
+            else //On passe au joueur suivant.
+                partie.joueurSuivant();
+
+
+
         });
+
         bPane.setMargin(btAbandon, new Insets(5));
         bPane.setAlignment(btAbandon, Pos.CENTER);
         bPane.setBottom(btAbandon);
@@ -203,7 +282,10 @@ public class VueControleur extends Application implements Observer {
         //Résout le problème de gap entre le plateau de jeu et les listes de pièces.
         bPane.setMinSize(1100, 700);
 
-        //SCENE
+
+
+        //---------------------------------------------------------------------
+        //----- SCENE
 
         Scene scene = new Scene(bPane, 1100, 700);
         scene.setOnScroll( event -> {
@@ -211,6 +293,7 @@ public class VueControleur extends Application implements Observer {
             plateau.getPieceCourante().rotation(Direction.RIGHT);
         });
 
+        primaryStage.setOnCloseRequest(e -> Platform.exit());
         primaryStage.setTitle("BLOKUS");
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -297,21 +380,17 @@ public class VueControleur extends Application implements Observer {
 
         if (o instanceof Partie) {
 
-            //Si on reçoit une pièce, on met à jour cette pièce.
-            if (arg instanceof Piece) {
-                listesPiecesJoueurs[partie.getNumJoueurActif()-1].supprimerPiece( (Piece)arg );
-                listesPiecesJoueurs[partie.getNumJoueurActif()-1].update();
-            }
-            //Si on reçoit un joueur, on mets à jour les listes des joueurs, ça veut aussi dire qu'on change de joueur.
-            else if (arg instanceof JoueurBlokus) {
+            int numJoueurActif = partie.getNumJoueurActif();
 
-                listeJoueurs.update( partie.getNumJoueurActif() );
+            //listesPiecesJoueurs[numJoueurActif-1].supprimerPiece( (Piece)arg );
+            listesPiecesJoueurs[numJoueurActif-1].update();
 
-                //On met à jour/change la liste de pièce affiché pour celle du nouveau joueur actif
-                bPane.setRight(listesPiecesJoueurs[partie.getJoueurActif().getNumJoueur()-1]);
+            //On met à jour la liste des joueurs à gauche.
+            listeJoueurs.update( numJoueurActif );
 
-                //On change les couleur de la liste des joueurs.
-            }
+            //On met à jour/change la liste de pièce affiché pour celle du nouveau joueur actif
+            bPane.setRight(listesPiecesJoueurs[numJoueurActif-1]);
+
         }
         //Si on reçoit le plateau, on rafraichit toute la grille de jeu.
         else if (o instanceof Plateau) {

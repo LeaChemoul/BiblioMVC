@@ -9,20 +9,22 @@ public class Partie extends Observable {
     private PieceBuilder builder = new PieceBuilder();
     private Plateau plateau;
     private JoueurBlokus[] joueurs = new JoueurBlokus[4]; //Max 4 joueurs
-    int nbJoueurs = 2;
 
-    private int numJoueurActif;
+    private int nbJoueurs;
+    private int nbJoueursRestant;
+
     private JoueurBlokus joueurActif;
 
 
 
-    public Partie(Plateau p, int nbJoueur){
+    public Partie(Plateau p, int nbJoueurs){
 
         this.plateau = p;
-        this.nbJoueurs = nbJoueur;
+        this.nbJoueurs = nbJoueurs;
+        this.nbJoueursRestant = nbJoueurs;
 
         //On génère les pièces du pool
-        genererPieces();
+        genererPiecesDemo();
 
         // 2 à 4 Joueurs seulement
         if ( nbJoueurs < 2 ) nbJoueurs = 2;
@@ -46,16 +48,33 @@ public class Partie extends Observable {
     /**
      * Modifie JoueurActif avec le joueur suivant.
      */
-    public void joueurSuivant() {
+    public boolean joueurSuivant() {
 
-        int numJoueurActif = joueurActif.getNumJoueur();
-        if ( numJoueurActif+1 > nbJoueurs )
-            joueurActif = joueurs[0];
-        else
-            joueurActif = joueurs[numJoueurActif];
+        int numJoueurActif;
+        JoueurBlokus premierJoueurActif = joueurActif;
+
+        //Si le joueur actif est un joueur ayant abandonné, on passe directement au joueur suivant.
+        do {
+            numJoueurActif = joueurActif.getNumJoueur();
+            if ( numJoueurActif+1 > nbJoueurs )
+                joueurActif = joueurs[0];
+            else
+                joueurActif = joueurs[numJoueurActif];
+
+            //Si on a déjà passé tout les joueurs, erreur !
+            if ( joueurActif == premierJoueurActif ) {
+                System.out.println("On a fait le tour des joueurs !");
+                setChanged();
+                notifyObservers(joueurActif);
+                return false;
+            }
+
+        } while ( joueurActif.isaAbandone() );
 
         setChanged();
-        notifyObservers(joueurActif);
+        notifyObservers();
+
+        return true;
     }
 
     /**
@@ -81,10 +100,9 @@ public class Partie extends Observable {
             //On pose la pièce
             plateau.poserPiecePlateau(piece, i, j);
             //On la supprime de la liste des pièces du joueur
-            supprimerPiece(joueurActif, piece);
-            //Il n'y a alors plus de pièce courantes
-            plateau.setPieceCourante(null);
-            joueurSuivant();
+            //supprimerPiece(joueurActif, piece);
+            supprimerPieceCourante();
+
         }
 
         return peutJouer;
@@ -169,13 +187,23 @@ public class Partie extends Observable {
         return isAdjPiece;
     }
 
+
+    /**
+     * Renvoie true si la case touche en diagonale (via un de ses coins) une autre pièce du même joueur.
+     * @param couleur Couleur de la pièce ( et donc du joueur )
+     * @param i numéro de ligne de la case à tester
+     * @param j numéro de colonne de de la case à tester
+     * @return true si la case touche en diagonale une case allié, false sinon.
+     */
     public boolean isDiagonalePieceAllie(Color couleur, int i, int j) {
         Case[][] matP = plateau.getTableauJeu();
         boolean isDiagPiece = false;
 
         if ( isHorsPlateau(i, j) ) {
-            return false;
+            return isDiagPiece;
         }
+
+        //On fait beaucoup de if pour la même instruction pour rendre le code plus clair.
 
         //Case Nord-Ouest
         if ( i > 0 && j > 0 && matP[i-1][j-1] != null && matP[i-1][j-1].getCouleur() == couleur)
@@ -192,6 +220,7 @@ public class Partie extends Observable {
 
         return isDiagPiece;
     }
+
 
     public boolean toucheCoinJoueur(JoueurBlokus joueur, Piece piece, int i_row, int j_col) {
 
@@ -233,6 +262,41 @@ public class Partie extends Observable {
     public boolean isHorsPlateau(int i, int j) {
         return i < 0 || j < 0 || i >= plateau.getHauteur() || j >= plateau.getLargeur();
     }
+
+    /**
+     * Fais abandonner le joueur. Renvoie true si il le joueur a bien abandonné, false si il avait déjà abandonné
+     * @param joueur joueur qui abandonne.
+     * @return true si il y a un gagnant, false sinon.
+     */
+    public boolean abandonner(JoueurBlokus joueur) {
+
+        if ( joueur.isaAbandone() )
+            return false;
+        else {
+           joueur.setaAbandone(true);
+           nbJoueursRestant--;
+           return true;
+        }
+
+    }
+
+    /**
+     * Renvoie le joueur gagnant. Renvoie null si il n'y a aucun gagnant.
+     * @return joueur gagnant.
+     */
+    public JoueurBlokus joueurGagnant() {
+
+        for (int i = 0; i < nbJoueurs; i++) {
+            //Si il ne reste qu'un joueur et que c'est le joueur qui n'a pas abandonné, c'est le joueur gagnant
+            //OU si le joueur n'a plus de pièce, c'est le joueur gagnant.
+            if ( ( nbJoueursRestant == 1  && !joueurs[i].isaAbandone() ) || joueurs[i].poolIsEmpty() )
+                return joueurs[i];
+        }
+
+        return null;
+
+    }
+
     /**
      * Supprime la Piece piece de la liste des pièces du joueur J.
      * @param j Joueur
@@ -241,20 +305,20 @@ public class Partie extends Observable {
     public void supprimerPiece(JoueurBlokus j, Piece piece) {
         j.supprimerPiece(piece);
 
-        setChanged();
-        notifyObservers(piece);
+        //setChanged();
+        //notifyObservers(piece);
     }
 
     /**
-     * Supprimer la piece courante du plateau.
+     * Supprimer la piece courante du plateau et de la liste des pièces du joueur actif.
      */
     public void supprimerPieceCourante() {
         joueurActif.supprimerPiece(getPieceCourante());
-
-        setChanged();
-        notifyObservers(getPieceCourante());
-
         setPieceCourante(null);
+
+        //setChanged();
+        //notifyObservers();
+
     }
 
     //TODO : Laisser ici ou la déplacer en static ailleurs pour etre réutilisable ?
@@ -275,6 +339,18 @@ public class Partie extends Observable {
 
     public boolean aGagne(Joueur joueur) {
         return joueur.poolIsEmpty();
+    }
+
+    public void genererPiecesDemo() {
+        //Pièce à une case
+        builder.addPiece("Piece1-1", new double[]{0,0});
+
+        //Pièce à deux cases
+        builder.addPiece("Piece2-1", new double[]{0,0, 1,0});
+
+        //Pièces à trois cases
+        builder.addPiece("Piece3-1", new double[]{0,0, 1,0 , 2,0});
+        builder.addPiece("Piece3-2", new double[]{0,0, 1,0 , 1,1});
     }
 
     /**
@@ -324,6 +400,14 @@ public class Partie extends Observable {
 
     public void setNbJoueurs(int nbJoueurs) {
         this.nbJoueurs = nbJoueurs;
+    }
+
+    public int getNbJoueursRestant() {
+        return nbJoueursRestant;
+    }
+
+    public void setNbJoueursRestant(int nbJoueursRestant) {
+        this.nbJoueursRestant = nbJoueursRestant;
     }
 
     public JoueurBlokus getJoueurActif() {
