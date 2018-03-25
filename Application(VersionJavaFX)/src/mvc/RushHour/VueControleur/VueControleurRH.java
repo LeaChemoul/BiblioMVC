@@ -16,8 +16,6 @@ import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
@@ -26,9 +24,8 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import mvc.RushHour.Modele.Partie;
-import mvc.VueControleur.GrilleVue;
+import mvc.VueControleur.VuePrincipale;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
@@ -37,7 +34,7 @@ import java.util.Observer;
 public class VueControleurRH extends Application implements Observer {
 
     private Partie partie;
-    GrilleVue grille = new GrilleVue(6,6,50);
+    VuePrincipale grille = new VuePrincipale(6,6,50);
 
     @Override
     public void start(Stage primaryStage){

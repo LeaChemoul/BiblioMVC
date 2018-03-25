@@ -402,6 +402,10 @@ public class Partie extends Observable {
         this.nbJoueurs = nbJoueurs;
     }
 
+    public int getNbJoueurs() {
+        return nbJoueurs;
+    }
+
     public int getNbJoueursRestant() {
         return nbJoueursRestant;
     }

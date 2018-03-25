@@ -20,7 +20,7 @@ import mvc.Model.Plateau;
 
 import javafx.scene.text.Text;
 
-public class GrilleVue extends BorderPane{
+public class VuePrincipale extends BorderPane{
 
     private int largeur;
     private int hauteur;
@@ -28,7 +28,7 @@ public class GrilleVue extends BorderPane{
     private Rectangle[][] tab;
     private MediaPlayer mediaPlayer;
 
-    public GrilleVue(int a, int b,int rectSize) {
+    public VuePrincipale(int a, int b, int rectSize) {
         this.largeur = a;
         this.hauteur = b;
         

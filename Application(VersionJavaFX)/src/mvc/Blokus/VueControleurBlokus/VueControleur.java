@@ -14,7 +14,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.*;
 import javafx.stage.Modality;
@@ -30,8 +29,6 @@ import java.util.Observer;
 
 public class VueControleur extends Application implements Observer {
 
-
-    private int NbJoueurs;
 
     private Plateau plateau = new Plateau(20, 20);
     private Partie partie = new Partie(plateau, 4);
@@ -66,12 +63,12 @@ public class VueControleur extends Application implements Observer {
 
         //---------------------------------------------------------------------
         //----- POPUP VICTOIRE
-
+            //region popup fin de partie
         Stage popupStage = new Stage();
 
         //---------------
         //Le contenu du Popup : Un message de victoire et un bouton pour quitter.
-        VBox popupBox = new VBox();
+        VBox popupVBox = new VBox();
 
         //Bouton pour quitter
         Button btQuitter = new Button("Quitter le jeu");
@@ -81,17 +78,18 @@ public class VueControleur extends Application implements Observer {
             primaryStage.close();
         });
 
-        //Message Victoire
+        //Message de Victoire
         Text textVictoire = new Text();
         textVictoire.setFont(Font.font("Helvetica", FontWeight.BOLD, 16));
 
-        popupBox.setAlignment(Pos.CENTER);
-        popupBox.setSpacing(20);
-        popupBox.getChildren().addAll( textVictoire, btQuitter );
+        //On ajoute le bouton et le texte a la vbox.
+        popupVBox.setAlignment(Pos.CENTER);
+        popupVBox.setSpacing(20);
+        popupVBox.getChildren().addAll( textVictoire, btQuitter );
 
         //---------------
         //On prépare le popup : C'est une nouvelle scène sur un nouveau stage.
-        Scene popupScene = new Scene(popupBox, 200, 120);
+        Scene popupScene = new Scene(popupVBox, 200, 120);
 
         popupStage.close();
         popupStage.setScene(popupScene);
@@ -101,9 +99,9 @@ public class VueControleur extends Application implements Observer {
 
         popupStage.setOnCloseRequest(e -> Platform.exit());
 
+        //endregion
 
-
-
+        //---------------------------------------------------------------------
         //Préparation de la scene de la grille de jeu.
 
         //---------------------------------------------------------------------
@@ -129,7 +127,7 @@ public class VueControleur extends Application implements Observer {
             listesPiecesJoueurs[i].setAlignment(Pos.TOP_LEFT);
         }
         //On l'ajoute pas encore à bPane, on attend le choix du nombre de joueur,
-        //  on l'ajoutera via un controlleur.
+        //on l'ajoutera via un controlleur.
 
         //endregion
 
@@ -138,7 +136,7 @@ public class VueControleur extends Application implements Observer {
 
         //region Liste Joueurs
 
-        //region choix nb joueurs
+            //region choix nb joueurs
         VBox vbox = new VBox();
 
         Text textChoix = new Text("   Choississez un\nnombre de joueurs :");
@@ -153,7 +151,6 @@ public class VueControleur extends Application implements Observer {
             //Lorsqu'on click sur un bouton, on redéfini le nb de joueurs de partie,
             //et on affiche la liste des joueurs en fct de celui-ci + la liste de pièce du premier joueur.
             btChoix.setOnMouseClicked(event -> {
-                NbJoueurs = nb;
                 partie.setNbJoueurs(nb);
                 partie.setNbJoueursRestant(nb);
                 listeJoueurs = new ListeJoueur(partie, nb);
@@ -364,7 +361,7 @@ public class VueControleur extends Application implements Observer {
 
     public void colorierCoins() {
         //On colorie les coins en fonction du nombre de joueurs
-        for (int i = 0; i < NbJoueurs; i++) {
+        for (int i = 0; i < partie.getNbJoueurs(); i++) {
             JoueurBlokus joueur = partie.getJoueur(i);
             tab[ joueur.getCoinDepartX() ] [joueur.getCoinDepartY() ].setFill(joueur.getCouleur());
         }

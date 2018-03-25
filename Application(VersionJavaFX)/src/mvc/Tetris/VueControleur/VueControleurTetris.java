@@ -12,7 +12,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -21,7 +20,7 @@ import javafx.stage.WindowEvent;
 import mvc.Model.Direction;
 import mvc.Tetris.Modele.Partie;
 import mvc.VueControleur.GrillePiece;
-import mvc.VueControleur.GrilleVue;
+import mvc.VueControleur.VuePrincipale;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -30,7 +29,7 @@ import java.util.Observer;
 public class VueControleurTetris extends Application implements Observer {
 
     private Partie partie;
-    GrilleVue grille = new GrilleVue(10,20,30);
+    VuePrincipale grille = new VuePrincipale(10,20,30);
 
     @Override
     public void start(Stage primaryStage){
