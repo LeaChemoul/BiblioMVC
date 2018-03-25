@@ -29,6 +29,7 @@ public class ListePiece extends TilePane{
     private JoueurBlokus joueur;
     private Partie partie;
 
+    //On associe à chaque pièce sa propre GridPane la représentant.
     private HashMap<Piece, GridPane> listeGrillesPieces;
 
     public ListePiece(JoueurBlokus joueur, Partie partie) {
@@ -52,22 +53,18 @@ public class ListePiece extends TilePane{
         }
     }
 
-    public void supprimerPiece(Piece piece) {
-        getChildren().remove(listeGrillesPieces.get(piece));
-        listeGrillesPieces.remove(piece);
-    }
-    public void supprimerGrille(GridPane grid) {
-        getChildren().remove(grid);
-    }
-
-
     public void update() {
 
+        //On efface toutes les pièces affichés dans la liste des pièces.
+        //Necessaire pour se débarraser des pièces jouées.
         listeGrillesPieces.forEach( (piece, grid) -> {
             getChildren().remove(grid);
         });
 
+        //On réinitialise la liste des pièce/grilles.
         listeGrillesPieces.clear();
+
+        //Pour chaque pièce, on recalcule sa grille qu'on rajoute dans la liste.
         for (Piece piece: joueur.getPoolDePiece() ) {
 
             //On refait une nouvelle grille à partir de l'état actuel de la pièce.
@@ -78,7 +75,8 @@ public class ListePiece extends TilePane{
             //CONTROLLEURS : Quand on clique sur une pièce, elle devient la pièce active du plateau (celle qu'on peut manipuler).
             grillePiece.setOnMouseClicked(event -> {
                 partie.setPieceCourante(piece);
-                System.out.println("Piece active changée ! - " + piece.getNom());
+                //DEBUG material
+                //System.out.println("Piece active changée ! - " + piece.getNom());
                 //partie.getPieceCourante().afficherPiece();
             });
 
@@ -86,15 +84,6 @@ public class ListePiece extends TilePane{
             getChildren().add(listeGrillesPieces.get(piece));
         }
     }
-
-    public void update(Piece piece) {
-
-    }
-
-    public GridPane getGridPiece(Piece piece) {
-        return listeGrillesPieces.get(piece);
-    }
-
 
 
 }

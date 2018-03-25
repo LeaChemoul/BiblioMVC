@@ -34,7 +34,7 @@ import java.util.Observer;
 public class VueControleurRH extends Application implements Observer {
 
     private Partie partie;
-    VuePrincipale grille = new VuePrincipale(6,6,50);
+    VuePrincipale grille = new VuePrincipale(6,6,50, true);
 
     @Override
     public void start(Stage primaryStage){

@@ -22,6 +22,7 @@ import javafx.stage.Stage;
 
 import mvc.Model.*;
 import mvc.Blokus.ModeleBlokus.*;
+import mvc.VueControleur.VuePrincipale;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -34,12 +35,12 @@ public class VueControleur extends Application implements Observer {
     private Partie partie = new Partie(plateau, 4);
 
 
-    private BorderPane bPane = new BorderPane();
+    private VuePrincipale vueP = new VuePrincipale(20, 20, 30, false);
     private GridPane grilleJeu;
 
     private ListePiece[] listesPiecesJoueurs = new ListePiece[5];
     private ListeJoueur listeJoueurs;
-    private Popup popupVictoire;
+    private PopupVictoire popupVictoire;
 
 
     private Rectangle[][] tab;
@@ -64,9 +65,12 @@ public class VueControleur extends Application implements Observer {
         //---------------------------------------------------------------------
         //----- POPUP VICTOIRE
             //region popup fin de partie
+
+        popupVictoire = new PopupVictoire(primaryStage);
+
+        /*
         Stage popupStage = new Stage();
 
-        //---------------
         //Le contenu du Popup : Un message de victoire et un bouton pour quitter.
         VBox popupVBox = new VBox();
 
@@ -98,7 +102,7 @@ public class VueControleur extends Application implements Observer {
         popupStage.setTitle("Bravo !");
 
         popupStage.setOnCloseRequest(e -> Platform.exit());
-
+        */
         //endregion
 
         //---------------------------------------------------------------------
@@ -111,8 +115,8 @@ public class VueControleur extends Application implements Observer {
         Text titre = new Text("--- BLOKUS ---");
         titre.setFont(Font.font("Helvetica", FontWeight.BOLD, 20));
         titre.setFill(Color.MEDIUMPURPLE);
-        bPane.setAlignment(titre, Pos.CENTER);
-        bPane.setTop(titre);
+        vueP.setAlignment(titre, Pos.CENTER);
+        vueP.setTop(titre);
         //endregion
 
         //---------------------------------------------------------------------
@@ -123,7 +127,7 @@ public class VueControleur extends Application implements Observer {
         //On initialise les liste de pièces de tout les joueurs
         for (int i = 0; i < 4; i++) {
             listesPiecesJoueurs[i] = new ListePiece( partie.getJoueur(i), partie);
-            bPane.setMargin(listesPiecesJoueurs[i], new Insets(20));
+            vueP.setMargin(listesPiecesJoueurs[i], new Insets(20));
             listesPiecesJoueurs[i].setAlignment(Pos.TOP_LEFT);
         }
         //On l'ajoute pas encore à bPane, on attend le choix du nombre de joueur,
@@ -154,8 +158,8 @@ public class VueControleur extends Application implements Observer {
                 partie.setNbJoueurs(nb);
                 partie.setNbJoueursRestant(nb);
                 listeJoueurs = new ListeJoueur(partie, nb);
-                bPane.setLeft(listeJoueurs);
-                bPane.setRight(listesPiecesJoueurs[0]);
+                vueP.setLeft(listeJoueurs);
+                vueP.setRight(listesPiecesJoueurs[0]);
 
                 colorierCoins();
             });
@@ -167,81 +171,21 @@ public class VueControleur extends Application implements Observer {
         //Pour éviter d'avoir un changement de taille de la région lorsqu'on la changera avec la liste de joueurs.
         vbox.setMinWidth(200);
 
-        bPane.setLeft(vbox);
+        vueP.setLeft(vbox);
         //endregion
 
         //---------------------------------------------------------------------
         // ------------ CENTER -- Plateau de Jeu
 
         //region Plateau Jeu
-        grilleJeu = new GridPane();
-        tab = new Rectangle[plateau.getHauteur()][plateau.getLargeur()];
-        for(int i = 0; i < plateau.getHauteur(); i++)
-            for(int j = 0; j < plateau.getLargeur(); j++){
-                Rectangle rect = new Rectangle();
-                rect.setHeight(30);
-                rect.setWidth(30);
-                rect.setFill(Color.WHITE);
-                tab[i][j] = rect;
-                grilleJeu.add(tab[i][j], j, i);
-                //CONTROLLEURS
-                // Lors d'un click de souris sur une case du plateau
-                rect.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent event) {
 
-                        //Si on a pas de pièce courante avec laquelle interagir on ne fait rien.
-                        if (plateau.getPieceCourante() == null) return;
+        //Le centre est déjà initialisé quand on crée VuePrincipale !
 
-                        MouseButton button = event.getButton();
-                        //Si c'est un click gauche, on pose la pièce
-                        if( button == MouseButton.PRIMARY ) {
+        vueP.getGridP().setGridLinesVisible(true);
+        vueP.getGridP().setPadding(new Insets(10, 0, 10, 20));
 
-                            //On pose la pièce courante, si on réussi :
-                            if ( partie.jouerPiece(plateau.getPieceCourante(), grilleJeu.getRowIndex(rect), grilleJeu.getColumnIndex(rect)) ) {
-                                effacerPieceSurvol(grilleJeu.getRowIndex(rect), grilleJeu.getColumnIndex(rect));
-
-                                //Si il y a un gagnant, message de victoire
-                                JoueurBlokus joueurGagnant = partie.joueurGagnant();
-                                if ( joueurGagnant != null ) {
-                                    System.out.println("Joueur " + joueurGagnant.getNumJoueur() + " a gagné !");
-                                    textVictoire.setText("Le joueur " + joueurGagnant.getNumJoueur() + " a gagné !");
-                                    textVictoire.setFill(joueurGagnant.getCouleur());
-                                    popupStage.showAndWait();
-                                }
-                                else //On passe au joueur suivant.
-                                    partie.joueurSuivant();
-                            }
-
-                        }
-
-                        //Si c'est un click droit, on la tourne
-                        else if( button == MouseButton.SECONDARY ) {
-                            if ( plateau.getPieceCourante() != null ) {
-                                plateau.getPieceCourante().rotation(Direction.RIGHT);
-                                effacerPieceSurvol(grilleJeu.getRowIndex(rect), grilleJeu.getColumnIndex(rect));
-                                afficherPieceSurvol(grilleJeu.getRowIndex(rect), grilleJeu.getColumnIndex(rect));
-                            }
-                        }
-
-                    }
-                });
-                // Si on survole une case avec une pièce active, ça nous montre où elle serait posée.
-                rect.setOnMouseEntered( event -> {
-                    //System.out.println("RowIndex = " +grilleJeu.getRowIndex(rect) +" ColIndex = " + grilleJeu.getColumnIndex(rect));
-                    if (plateau.getPieceCourante() != null)
-                        afficherPieceSurvol(grilleJeu.getRowIndex(rect), grilleJeu.getColumnIndex(rect));
-                });
-                // Si on ne survole plus une case, on efface la pièce qui y était affiché en survole
-                rect.setOnMouseExited( event -> {
-                    effacerPieceSurvol(grilleJeu.getRowIndex(rect), grilleJeu.getColumnIndex(rect));
-                });
-
-            }
-        grilleJeu.setGridLinesVisible(true);
-        grilleJeu.setPadding(new Insets(10, 0, 10, 20));
-
-        bPane.setCenter(grilleJeu);
+        //On initialise les controleurs.
+        initialiserCases();
 
         //endregion
 
@@ -259,32 +203,28 @@ public class VueControleur extends Application implements Observer {
             //Si il y a un gagnant, message de victoire
             JoueurBlokus joueurGagnant = partie.joueurGagnant();
             if (joueurGagnant != null) {
-                System.out.println("Joueur " + joueurGagnant.getNumJoueur() + " a gagné !");
-                textVictoire.setText("Le joueur " + joueurGagnant.getNumJoueur() + " a gagné !");
-                textVictoire.setFill(joueurGagnant.getCouleur());
-                popupStage.showAndWait();
+                popupVictoire.afficherPopupVictoire(joueurGagnant);
             }
 
             else //On passe au joueur suivant.
                 partie.joueurSuivant();
 
-
-
         });
 
-        bPane.setMargin(btAbandon, new Insets(5));
-        bPane.setAlignment(btAbandon, Pos.CENTER);
-        bPane.setBottom(btAbandon);
+        vueP.setMargin(btAbandon, new Insets(5));
+        vueP.setAlignment(btAbandon, Pos.CENTER);
+        vueP.setPadding(new Insets(0));
+        vueP.setBottom(btAbandon);
 
         //Résout le problème de gap entre le plateau de jeu et les listes de pièces.
-        bPane.setMinSize(1100, 700);
+        vueP.setMinSize(1100, 700);
 
 
 
         //---------------------------------------------------------------------
         //----- SCENE
 
-        Scene scene = new Scene(bPane, 1100, 700);
+        Scene scene = new Scene(vueP, 1100, 700);
         scene.setOnScroll( event -> {
         if ( plateau.getPieceCourante() != null )
             plateau.getPieceCourante().rotation(Direction.RIGHT);
@@ -318,9 +258,9 @@ public class VueControleur extends Application implements Observer {
                 {
                     //On rétablit les couleurs d'origines du plateau.
                     if (plateau.getTableauJeu()[i][j] != null)
-                        tab[i][j].setFill(plateau.getTableauJeu()[i][j].getCouleur());
+                        vueP.getTab()[i][j].setFill(plateau.getTableauJeu()[i][j].getCouleur());
                     else
-                        tab[i][j].setFill(Color.WHITE);
+                        vueP.getTab()[i][j].setFill(Color.WHITE);
                 }
 
             }
@@ -352,23 +292,88 @@ public class VueControleur extends Application implements Observer {
                 if (inBound(row+i, col+j, plateau.getHauteur(), plateau.getLargeur()) ) {
                     //On colorie par dessus le plateau avec la couleur de la piece qu'on veut visualiser.
                     if (croppedPiece[i][j] != 0)
-                        tab[row+i][col+j].setFill(pieceCourante.getCouleur());
+                        vueP.getTab()[row+i][col+j].setFill(pieceCourante.getCouleur());
                 }
             }
         }
 
     }
 
+    /**
+     * Colorie les coins du plateau avec les couleurs des joueurs, pour indiquer dans quel coin chacun commence.
+     */
     public void colorierCoins() {
         //On colorie les coins en fonction du nombre de joueurs
         for (int i = 0; i < partie.getNbJoueurs(); i++) {
             JoueurBlokus joueur = partie.getJoueur(i);
-            tab[ joueur.getCoinDepartX() ] [joueur.getCoinDepartY() ].setFill(joueur.getCouleur());
+            vueP.getTab()[ joueur.getCoinDepartX() ] [joueur.getCoinDepartY() ].setFill(joueur.getCouleur());
         }
     }
 
     public boolean inBound(int i, int j, int iMax, int jMax) {
         return ( i >= 0 && j >= 0 && i < iMax && j < jMax);
+    }
+
+    /**
+     * Création de l'evenement en réponse au clique sur une case
+     */
+    private void initialiserCases() {
+        for (int i = 0; i < vueP.getHauteur(); i++) {
+            for (int j = 0; j < vueP.getLargeur() ; j++) {
+                Rectangle[][] tab = vueP.getTab();
+                int finalI = i;
+                int finalJ = j;
+                tab[i][j].setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+                    @Override
+                    public void handle(MouseEvent event) {
+
+                        //Si on a pas de pièce courante avec laquelle interagir on ne fait rien.
+                        if (plateau.getPieceCourante() == null) return;
+
+                        MouseButton button = event.getButton();
+                        //Si c'est un click gauche, on pose la pièce
+                        if( button == MouseButton.PRIMARY ) {
+
+                            //On pose la pièce courante, si on réussi :
+                            if ( partie.jouerPiece(plateau.getPieceCourante(), finalI, finalJ) ) {
+                                effacerPieceSurvol(finalI, finalJ);
+
+                                //Si il y a un gagnant, message de victoire
+                                JoueurBlokus joueurGagnant = partie.joueurGagnant();
+                                if ( joueurGagnant != null ) {
+                                    popupVictoire.afficherPopupVictoire(joueurGagnant);
+                                }
+                                else //On passe au joueur suivant.
+                                    partie.joueurSuivant();
+                            }
+
+                        }
+
+                        //Si c'est un click droit, on la tourne
+                        else if( button == MouseButton.SECONDARY ) {
+                            if ( plateau.getPieceCourante() != null ) {
+                                plateau.getPieceCourante().rotation(Direction.RIGHT);
+                                effacerPieceSurvol(finalI, finalJ);
+                                afficherPieceSurvol(finalI, finalJ);
+                            }
+                        }
+
+                    }
+                });
+
+                // Si on survole une case avec une pièce active, ça nous montre où elle serait posée.
+                tab[i][j].setOnMouseEntered( event -> {
+                    //System.out.println("RowIndex = " +grilleJeu.getRowIndex(rect) +" ColIndex = " + grilleJeu.getColumnIndex(rect));
+                    if (plateau.getPieceCourante() != null)
+                        afficherPieceSurvol(finalI, finalJ);
+                });
+
+                tab[i][j].setOnMouseExited( event -> {
+                    effacerPieceSurvol(finalI, finalJ);
+                });
+            }
+        }
     }
 
     @Override
@@ -386,7 +391,7 @@ public class VueControleur extends Application implements Observer {
             listeJoueurs.update( numJoueurActif );
 
             //On met à jour/change la liste de pièce affiché pour celle du nouveau joueur actif
-            bPane.setRight(listesPiecesJoueurs[numJoueurActif-1]);
+            vueP.setRight(listesPiecesJoueurs[numJoueurActif-1]);
 
         }
         //Si on reçoit le plateau, on rafraichit toute la grille de jeu.
@@ -399,9 +404,9 @@ public class VueControleur extends Application implements Observer {
 
                     //Case non vide
                     if (plateau.getTableauJeu()[i][j] != null)
-                        tab[i][j].setFill(plateau.getTableauJeu()[i][j].getCouleur());
+                        vueP.getTab()[i][j].setFill(plateau.getTableauJeu()[i][j].getCouleur());
                     else //Case vide
-                        tab[i][j].setFill(Color.WHITE);
+                        vueP.getTab()[i][j].setFill(Color.WHITE);
 
                 }
             }

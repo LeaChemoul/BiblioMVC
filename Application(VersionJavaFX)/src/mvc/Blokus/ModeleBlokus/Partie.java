@@ -24,7 +24,7 @@ public class Partie extends Observable {
         this.nbJoueursRestant = nbJoueurs;
 
         //On génère les pièces du pool
-        genererPiecesDemo();
+        genererPieces();
 
         // 2 à 4 Joueurs seulement
         if ( nbJoueurs < 2 ) nbJoueurs = 2;
@@ -46,7 +46,7 @@ public class Partie extends Observable {
     //Méthodes
 
     /**
-     * Modifie JoueurActif avec le joueur suivant.
+     * Modifie JoueurActif avec le joueur suivant. Saute les joueurs ayant abandonné.
      */
     public boolean joueurSuivant() {
 
@@ -109,6 +109,17 @@ public class Partie extends Observable {
 
     }
 
+    /**
+     * Permet de savoir si on peut poser une pièce, suivant les règles du blokus :<br>
+      - On peut pas poser une pièce sur une autre<br>
+      - La pièce ne peut pas toucher directement une autre pièce du même joueur.<br>
+      - La pièce doit toucher en "diagonale" au moins une autre pièce du même joueur.<br>
+     * @param joueur Joueur jouant la pièce
+     * @param piece Pièce à poser
+     * @param i_row ligne du plateau où jouer la pièce
+     * @param j_col colonne du plateau où jouer la pièce
+     * @return true si on peut poser la pièce à la case (i,j) du plateau, false sinon.
+     */
     public boolean peutPoserPiece(JoueurBlokus joueur, Piece piece, int i_row, int j_col) {
 
         //Les règles pour poser une pièce au Blokus :
@@ -163,6 +174,13 @@ public class Partie extends Observable {
 
     }
 
+    /**
+     * Permet de savoir si case est adjacente à une case avec une pièce de la couleur donnée.
+     * @param couleur Couleur de la pièce
+     * @param i ligne de la case dans le plateau
+     * @param j colonne de la case dans le plateau
+     * @return vrai si la case touche une case avec une pièce de couleur 'couleur', renvoie false sinon.
+     */
     public boolean isAdjacentePieceAllie(Color couleur, int i, int j) {
         Case[][] matP = plateau.getTableauJeu();
         boolean isAdjPiece = false;
@@ -222,6 +240,16 @@ public class Partie extends Observable {
     }
 
 
+    /**
+     * Permet de savoir si le premier coup du joueur est valide :<br>
+     *     - la pièce touche le coin qui lui est attribué<br>
+     *     - la pièce ne dépasse pas le plateau<br>
+     * @param joueur Joueur jouant la pièce
+     * @param piece Piece à jouer
+     * @param i_row ligne du plateau où jouer la pièce
+     * @param j_col colonne du plateau où jouer la pièce
+     * @return vrai si la pièce touche le coin du joueur et est dans les limites du plateau, false sinon.
+     */
     public boolean toucheCoinJoueur(JoueurBlokus joueur, Piece piece, int i_row, int j_col) {
 
         int[][] matPiece = piece.croppedPiece();
@@ -321,7 +349,16 @@ public class Partie extends Observable {
 
     }
 
-    //TODO : Laisser ici ou la déplacer en static ailleurs pour etre réutilisable ?
+    /**
+     * Associe un int à une couleur, permet d'attribuer des couleurs aux joueurs :<br>
+     * 0 -> RED <br>
+     * 1 -> BLUE<br>
+     * 2 -> GREEN<br>
+     * 3 -> PURPLE<br>
+     * autres -> GREY<br>
+     * @param n Int à convertir en couleur
+     * @return renvoie la couleur correspodante à l'entier donné.
+     */
     public static Color intToColor(int n) {
         switch (n) {
             case 0:
@@ -335,10 +372,6 @@ public class Partie extends Observable {
             default:
                 return Color.GREY;
         }
-    }
-
-    public boolean aGagne(Joueur joueur) {
-        return joueur.poolIsEmpty();
     }
 
     public void genererPiecesDemo() {

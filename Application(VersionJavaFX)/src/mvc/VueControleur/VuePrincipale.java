@@ -27,8 +27,9 @@ public class VuePrincipale extends BorderPane{
     private Plateau p;
     private Rectangle[][] tab;
     private MediaPlayer mediaPlayer;
+    private GridPane gridP;
 
-    public VuePrincipale(int a, int b, int rectSize) {
+    public VuePrincipale(int a, int b, int rectSize , boolean reversed) {
         this.largeur = a;
         this.hauteur = b;
         
@@ -36,18 +37,27 @@ public class VuePrincipale extends BorderPane{
         p = new Plateau(hauteur, largeur);
 
         // permet de placer les differents boutons dans une grille
-        GridPane gPane = new GridPane();
+        gridP = new GridPane();
 
-        tab = new Rectangle[largeur][hauteur];
+        //TODO : FIX L'INVERSION LARGEUR HAUTEUR
+        if (reversed)
+            tab = new Rectangle[largeur][hauteur];
+        else
+            tab = new Rectangle[hauteur][largeur];
+
 
         // création des boutons et placement dans la grille
-        for(int i = 0; i< largeur; i++)
-            for(int j = 0; j< hauteur; j++){
+        for(int i = 0; i < largeur; i++)
+            for(int j = 0; j < hauteur; j++){
                 tab[i][j] = new Rectangle();
                 tab[i][j].setHeight(rectSize);
                 tab[i][j].setWidth(rectSize);
                 tab[i][j].setFill(Color.WHITE);
-                gPane.add(tab[i][j],i, j);
+                if (reversed)
+                    gridP.add(tab[i][j], i, j);
+                else
+                    gridP.add(tab[i][j], j, i);
+
             }
 
 
@@ -57,11 +67,12 @@ public class VuePrincipale extends BorderPane{
         this.mediaPlayer = new MediaPlayer(media);
 
         //CENTER
-        gPane.setGridLinesVisible(true);
-        this.setCenter(gPane);
+        gridP.setGridLinesVisible(true);
+        this.setCenter(gridP);
         this.setPadding(new Insets(10, 20, 10, 20));
 
     }
+
 
     public Plateau getP() {
         return p;
@@ -77,6 +88,10 @@ public class VuePrincipale extends BorderPane{
 
     public int getHauteur() {
         return hauteur;
+    }
+
+    public GridPane getGridP() {
+        return gridP;
     }
 
     public MediaPlayer getMediaPlayer() {
