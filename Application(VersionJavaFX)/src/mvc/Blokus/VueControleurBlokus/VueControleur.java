@@ -36,14 +36,12 @@ public class VueControleur extends Application implements Observer {
 
 
     private VuePrincipale vueP = new VuePrincipale(20, 20, 30, false);
-    private GridPane grilleJeu;
 
     private ListePiece[] listesPiecesJoueurs = new ListePiece[5];
     private ListeJoueur listeJoueurs;
     private PopupVictoire popupVictoire;
 
 
-    private Rectangle[][] tab;
 
     /*
     Actions possible du joueur de Blokus dans la vue :
@@ -62,51 +60,14 @@ public class VueControleur extends Application implements Observer {
         partie.getPlateau().addObserver(this);
         partie.addObserver(this);
 
-        //---------------------------------------------------------------------
+        //------------------------------------------
         //----- POPUP VICTOIRE
-            //region popup fin de partie
-
         popupVictoire = new PopupVictoire(primaryStage);
 
-        /*
-        Stage popupStage = new Stage();
 
-        //Le contenu du Popup : Un message de victoire et un bouton pour quitter.
-        VBox popupVBox = new VBox();
-
-        //Bouton pour quitter
-        Button btQuitter = new Button("Quitter le jeu");
-        btQuitter.setPadding(new Insets(10));
-        btQuitter.setOnMouseClicked( event -> {
-            popupStage.close();
-            primaryStage.close();
-        });
-
-        //Message de Victoire
-        Text textVictoire = new Text();
-        textVictoire.setFont(Font.font("Helvetica", FontWeight.BOLD, 16));
-
-        //On ajoute le bouton et le texte a la vbox.
-        popupVBox.setAlignment(Pos.CENTER);
-        popupVBox.setSpacing(20);
-        popupVBox.getChildren().addAll( textVictoire, btQuitter );
-
-        //---------------
-        //On prépare le popup : C'est une nouvelle scène sur un nouveau stage.
-        Scene popupScene = new Scene(popupVBox, 200, 120);
-
-        popupStage.close();
-        popupStage.setScene(popupScene);
-            //Cette ligne sert à rendre le stage un popup.
-        popupStage.initModality(Modality.APPLICATION_MODAL);
-        popupStage.setTitle("Bravo !");
-
-        popupStage.setOnCloseRequest(e -> Platform.exit());
-        */
-        //endregion
-
-        //---------------------------------------------------------------------
+        //-----------------------------------------
         //Préparation de la scene de la grille de jeu.
+        //-----------------------------------------
 
         //---------------------------------------------------------------------
         // ------------ TOP -- Le Titre
@@ -130,17 +91,16 @@ public class VueControleur extends Application implements Observer {
             vueP.setMargin(listesPiecesJoueurs[i], new Insets(20));
             listesPiecesJoueurs[i].setAlignment(Pos.TOP_LEFT);
         }
-        //On l'ajoute pas encore à bPane, on attend le choix du nombre de joueur,
-        //on l'ajoutera via un controlleur.
+        /* On l'ajoute pas encore à bPane, on attend le choix du nombre de joueur,
+         * on l'ajoutera via un controlleur.
+         */
 
         //endregion
 
         //---------------------------------------------------------------------
         //------------- LEFT -- Choix Nb Joueur & Liste des Joueurs.
 
-        //region Liste Joueurs
-
-            //region choix nb joueurs
+        //region choix nb joueurs
         VBox vbox = new VBox();
 
         Text textChoix = new Text("   Choississez un\nnombre de joueurs :");
