@@ -12,11 +12,6 @@ public class Case {
     private int xLocal; //La coordonnée x de la case dans la matrice locale de la pièce
     private int yLocal; //La coordonnée x de la case dans la matrice locale de la pièce
 
-    public Case(int x, int y, Color coul, int i){
-        this.couleur = coul;
-        this.index = i;
-    }
-
     public Case(int x, int y, Color coul, int i, int xLocal, int yLocal){
         this.xLocal = xLocal;
         this.yLocal = yLocal;

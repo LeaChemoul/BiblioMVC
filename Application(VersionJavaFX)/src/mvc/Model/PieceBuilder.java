@@ -107,7 +107,7 @@ public class PieceBuilder {
 
 
     /**
-     * Supprime la pièce avec le nom donné
+     * Supprime la pièce avec le nom donné de la liste de pièces
      * @param name Nom de la piece à supprimer
      */
     public void removePiece (String name) {
@@ -150,7 +150,7 @@ public class PieceBuilder {
     //Méthodes booléenes
 
     /**
-     * @return Vrai si la liste est vide, false sinon.
+     * @return Vrai si la liste de pièces est vide, false sinon.
      */
     public boolean listeIsEmpty() {
         return listePieces.isEmpty();

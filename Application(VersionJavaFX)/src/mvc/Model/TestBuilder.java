@@ -59,7 +59,7 @@ public class TestBuilder {
         builder.afficherPieces();
 
         System.out.println("    TEST - Translations Right");
-        listeDesPieces[0].translater(Direction.RIGHT);
+        //listeDesPieces[0].translater(Direction.RIGHT);
         listeDesPieces[0].afficherInfosPiece();
         System.out.println("    TEST - rotation droite ");
         listeDesPieces[0].rotation(Direction.RIGHT);
@@ -88,6 +88,7 @@ public class TestBuilder {
         listeDesPieces[1].rotation(Direction.UP);
         listeDesPieces[1].afficherInfosPiece();
 
+        /*
 
         System.out.println("    TEST - Translations ");
         listeCoor = new Vec2d[] { new Vec2d(1, 1), new Vec2d(1, 2), new Vec2d(2, 1), new Vec2d(2, 2) };
@@ -105,6 +106,7 @@ public class TestBuilder {
         System.out.println("    TEST - Translations RIGHT");
         builder.getPiece("Cube").translater(Direction.RIGHT);
         builder.afficherPiece("Cube");
+        */
 
 
     }
