@@ -64,7 +64,7 @@ public class VueControleurTetris extends Application implements Observer {
         grillePiecePieceSuivante.setPadding(new Insets(15));
         grillePiecePieceSuivante.setPrefWidth(210);
 
-        grille.setLeft(grillePiecePieceSuivante);
+        //grille.setLeft(grillePiecePieceSuivante);
 
 
         grille.setPadding(new Insets(20));
@@ -72,6 +72,7 @@ public class VueControleurTetris extends Application implements Observer {
             @Override
             public void handle(MouseEvent event) {
                 grille.getChildren().remove(startButton);
+                grille.setRight(grillePiecePieceSuivante);
                 partie.deroulement();
             }
         });
@@ -157,7 +158,7 @@ public class VueControleurTetris extends Application implements Observer {
                         GrillePiece grillePiecePieceSuivante = new GrillePiece(partie.getPlateau().getPiecesSuivantes().get(0).getCases(),Color.BLUE,false,30);
                         grillePiecePieceSuivante.setPadding(new Insets(15));
                         grillePiecePieceSuivante.setPrefWidth(210);
-                        grille.setLeft(grillePiecePieceSuivante);
+                        grille.setRight(grillePiecePieceSuivante);
                     }
             }
         });
