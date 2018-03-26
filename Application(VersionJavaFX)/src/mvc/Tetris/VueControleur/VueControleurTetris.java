@@ -29,19 +29,25 @@ import java.util.Observer;
 public class VueControleurTetris extends Application implements Observer {
 
     private Partie partie;
-    VuePrincipale grille = new VuePrincipale(10,20,30, true);
+    private VuePrincipale grille = new VuePrincipale(10,20,30, true);
 
     @Override
     public void start(Stage primaryStage){
+        //----------------------------------------------------------------
         //TOP
-        Text titre = new Text("--- TETRIS ---");
+        //----------------------------------------------------------------
+
+        Text titre = new Text("--- Tetris ---");
         titre.setFont(Font.font("Helvetica", FontWeight.BOLD, 20));
         titre.setFill(Color.MEDIUMPURPLE);
         grille.setAlignment(titre, Pos.CENTER);
         grille.setTop(titre);
         partie = new Partie(grille.getP());
 
+        //----------------------------------------------------------------
         //RIGHT
+        //----------------------------------------------------------------
+
         Button startButton = new Button();
         DropShadow shadow = new DropShadow();
         startButton.setPadding(new Insets(10));
@@ -50,7 +56,10 @@ public class VueControleurTetris extends Application implements Observer {
         grille.setMargin(startButton, new Insets(10, 0, 0, 15));
         grille.setRight(startButton);
 
+        //----------------------------------------------------------------
         //LEFT
+        //----------------------------------------------------------------
+
         GrillePiece grillePiecePieceSuivante = new GrillePiece(partie.getPlateau().getPiecesSuivantes().get(0).getCases(),Color.BLUE,false,25);
         grillePiecePieceSuivante.setPadding(new Insets(15));
         grillePiecePieceSuivante.setPrefWidth(210);
@@ -87,7 +96,18 @@ public class VueControleurTetris extends Application implements Observer {
 
         Scene scene = new Scene(grille, Color.WHITE);
 
+        //----------------------------------------------------------------
         //EVENEMENTS LIES AUX TOUCHES CLAVIER
+        //----------------------------------------------------------------
+
+        evenementsClavier(scene);
+
+        primaryStage.setTitle("Jeu Plateau");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    private void evenementsClavier(Scene scene) {
         scene.setOnKeyPressed(new EventHandler<KeyEvent>(){
             @Override
             public void handle(KeyEvent ke){
@@ -95,10 +115,6 @@ public class VueControleurTetris extends Application implements Observer {
                     //rotation
                     if(grille.getP().getPieceCourante() != null) {
                         grille.getP().tournerPieceCourante(Direction.RIGHT);
-
-                        //Declenchement du son depuis le model
-                        grille.getMediaPlayer().stop();
-                        grille.getMediaPlayer().play();
                     }
 
                 }
@@ -118,10 +134,6 @@ public class VueControleurTetris extends Application implements Observer {
                 }
             }
         });
-
-        primaryStage.setTitle("Jeu Plateau");
-        primaryStage.setScene(scene);
-        primaryStage.show();
     }
 
     public static void main(String[] args) {
