@@ -2,6 +2,7 @@ package mvc.VueControleur;
 
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -13,6 +14,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.media.Media;
+import javafx.scene.media.MediaException;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -26,7 +28,6 @@ public class VuePrincipale extends BorderPane{
     private int hauteur;
     private Plateau p;
     private Rectangle[][] tab;
-    private MediaPlayer mediaPlayer;
     private GridPane gridP;
 
     public VuePrincipale(int a, int b, int rectSize , boolean reversed) {
@@ -60,12 +61,6 @@ public class VuePrincipale extends BorderPane{
 
             }
 
-
-        //SON
-        String path = new File(System.getProperty("user.dir") + "/sound/mouvement.wav").getAbsolutePath();
-        Media media = new Media(new File(path).toURI().toString());
-        this.mediaPlayer = new MediaPlayer(media);
-
         //CENTER
         gridP.setGridLinesVisible(true);
         this.setCenter(gridP);
@@ -92,9 +87,5 @@ public class VuePrincipale extends BorderPane{
 
     public GridPane getGridP() {
         return gridP;
-    }
-
-    public MediaPlayer getMediaPlayer() {
-        return mediaPlayer;
     }
 }

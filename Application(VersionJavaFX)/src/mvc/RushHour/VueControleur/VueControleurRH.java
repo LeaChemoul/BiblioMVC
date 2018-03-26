@@ -218,10 +218,6 @@ public class VueControleurRH extends Application implements Observer {
                         //poser la pièce a l'endroit
                         bougerPiece(finalJ, finalI);
                         scene.setCursor(Cursor.DEFAULT);
-
-                        //Declenchement du son depuis le model
-                        grille.getMediaPlayer().stop();
-                        grille.getMediaPlayer().play();
                     }
                 });
             }
