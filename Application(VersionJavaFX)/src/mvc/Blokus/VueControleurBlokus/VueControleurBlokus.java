@@ -2,7 +2,6 @@ package mvc.Blokus.VueControleurBlokus;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -10,25 +9,22 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.*;
-import javafx.stage.Modality;
-import javafx.stage.Popup;
 import javafx.stage.Stage;
 
 import mvc.Model.*;
 import mvc.Blokus.ModeleBlokus.*;
+import mvc.VueControleur.PopupFinPartie;
 import mvc.VueControleur.VuePrincipale;
 
 import java.util.Observable;
 import java.util.Observer;
 
 
-public class VueControleur extends Application implements Observer {
+public class VueControleurBlokus extends Application implements Observer {
 
 
     private Plateau plateau = new Plateau(20, 20);
@@ -39,7 +35,7 @@ public class VueControleur extends Application implements Observer {
 
     private ListePiece[] listesPiecesJoueurs = new ListePiece[5];
     private ListeJoueur listeJoueurs;
-    private PopupVictoire popupVictoire;
+    private PopupFinPartie popupFinPartie;
 
 
 
@@ -62,7 +58,7 @@ public class VueControleur extends Application implements Observer {
 
         //------------------------------------------
         //----- POPUP VICTOIRE
-        popupVictoire = new PopupVictoire(primaryStage);
+        popupFinPartie = new PopupFinPartie(primaryStage);
 
 
         //-----------------------------------------
@@ -163,7 +159,8 @@ public class VueControleur extends Application implements Observer {
             //Si il y a un gagnant, message de victoire
             JoueurBlokus joueurGagnant = partie.joueurGagnant();
             if (joueurGagnant != null) {
-                popupVictoire.afficherPopupVictoire(joueurGagnant);
+                popupFinPartie.setTextPopup("Le joueur " + joueurGagnant.getNumJoueur() + " a gagné !");
+                popupFinPartie.afficherPopup();
             }
 
             else //On passe au joueur suivant.
@@ -302,7 +299,8 @@ public class VueControleur extends Application implements Observer {
                                 //Si il y a un gagnant, message de victoire
                                 JoueurBlokus joueurGagnant = partie.joueurGagnant();
                                 if ( joueurGagnant != null ) {
-                                    popupVictoire.afficherPopupVictoire(joueurGagnant);
+                                    popupFinPartie.setTextPopup("Le joueur " + joueurGagnant.getNumJoueur() + " a gagné !");
+                                    popupFinPartie.afficherPopup();
                                 }
                                 else //On passe au joueur suivant.
                                     partie.joueurSuivant();

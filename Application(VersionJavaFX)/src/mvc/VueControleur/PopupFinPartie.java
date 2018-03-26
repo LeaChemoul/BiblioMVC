@@ -1,4 +1,4 @@
-package mvc.Blokus.VueControleurBlokus;
+package mvc.VueControleur;
 
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -12,17 +12,15 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import mvc.Blokus.ModeleBlokus.JoueurBlokus;
-import mvc.Blokus.ModeleBlokus.Partie;
 
-public class PopupVictoire extends Stage {
+public class PopupFinPartie extends Stage {
 
     private VBox popupVBox;
-    private Text textVictoire;
+    private Text textPopup;
     private Button btQuitter;
 
-    public PopupVictoire(Stage primaryStage) {
+    public PopupFinPartie(Stage primaryStage) {
 
-        //this.primaryStage = primaryStage;
 
         //Le contenu du Popup : Un message de victoire et un bouton pour quitter.
         popupVBox = new VBox();
@@ -36,13 +34,13 @@ public class PopupVictoire extends Stage {
         });
 
         //Message de Victoire
-        textVictoire = new Text();
-        textVictoire.setFont(Font.font("Helvetica", FontWeight.BOLD, 16));
+        textPopup = new Text();
+        textPopup.setFont(Font.font("Helvetica", FontWeight.BOLD, 16));
 
         //On ajoute le bouton et le texte a la vbox.
         popupVBox.setAlignment(Pos.CENTER);
         popupVBox.setSpacing(20);
-        popupVBox.getChildren().addAll(textVictoire, btQuitter);
+        popupVBox.getChildren().addAll(textPopup, btQuitter);
 
         //---------------
         //On prépare le popup : C'est une nouvelle scène sur un nouveau stage.
@@ -57,13 +55,20 @@ public class PopupVictoire extends Stage {
 
     }
 
+
     /**
-     * Mets à jour le Popup de Victoire avec le nom du gagnant et l'affiche.
-     * @param joueurGagnant joueur qui a gagné la partie
+     * Modifie le texte du Popup affiché au dessus du bouton.
+     * @param text Nouveau texte du popup.
      */
-    public void afficherPopupVictoire(JoueurBlokus joueurGagnant) {
-        textVictoire.setText("Le joueur " + joueurGagnant.getNumJoueur() + " a gagné !");
-        textVictoire.setFill(joueurGagnant.getCouleur());
+    public void setTextPopup(String text) {
+        textPopup.setText(text);
+    }
+
+    /**
+     * Affiche le popup. Il empêche toute interaction avec les autres fenêtres,
+     * et à sa fermeture, le programme se termine.
+     */
+    public void afficherPopup() {
         showAndWait();
     }
 
