@@ -34,7 +34,7 @@ public class VueControleurTetris extends Application implements Observer {
     @Override
     public void start(Stage primaryStage){
         //TOP
-        Text titre = new Text("--- Tetris ---");
+        Text titre = new Text("--- TETRIS ---");
         titre.setFont(Font.font("Helvetica", FontWeight.BOLD, 20));
         titre.setFill(Color.MEDIUMPURPLE);
         grille.setAlignment(titre, Pos.CENTER);
@@ -47,11 +47,13 @@ public class VueControleurTetris extends Application implements Observer {
         startButton.setPadding(new Insets(10));
         startButton.setStyle("-fx-font: 22 arial; -fx-base: #b6e7c9;");
         startButton.setText("Commencer");
+        grille.setMargin(startButton, new Insets(10, 0, 0, 15));
         grille.setRight(startButton);
 
         //LEFT
         GrillePiece grillePiecePieceSuivante = new GrillePiece(partie.getPlateau().getPiecesSuivantes().get(0).getCases(),Color.BLUE,false,25);
-        grillePiecePieceSuivante.setPadding(new Insets(30));
+        grillePiecePieceSuivante.setPadding(new Insets(15));
+        grillePiecePieceSuivante.setPrefWidth(210);
 
         grille.setLeft(grillePiecePieceSuivante);
 
@@ -60,6 +62,7 @@ public class VueControleurTetris extends Application implements Observer {
         startButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                grille.getChildren().remove(startButton);
                 partie.deroulement();
             }
         });
@@ -140,7 +143,8 @@ public class VueControleurTetris extends Application implements Observer {
 
                         //Mise a jour de la pièce suivante affichée
                         GrillePiece grillePiecePieceSuivante = new GrillePiece(partie.getPlateau().getPiecesSuivantes().get(0).getCases(),Color.BLUE,false,30);
-                        grillePiecePieceSuivante.setPadding(new Insets(30));
+                        grillePiecePieceSuivante.setPadding(new Insets(15));
+                        grillePiecePieceSuivante.setPrefWidth(210);
                         grille.setLeft(grillePiecePieceSuivante);
                     }
             }
