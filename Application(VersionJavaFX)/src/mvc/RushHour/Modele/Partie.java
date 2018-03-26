@@ -30,12 +30,12 @@ public class Partie{
         this.plateau.newPiece(pieceHashMap.get("2RushHourV"),2,0,false,genererCouleur());
         this.plateau.newPiece(pieceHashMap.get("2RushHourH"),4,0,true,genererCouleur());
         this.plateau.newPiece(pieceHashMap.get("3RushHourH"),5,0,true,genererCouleur());
-        this.plateau.newPiece(pieceHashMap.get("2RushHourV"),3,2,false,genererCouleur());
+        /*this.plateau.newPiece(pieceHashMap.get("2RushHourV"),3,2,false,genererCouleur());
         this.plateau.newPiece(pieceHashMap.get("2RushHourH"),3,3,true,genererCouleur());
         this.plateau.newPiece(pieceHashMap.get("3RushHourV"),3,5,false,genererCouleur());
         this.plateau.newPiece(pieceHashMap.get("2RushHourH"),0,4,true,genererCouleur());
         this.plateau.newPiece(pieceHashMap.get("2RushHourH"),1,4,true,genererCouleur());
-        this.plateau.newPiece(pieceHashMap.get("3RushHourV"),0,3,false,genererCouleur());
+        this.plateau.newPiece(pieceHashMap.get("3RushHourV"),0,3,false,genererCouleur());*/
 
         //Piece a bouger
         //On considère que la dernière pièce de ma liste de pièce est la pièce gagnante
@@ -81,5 +81,9 @@ public class Partie{
 
     public boolean isEstFinie() {
         return estFinie;
+    }
+
+    public void setEstFinie(boolean estFinie) {
+        this.estFinie = estFinie;
     }
 }

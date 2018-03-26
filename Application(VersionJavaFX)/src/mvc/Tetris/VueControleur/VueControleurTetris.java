@@ -11,6 +11,7 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -20,6 +21,7 @@ import javafx.stage.WindowEvent;
 import mvc.Model.Direction;
 import mvc.Tetris.Modele.Partie;
 import mvc.VueControleur.GrillePiece;
+import mvc.VueControleur.PopupFinPartie;
 import mvc.VueControleur.VuePrincipale;
 
 import java.util.Observable;
@@ -28,11 +30,15 @@ import java.util.Observer;
 
 public class VueControleurTetris extends Application implements Observer {
 
+    private PopupFinPartie popupFinPartie;
     private Partie partie;
     private VuePrincipale grille = new VuePrincipale(10,20,30, true);
 
     @Override
     public void start(Stage primaryStage){
+
+        this.popupFinPartie = new PopupFinPartie(primaryStage);
+        this.popupFinPartie.setTextPopup("GAME OVER");
         //----------------------------------------------------------------
         //TOP
         //----------------------------------------------------------------
@@ -66,6 +72,12 @@ public class VueControleurTetris extends Application implements Observer {
 
         //grille.setLeft(grillePiecePieceSuivante);
 
+        grille.getGridP().setEffect(shadow);
+        grille.getGridP().setPadding(new Insets(20));
+        /*grille.getGridP().setBorder(new Border(new BorderStroke(Color.GREY,
+                BorderStrokeStyle.SOLID, new CornerRadii(20), BorderWidths.DEFAULT)));*/
+        grille.getGridP().setHgap(1.0);
+        grille.getGridP().setVgap(1.0);
 
         grille.setPadding(new Insets(20));
         startButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -82,7 +94,6 @@ public class VueControleurTetris extends Application implements Observer {
                 startButton.setEffect(shadow);
             }
         });
-
 
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
@@ -117,7 +128,6 @@ public class VueControleurTetris extends Application implements Observer {
                     if(grille.getP().getPieceCourante() != null) {
                         grille.getP().tournerPieceCourante(Direction.RIGHT);
                     }
-
                 }
                 if (ke.getCode().equals(KeyCode.LEFT)) {
                     if(grille.getP().getPieceCourante() != null)
@@ -160,6 +170,9 @@ public class VueControleurTetris extends Application implements Observer {
                         grillePiecePieceSuivante.setPrefWidth(210);
                         grille.setRight(grillePiecePieceSuivante);
                     }
+                   if(partie.isEstFinie())
+                        popupFinPartie.afficherPopup();
+
             }
         });
     }

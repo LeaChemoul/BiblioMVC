@@ -80,6 +80,7 @@ public class VueControleurRH extends Application implements Observer {
         rightPane.add(sortieText,0,2);
         grille.setRight(rightPane);
         grille.setPadding(new Insets(20));
+        grille.getGridP().setGridLinesVisible(false);
 
         //---------------------------------------------------------------------
         //EVENEMENTS
@@ -92,6 +93,7 @@ public class VueControleurRH extends Application implements Observer {
             public void handle(MouseEvent event) {
                 partie.getPlateau().reinitialiser();
                 partie.initialiser();
+                partie.setEstFinie(false);
                 grille.getP().setPieceCourante(null);
             }
         });

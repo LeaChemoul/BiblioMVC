@@ -77,10 +77,15 @@ public class Partie implements Runnable{
                     nbrRepetitions = this.plateau.getHauteur();
                 }else{
                     this.estFinie = true;
+
                     break;
                 }
             }
         }
 
+    }
+
+    public boolean isEstFinie() {
+        return estFinie;
     }
 }
