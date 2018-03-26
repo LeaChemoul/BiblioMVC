@@ -46,6 +46,9 @@ public class VueControleurRH extends Application implements Observer {
         BorderPane.setAlignment(titre, Pos.CENTER);
         grille.setTop(titre);
         partie = new Partie(grille.getP());
+        grille.setStyle("-fx-background-color: #2f4f4f;\n" +
+                "    -fx-padding: 15;\n" +
+                "    -fx-spacing: 10;");
 
         //---------------------------------------------------------------------
         //LEFT : regles du jeu
@@ -53,7 +56,8 @@ public class VueControleurRH extends Application implements Observer {
                 "voiture rouge de la grille en \n" +
                 "la faisant atteindre la sortie \n" +
                 "indiquée à droite.");
-        reglesText.setStyle("-fx-font: 13 arial; -fx-base: #b6e7c9;");
+        reglesText.setStyle("-fx-font: 13 arial;");
+        reglesText.setTextFill(Color.WHITE);
         reglesText.setPadding(new Insets(25,10,0,0));
         grille.setLeft(reglesText);
 
@@ -72,7 +76,8 @@ public class VueControleurRH extends Application implements Observer {
         replayButton.setText("Rejouer");
 
         Label sortieText = new Label("<== Sortie");
-        sortieText.setStyle("-fx-font: 22 arial; -fx-base: #b6e7c9;");
+        sortieText.setStyle("-fx-font: 22 arial;");
+        sortieText.setTextFill(Color.WHITE);
         sortieText.setPadding(new Insets(25,10,0,0));
 
         GridPane rightPane = new GridPane();
@@ -82,8 +87,6 @@ public class VueControleurRH extends Application implements Observer {
         grille.setRight(rightPane);
         grille.setPadding(new Insets(20));
         grille.getGridP().setGridLinesVisible(false);
-
-        grille.setStyle("-fx-background-color: LIGHTGREY;");
 
         //---------------------------------------------------------------------
         //EVENEMENTS

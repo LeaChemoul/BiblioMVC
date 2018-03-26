@@ -45,6 +45,7 @@ public class VueControleurTetris extends Application implements Observer {
         // la vue observe les "update" du modèle, et réalise les mises à jour graphiques
         partie.getPlateau().addObserver(this);
         grille.getGridP().setGridLinesVisible(true);
+        grille.setMinSize(600,600);
 
         Scene scene = new Scene(grille, Color.WHITE);
 
@@ -84,8 +85,6 @@ public class VueControleurTetris extends Application implements Observer {
 
         grille.getGridP().setEffect(shadow);
         grille.getGridP().setPadding(new Insets(20));
-        /*grille.getGridP().setBorder(new Border(new BorderStroke(Color.GREY,
-                BorderStrokeStyle.SOLID, new CornerRadii(20), BorderWidths.DEFAULT)));*/
 
         grille.setPadding(new Insets(20));
         startButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -109,16 +108,6 @@ public class VueControleurTetris extends Application implements Observer {
                 System.exit(0);
             }
         });
-
-        //----------------------------------------------------------------
-        //Bottom
-        //----------------------------------------------------------------
-
-        //SCORE
-        this.score = new Text("0");
-        score.setFont(Font.font("Helvetica", FontWeight.BOLD, 20));
-        score.setFill(Color.WHITE);
-        grille.setBottom(score);
 
         //----------------------------------------------------------------
         //EVENEMENTS LIES AUX TOUCHES CLAVIER
@@ -185,7 +174,7 @@ public class VueControleurTetris extends Application implements Observer {
 
     private void miseAJourJeu() {
         //Mise à jour du score.
-        score = new Text(Integer.toString(partie.getScore()));
+        score = new Text("Score : " + Integer.toString(partie.getScore()));
         score.setFont(Font.font("Helvetica", FontWeight.BOLD, 40));
         score.setFill(Color.WHITE);
 
