@@ -11,7 +11,6 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import mvc.Blokus.ModeleBlokus.JoueurBlokus;
 
 public class PopupFinPartie extends Stage {
 

@@ -1,23 +1,8 @@
 package mvc.VueControleur;
 
-
-
-import java.util.Observable;
-import java.util.Observer;
-
-import javafx.application.Platform;
-import javafx.event.Event;
-import javafx.event.EventHandler;
-import javafx.geometry.Insets;
-import javafx.scene.control.Button;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import mvc.Model.Plateau;
-
-import javafx.scene.text.Text;
 
 public class GrillePiece extends GridPane{
 

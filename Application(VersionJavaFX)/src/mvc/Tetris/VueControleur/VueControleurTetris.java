@@ -41,6 +41,7 @@ public class VueControleurTetris extends Application implements Observer {
         partie = new Partie(grille.getP());
         // la vue observe les "update" du modèle, et réalise les mises à jour graphiques
         partie.getPlateau().addObserver(this);
+        grille.getGridP().setGridLinesVisible(true);
 
         Scene scene = new Scene(grille, Color.WHITE);
 
@@ -54,9 +55,6 @@ public class VueControleurTetris extends Application implements Observer {
         grille.setStyle("-fx-background-color: #2f4f4f;\n" +
                 "    -fx-padding: 15;\n" +
                 "    -fx-spacing: 10;");
-
-        grille.getGridP().setGridLinesVisible(false);
-
 
         //----------------------------------------------------------------
         //TOP

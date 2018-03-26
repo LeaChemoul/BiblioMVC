@@ -6,7 +6,6 @@ import javafx.scene.paint.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Observable;
-import java.util.Random;
 
 public class Plateau extends Observable {
 
@@ -118,9 +117,7 @@ public class Plateau extends Observable {
 
         //On crée une pièce à partir des modèles disponibles dans le pool de pièces
         if(piecesSuivantes != null){
-            //TODO : CONSTRUCTEUR A REVOIR
             this.pieceCourante = new Piece(piecesSuivantes.get(0), true);
-            this.pieceCourante.afficherPiece();
             this.piecesPosees.add(pieceCourante);
             setChanged();
             notifyObservers();
@@ -156,7 +153,7 @@ public class Plateau extends Observable {
                 effacerPiecePlateau(positions); //On efface la pièce
                 //On la pose aux nouvelles coordonnées.
                 // On la place à partir de la position précédente à laquelle on a ajouté (0,-1) par exemple pour la descendre verticalement
-                this.poserPiecePlateau(piece,(int) min.x + direction.x, (int) min.y + direction.y);
+                this.poserPiecePlateau(piece,(int) min.x + direction.getX(), (int) min.y + direction.getY());
             }else{
                 return false;
             }
@@ -250,8 +247,8 @@ public class Plateau extends Observable {
      */
     private boolean collision(ArrayList<Vec2d> occurrences, Direction dir, int index){
         for (Vec2d occurrence : occurrences){
-            int a = (int) occurrence.x + dir.x;
-            int b = (int) occurrence.y + dir.y;
+            int a = (int) occurrence.x + dir.getX();
+            int b = (int) occurrence.y + dir.getY();
             if (a<0 || a>=this.hauteur || b< 0 || b>=this.largeur || (this.getTableauJeu()[a][b] != null && this.getTableauJeu()[a][b].getIndex() != index ))
                 return true;
         }
