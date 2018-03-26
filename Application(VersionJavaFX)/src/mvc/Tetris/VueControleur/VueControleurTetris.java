@@ -1,5 +1,7 @@
 package mvc.Tetris.VueControleur;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -18,6 +20,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javafx.util.Duration;
 import mvc.Model.Direction;
 import mvc.Tetris.Modele.Partie;
 import mvc.VueControleur.GrillePiece;
@@ -50,7 +53,7 @@ public class VueControleurTetris extends Application implements Observer {
         //----------------------------------------------------------------
 
         this.popupFinPartie = new PopupFinPartie(primaryStage);
-        this.popupFinPartie.setTextPopup("GAME OVER");
+        popupFinPartie.setTextPopup("GAME OVER !");
 
         grille.setStyle("-fx-background-color: #2f4f4f;\n" +
                 "    -fx-padding: 15;\n" +
@@ -169,8 +172,9 @@ public class VueControleurTetris extends Application implements Observer {
                         else
                             grille.getTab()[a][b].setFill(Color.WHITE);
                     }
-                   if(partie.isEstFinie())
-                        popupFinPartie.afficherPopup();
+                   if(partie.isEstFinie()){
+                       popupFinPartie.afficherPopup();
+                   }
 
                 //Mise a jour du score et de la pièce suivante
                 miseAJourJeu();
@@ -191,9 +195,14 @@ public class VueControleurTetris extends Application implements Observer {
         grillePiecePieceSuivante.setMaxSize(20.0,20.0);
         grillePiecePieceSuivante.setPrefWidth(210);
 
+        Text chrono = new Text(partie.getChronometre().getTemps());
+        chrono.setFont(Font.font("Helvetica", FontWeight.BOLD, 40));
+        chrono.setFill(Color.WHITE);
+
         GridPane rightpane = new GridPane();
         rightpane.add(grillePiecePieceSuivante,0,0);
         rightpane.add(score,0,1);
+        rightpane.add(chrono,0,2);
 
         grille.setRight(rightpane);
         grille.setBottom(null);

@@ -12,6 +12,8 @@ public class Partie implements Runnable{
     private Plateau plateau;
     private boolean estFinie;
     private int score = 0;
+    private Chronometre chronometre;
+
 
     public Partie(Plateau p){
         this.plateau = p;
@@ -35,6 +37,7 @@ public class Partie implements Runnable{
 
     public void deroulement(){
         new Thread(this).start();
+        this.chronometre = new Chronometre(this);
     }
 
     public Plateau getPlateau() {
@@ -81,7 +84,6 @@ public class Partie implements Runnable{
                     nbrRepetitions = this.plateau.getHauteur();
                 }else{
                     this.estFinie = true;
-
                     break;
                 }
             }
@@ -99,5 +101,9 @@ public class Partie implements Runnable{
 
     public void incrementerScore(){
         this.score += 2;
+    }
+
+    public Chronometre getChronometre() {
+        return chronometre;
     }
 }
