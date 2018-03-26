@@ -46,7 +46,7 @@ public class Piece {
 
     /**
      * Constructeur par copie de la classe.
-     * @param piece
+     * @param piece piece a copier
      */
     public Piece(Piece piece, boolean couleurAleatoire){
         this.nom = piece.nom;

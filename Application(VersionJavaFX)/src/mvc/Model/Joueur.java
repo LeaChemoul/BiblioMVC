@@ -9,8 +9,8 @@ public class Joueur {
 
     protected int numJoueur; //Numéro du joueur
     protected Color couleur;
-    protected Piece pieceActive; //Piece avec laquelle le joueur peut interagir
-    protected ArrayList<Piece> PoolDePiece; //Liste des pièces du joueur, utilisés différemment en fonction du jeu
+    private Piece pieceActive; //Piece avec laquelle le joueur peut interagir
+    private ArrayList<Piece> PoolDePiece; //Liste des pièces du joueur, utilisés différemment en fonction du jeu
 
     protected Plateau plateau;
 

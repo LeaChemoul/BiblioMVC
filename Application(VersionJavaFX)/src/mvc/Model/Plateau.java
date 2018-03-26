@@ -42,13 +42,13 @@ public class Plateau extends Observable {
      * Pose une pièce donnée à une coordonée (x,y) de notre plateau
      * Lorsque l'on pose notre pièce on veille a bien la démarrer à l'endroit (i,j)
      * On gère bien les collisions.
-     * @param piece
-     * @param i
-     * @param j
+     * @param piece Piece à poser.
+     * @param i Ligne où placer la pièce.
+     * @param j Colonne où placer la pièce.
      * @return
      */
     synchronized public boolean poserPiecePlateau(Piece piece,int i, int j){
-    //On parcours le plateau de jeu depuis la position (i,j) et les cases de la pièce simultanement.
+        //On parcours le plateau de jeu depuis la position (i,j) et les cases de la pièce simultanement.
         //On ajoutera à positionsPlateau les positions de notre plateau à remplir par notre pièce. Evite uen boucle supplémentaire.
         ArrayList<Vec2d> positionsPlateau = new ArrayList<>(); // Les positions (x,y) du plateau où il faudra placer notre pièce
         HashMap<Vec2d, Vec2d> positionsLocalPiece = new  HashMap<Vec2d, Vec2d>(); //Se souvient des coordonnées local des pièces
@@ -85,13 +85,7 @@ public class Plateau extends Observable {
                 decalageX++; //On a toujours pas trouvé notre pièce on décale en colonne
         }
         if(!positionsPlateau.isEmpty() && positionsPlateau.size() == piece.getTaille()) { //Si on a bien pu tout poser dans le plateau
-            index = piecesPosees.indexOf(piece);
-            for (Vec2d position : positionsPlateau) { //On met à jour le plateau en y posant la pièce
-                int ii = (int) position.x;
-                int jj = (int) position.y;
-                Vec2d posLoc = positionsLocalPiece.get(position);
-                this.tableauJeu[ii][jj] = new Case(ii, jj, piece.getCouleur(), index, (int) posLoc.x, (int) posLoc.y);
-            }
+            poserPieceCoordonnees(piece, positionsPlateau, positionsLocalPiece);
         }
         else
             return false;
@@ -101,6 +95,35 @@ public class Plateau extends Observable {
 
     }
 
+    /**
+     * Pose une pièce donnée aux positions indiquées.
+     * @param piece Piece à placer.
+     * @param positionsPlateau Positions où la placer.
+     * @param positionsLocalPiece Positions locales de la pièces de sa grille.
+     */
+    private void poserPieceCoordonnees(Piece piece, ArrayList<Vec2d> positionsPlateau, HashMap<Vec2d, Vec2d> positionsLocalPiece) {
+        int index;
+        index = piecesPosees.indexOf(piece);
+        for (Vec2d position : positionsPlateau) { //On met à jour le plateau en y posant la pièce
+            int ii = (int) position.x;
+            int jj = (int) position.y;
+            Vec2d posLoc = positionsLocalPiece.get(position);
+            this.tableauJeu[ii][jj] = new Case(ii, jj, piece.getCouleur(), index, (int) posLoc.x, (int) posLoc.y);
+        }
+    }
+
+    /**
+     * Verifie si une piece peut être posée sur une case du plateau.
+     * Verifie donc si les cases alentours sont libres.
+     * @param i Ligne où poser la pièce.
+     * @param j Colonne où placer la pièce.
+     * @param index Index de la pièce dans la liste des pièces posées.
+     * @param decalageX Decalage en x (lignes) calculé par rapport à la grille local de la pièce et le parcours simultané du plateau.
+     * @param decalageY Decalage en y (colonnes)
+     * @param x Ligne correspondante parcourue sur la grille locale de la pièce.
+     * @param y Colonne correspondante parcourue sur la grille locale de la pièce.
+     * @return Retourne vrai si la pièce peut être posée.
+     */
     private boolean peutEtrePosee(int i, int j, int index, int decalageX, int decalageY, int x, int y) {
         return j+y >= 0 && i+x >= 0
                 && j+y-decalageY< this.getLargeur() && i+x-decalageX < this.getHauteur() //Si cela ne dépasses pas notre plateau de jeu
@@ -129,6 +152,15 @@ public class Plateau extends Observable {
         return false;
     }
 
+    /**
+     * On crée une nouvelle instance de pièce qu'on pose sur notre plateau de jeu.
+     * @param piece Modèle de la pièce a créer.
+     * @param i Ligne où creer la pièce.
+     * @param j Colonne où creer la pièce.
+     * @param h Horizontal (vrai) ou vertical (faux)
+     * @param couleur Couleur de la pièce que l'on souhaite creer.
+     * @return
+     */
     public boolean newPiece(Piece piece,int i,int j,boolean h, Color couleur){
         this.pieceCourante = null;
         this.pieceCourante = new Piece(piece, false,h, couleur);
@@ -183,22 +215,38 @@ public class Plateau extends Observable {
         return null;
     }
 
-    //TODO : Javadoc
+    /**
+     * Déplace la pièce vers le bas.
+     * @param piece Pièce à deplacer.
+     * @return Vrai si la pièce a pu être déplacée.
+     */
     public boolean versBas(Piece piece){
         return this.deplacer(Direction.DOWN, piece);
     }
 
-    //TODO : Javadoc
+    /**
+     * Déplace la pièce vers le droite.
+     * @param piece Pièce à deplacer.
+     * @return Vrai si la pièce a pu être déplacée.
+     */
     public boolean versDroite(Piece piece){
         return this.deplacer(Direction.RIGHT, piece);
     }
 
-    //TODO : Javadoc
+    /**
+     * Déplace la pièce vers le gauche.
+     * @param piece Pièce à deplacer.
+     * @return Vrai si la pièce a pu être déplacée.
+     */
     public boolean versGauche(Piece piece){
         return this.deplacer(Direction.LEFT, piece);
     }
 
-    //TODO : Javadoc
+    /**
+     * Déplace la pièce vers le haut.
+     * @param piece Pièce à deplacer.
+     * @return Vrai si la pièce a pu être déplacée.
+     */
     public boolean versHaut(Piece piece){
         return this.deplacer(Direction.UP, piece);
     }
