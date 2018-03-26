@@ -27,7 +27,6 @@ public class GrillePiece extends GridPane{
 
     public GrillePiece(int[][] grille, Color couleur, boolean visibleLine, int size) {
 
-
         this.hauteur = grille.length;
         this.largeur = grille[0].length;
 
@@ -53,6 +52,9 @@ public class GrillePiece extends GridPane{
 
     }
 
+    public void enleverColonneVide(){
+
+    }
 
     public Rectangle[][] getTab() {
         return tab;

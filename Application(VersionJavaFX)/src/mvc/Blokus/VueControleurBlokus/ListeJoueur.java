@@ -19,10 +19,30 @@ public class ListeJoueur extends VBox {
         this.partie = partie;
         this.nbJoueurs = nbJoueurs;
 
-        textsJoueurs = new Text[nbJoueurs+1];
+        textsJoueurs = new Text[nbJoueurs+2];
+        //Une place pour chaque joueur + une place pour le titre + une place pour les règles.
 
+        //Titre
         textsJoueurs[0] = new Text("Liste des Joueurs");
         textsJoueurs[0].setFont(Font.font("Helvetica", FontWeight.BOLD, 20));
+
+        //Règles
+        textsJoueurs[nbJoueurs+1] = new Text("\n\nRègles du Blokus :\n\n" +
+                "- But du jeu :\n" +
+                "Poser toutes ses pièces ou\n" +
+                "n'avoir aucun autre joueur\n" +
+                "pouvant poser une pièce.\n\n" +
+                "- La première pièce doit être\n" +
+                "posée dans le coin de la même\n" +
+                "couleur que le joueur.\n" +
+                "(Elle doit se superposer au\n" +
+                "coin coloré)\n\n" +
+                "- Les autres pièces doivent\n" +
+                "toucher en diagonale une\n" +
+                "autre pièce du même joueur\n" +
+                "sans la toucher directement.");
+        textsJoueurs[nbJoueurs+1].setFont(Font.font("Helvetica", FontWeight.BOLD, 12));
+
         for (int i = 1; i < nbJoueurs +1; i++) {
 
             textsJoueurs[i] = new Text("Joueur " + i );
@@ -39,10 +59,12 @@ public class ListeJoueur extends VBox {
 
         setMargin(textsJoueurs[0], new Insets(60, 5, 2, 5));
         getChildren().add(textsJoueurs[0]);
-        for (int i = 1; i < nbJoueurs +1; i++) {
+        for (int i = 1; i < nbJoueurs + 1; i++) {
             setMargin(textsJoueurs[i], new Insets(5, 5, 5, 40));
             getChildren().add(textsJoueurs[i]);
         }
+        setMargin(textsJoueurs[nbJoueurs+1], new Insets(5));
+        getChildren().add(textsJoueurs[nbJoueurs+1]);
 
         setMinWidth(200);
     }

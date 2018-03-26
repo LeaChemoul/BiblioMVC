@@ -71,16 +71,6 @@ public class Piece {
     }
 
 
-
-
-    public void deleteDecalage(Vec2d decalage){
-       deleteCase((int) decalage.x, (int) decalage.y);
-    }
-
-    public void deleteCase(int i, int j){
-        this.cases[i][j] = 0;
-    }
-
     public boolean colonneVide(int j){
         for (int i = 0; i < this.getHauteur(); i++) {
             if(this.cases[i][j] == 1)
@@ -129,47 +119,6 @@ public class Piece {
 
             }
         }
-        calculPivotEtTaille();
-    }
-
-    public void Rotation_New(Direction sens) {
-        int nbRaw = this.cases.length;
-        int nbCol = this.cases[0].length;
-
-        int[][] vr = new int[nbRaw][nbCol]; // coordinates comparatively to the pivot
-        int[][] vt = new int[nbRaw][nbCol]; // coordinates comparatively to the pivot after transform
-        int[][] vprim = new int[nbRaw][nbCol]; // absolute coordinates after transform
-
-        // int[][] Rg = { {0,-1} , {1,0} }; // 90 degrees rotation to the left (counter clockwise)
-        // int[][] Rd = { {0,1} , {-1,0} }; // 90 degrees rotation to the left (clockwise)
-
-        int px = (int) this.pivot.x;
-        int py = (int) this.pivot.y;
-
-        for (int i = 0; i < nbRaw; i++) {
-            vr[i][0] = this.cases[i][0] - px;
-            vr[i][1] = this.cases[i][1] - py;
-        }
-
-        switch (sens) {
-            case LEFT:
-                for (int i = 0; i < nbRaw; i++) {
-                    vt[i][0] = (0 * vr[i][0]) + (-1 * vr[i][1]);
-                    vt[i][1] = (1 * vr[i][0]) + (0 * vr[i][1]);
-                }
-            case RIGHT:
-                for (int i = 0; i < nbRaw; i++) {
-                    vt[i][0] = (0 * vr[i][0]) + (1 * vr[i][1]);
-                    vt[i][1] = (-1 * vr[i][0]) + (0 * vr[i][1]);
-                }
-        }
-
-        for (int i = 0; i < nbRaw; i++) {
-            vprim[i][0] = vt[i][0] + px;
-            vprim[i][1] = vt[i][1] + py;
-            this.cases[i] = vprim[i];
-        }
-
         calculPivotEtTaille();
     }
 
@@ -323,12 +272,13 @@ public class Piece {
 
 
 
-    //TODO : translater(dir) est potentiellement inutile, je ne l'ai pas utilisé pour centrer la pièce. On la garde atm mais si on lui trouve aucune utilité on la supprimera.
+    //region mort mais trop complexe pour pas la garder
+    /*
     /**
      * Translate toutes les cases de la pièce d'une case dans la matrice locale vers la direction donnée.
      * @param dir Direction vers laquelle translater la piece
      */
-    //Testé & Fonctionnelle.
+    /*
     public void translater(Direction dir) {
 
         //Pour chaque case, on décale leur contenu d'une case vers la gauche/droite/haut/bas. En ignorant la première/dernière ligne/colonne
@@ -373,8 +323,15 @@ public class Piece {
         }
         calculPivotEtTaille();
     }
+    */
+
+    //endregion
 
     //Centre la pièce le plus possible sur sa matrice locale en translatant la matrice de façon à centrer le pivot.
+
+    /**
+     * Centre la pièce le plus possible sur sa matrice locale en réécrivant la matrice de façon à centrer le pivot.
+     */
     public void centrerPiece() {
 
         /* Conditions et objectifs :

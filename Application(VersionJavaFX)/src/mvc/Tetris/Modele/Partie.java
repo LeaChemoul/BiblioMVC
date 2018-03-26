@@ -11,6 +11,7 @@ public class Partie implements Runnable{
     private GenerateurPieces generateurPieces = new GenerateurPieces();
     private Plateau plateau;
     private boolean estFinie;
+    private int score = 0;
 
     public Partie(Plateau p){
         this.plateau = p;
@@ -56,6 +57,9 @@ public class Partie implements Runnable{
                     else
                         nbrRepetitions--;
 
+                    //On incremente le score
+                    this.incrementerScore();
+
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -64,7 +68,7 @@ public class Partie implements Runnable{
                 boolean piecePosee = plateau.newPiece();
                 this.pieceSuivante(); //Création de la pièce suivante
 
-                //Suppresion des lignes
+                //Suppression des lignes
                 int ligne = 0;
                 do {
                     ligne = plateau.ligneASupprimer();
@@ -77,10 +81,23 @@ public class Partie implements Runnable{
                     nbrRepetitions = this.plateau.getHauteur();
                 }else{
                     this.estFinie = true;
+
                     break;
                 }
             }
         }
 
+    }
+
+    public boolean isEstFinie() {
+        return estFinie;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void incrementerScore(){
+        this.score += 2;
     }
 }

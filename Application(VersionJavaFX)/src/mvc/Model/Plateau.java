@@ -24,7 +24,7 @@ public class Plateau extends Observable {
     //Liste dans laquelle on va piocher les pièces avec lesquelles on va jouer.
     private Piece[] PoolDePiece;
 
-    //Pas encore implémenté.
+    //Liste des pièces suivantes dans lesquelles on piochera le type de la pièce courante (ex : tetris)
     private ArrayList<Piece> piecesSuivantes = new ArrayList<>();
 
     public Plateau(int h,int l){
@@ -186,18 +186,22 @@ public class Plateau extends Observable {
         return null;
     }
 
+    //TODO : Javadoc
     public boolean versBas(Piece piece){
         return this.deplacer(Direction.DOWN, piece);
     }
 
+    //TODO : Javadoc
     public boolean versDroite(Piece piece){
         return this.deplacer(Direction.RIGHT, piece);
     }
 
+    //TODO : Javadoc
     public boolean versGauche(Piece piece){
         return this.deplacer(Direction.LEFT, piece);
     }
 
+    //TODO : Javadoc
     public boolean versHaut(Piece piece){
         return this.deplacer(Direction.UP, piece);
     }
@@ -336,24 +340,6 @@ public class Plateau extends Observable {
 
     }
 
-    public void descendreLigne(int ligne){
-        //Descente des pièces d'une ligne si possible
-        for (int j = 0; j < this.largeur; j++) {
-            if(this.getTableauJeu()[ligne][j]!=null)
-            {
-                int index = this.getTableauJeu()[ligne][j].getIndex();
-                while(this.versBas(this.getPiecesPosees().get(index)));
-            }
-
-        }
-    }
-
-    public void mettreAJourLignes(){
-        for (int i = getHauteur()-1; i >= 0 ; i--) {
-            descendreLigne(i);
-        }
-    }
-
     /**
      * Permet de savoir quelle ligne de otre plateau doit être supprimée, c'est à dire qui est complète.
      * @return ligne complète
@@ -384,6 +370,7 @@ public class Plateau extends Observable {
             return null;
     }
 
+    //TODO : Javadoc
     public void reinitialiser(){
         for (int i = 0; i < this.hauteur; i++) {
             for (int j = 0; j < this.largeur; j++) {
@@ -394,15 +381,6 @@ public class Plateau extends Observable {
         this.getPiecesSuivantes().clear();
         this.getPiecesPosees().clear();
     }
-
-    //Méthodes relatives à PoolDePiece
-    /*
-        PoolDePiece va contenir les pièces générés à travers le Builder et qu'on va utiliser dans notre jeu. On veut pouvoir :
-        - Juste piocher une pièce aléatoirement sans la retirer de la liste (cas Tetris)
-        - Retirer des pièces (Cas Blokus. Possibilité d'avoir une liste de pièce nécessaire pour chaque joueur.)
-        - Ajouter des pièces (autre jeux non couverts dans ceux que l'on doit créer.
-     */
-
 
     //Accesseurs
 

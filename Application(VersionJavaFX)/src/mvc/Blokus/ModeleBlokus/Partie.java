@@ -374,17 +374,7 @@ public class Partie extends Observable {
         }
     }
 
-    public void genererPiecesDemo() {
-        //Pièce à une case
-        builder.addPiece("Piece1-1", new double[]{0,0});
 
-        //Pièce à deux cases
-        builder.addPiece("Piece2-1", new double[]{0,0, 1,0});
-
-        //Pièces à trois cases
-        builder.addPiece("Piece3-1", new double[]{0,0, 1,0 , 2,0});
-        builder.addPiece("Piece3-2", new double[]{0,0, 1,0 , 1,1});
-    }
 
     /**
      * Génération du pool de pièces des joueurs, propre au blokus, en utilisant le PieceBuilder.
@@ -423,8 +413,22 @@ public class Partie extends Observable {
         builder.addPiece("Piece5-11", new double[]{0,0, 1,0, 1,1, 1,2, 2,1});
         builder.addPiece("Piece5-12", new double[]{0,1, 1,0, 1,1, 1,2, 2,1});
 
-        //DEBUG
-        //builder.afficherPieces();
+    }
+
+    /**
+     * Génération d'un pool de pièce plus petit pour jouer au Blokus avec. Utilisé pour tester la condition de victoire simple.
+     * @return La liste de Piece réduites des pièces utilisées pour une partie de Blokus.
+     */
+    public void genererPiecesDemo() {
+        //Pièce à une case
+        builder.addPiece("Piece1-1", new double[]{0,0});
+
+        //Pièce à deux cases
+        builder.addPiece("Piece2-1", new double[]{0,0, 1,0});
+
+        //Pièces à trois cases
+        builder.addPiece("Piece3-1", new double[]{0,0, 1,0 , 2,0});
+        builder.addPiece("Piece3-2", new double[]{0,0, 1,0 , 1,1});
     }
 
 

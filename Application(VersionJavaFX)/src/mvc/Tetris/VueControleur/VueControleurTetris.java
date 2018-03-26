@@ -11,6 +11,7 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -20,6 +21,7 @@ import javafx.stage.WindowEvent;
 import mvc.Model.Direction;
 import mvc.Tetris.Modele.Partie;
 import mvc.VueControleur.GrillePiece;
+import mvc.VueControleur.PopupFinPartie;
 import mvc.VueControleur.VuePrincipale;
 
 import java.util.Observable;
@@ -28,38 +30,67 @@ import java.util.Observer;
 
 public class VueControleurTetris extends Application implements Observer {
 
+    private PopupFinPartie popupFinPartie;
     private Partie partie;
-    VuePrincipale grille = new VuePrincipale(10,20,30, true);
+    private VuePrincipale grille = new VuePrincipale(10,20,30, true);
+    private Text score;
 
     @Override
     public void start(Stage primaryStage){
+
+        partie = new Partie(grille.getP());
+        // la vue observe les "update" du modèle, et réalise les mises à jour graphiques
+        partie.getPlateau().addObserver(this);
+
+        Scene scene = new Scene(grille, Color.WHITE);
+
+        //----------------------------------------------------------------
+        //POPUP FIN DE PARTIE
+        //----------------------------------------------------------------
+
+        this.popupFinPartie = new PopupFinPartie(primaryStage);
+        this.popupFinPartie.setTextPopup("GAME OVER");
+
+        grille.setStyle("-fx-background-color: #2f4f4f;\n" +
+                "    -fx-padding: 15;\n" +
+                "    -fx-spacing: 10;");
+
+        grille.getGridP().setGridLinesVisible(false);
+
+
+        //----------------------------------------------------------------
         //TOP
+        //----------------------------------------------------------------
+
         Text titre = new Text("--- Tetris ---");
         titre.setFont(Font.font("Helvetica", FontWeight.BOLD, 20));
-        titre.setFill(Color.MEDIUMPURPLE);
+        titre.setFill(Color.YELLOW);
         grille.setAlignment(titre, Pos.CENTER);
         grille.setTop(titre);
-        partie = new Partie(grille.getP());
 
+        //----------------------------------------------------------------
         //RIGHT
+        //----------------------------------------------------------------
+
         Button startButton = new Button();
         DropShadow shadow = new DropShadow();
         startButton.setPadding(new Insets(10));
-        startButton.setStyle("-fx-font: 22 arial; -fx-base: #b6e7c9;");
+        startButton.setStyle("-fx-font: 22 helvetica; -fx-base: #b6e7c9;");
         startButton.setText("Commencer");
+
+        grille.setMargin(startButton, new Insets(20, 0, 0, 15));
         grille.setRight(startButton);
 
-        //LEFT
-        GrillePiece grillePiecePieceSuivante = new GrillePiece(partie.getPlateau().getPiecesSuivantes().get(0).getCases(),Color.BLUE,false,25);
-        grillePiecePieceSuivante.setPadding(new Insets(30));
-
-        grille.setLeft(grillePiecePieceSuivante);
-
+        grille.getGridP().setEffect(shadow);
+        grille.getGridP().setPadding(new Insets(20));
+        /*grille.getGridP().setBorder(new Border(new BorderStroke(Color.GREY,
+                BorderStrokeStyle.SOLID, new CornerRadii(20), BorderWidths.DEFAULT)));*/
 
         grille.setPadding(new Insets(20));
         startButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                grille.getChildren().remove(startButton);
                 partie.deroulement();
             }
         });
@@ -70,7 +101,6 @@ public class VueControleurTetris extends Application implements Observer {
             }
         });
 
-
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent t) {
@@ -79,12 +109,28 @@ public class VueControleurTetris extends Application implements Observer {
             }
         });
 
-        // la vue observe les "update" du modèle, et réalise les mises à jour graphiques
-        partie.getPlateau().addObserver(this);
+        //----------------------------------------------------------------
+        //Bottom
+        //----------------------------------------------------------------
 
-        Scene scene = new Scene(grille, Color.WHITE);
+        //SCORE
+        this.score = new Text("0");
+        score.setFont(Font.font("Helvetica", FontWeight.BOLD, 20));
+        score.setFill(Color.WHITE);
+        grille.setBottom(score);
 
+        //----------------------------------------------------------------
         //EVENEMENTS LIES AUX TOUCHES CLAVIER
+        //----------------------------------------------------------------
+        evenementsClavier(scene);
+
+
+        primaryStage.setTitle("TETRIS");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    private void evenementsClavier(Scene scene) {
         scene.setOnKeyPressed(new EventHandler<KeyEvent>(){
             @Override
             public void handle(KeyEvent ke){
@@ -92,12 +138,7 @@ public class VueControleurTetris extends Application implements Observer {
                     //rotation
                     if(grille.getP().getPieceCourante() != null) {
                         grille.getP().tournerPieceCourante(Direction.RIGHT);
-
-                        //Declenchement du son depuis le model
-                        grille.getMediaPlayer().stop();
-                        grille.getMediaPlayer().play();
                     }
-
                 }
                 if (ke.getCode().equals(KeyCode.LEFT)) {
                     if(grille.getP().getPieceCourante() != null)
@@ -115,14 +156,6 @@ public class VueControleurTetris extends Application implements Observer {
                 }
             }
         });
-
-        primaryStage.setTitle("Jeu Plateau");
-        primaryStage.setScene(scene);
-        primaryStage.show();
-    }
-
-    public static void main(String[] args) {
-        launch(args);
     }
 
     @Override
@@ -137,13 +170,39 @@ public class VueControleurTetris extends Application implements Observer {
                             grille.getTab()[a][b].setFill(grille.getP().getTableauJeu()[b][a].getCouleur());
                         else
                             grille.getTab()[a][b].setFill(Color.WHITE);
-
-                        //Mise a jour de la pièce suivante affichée
-                        GrillePiece grillePiecePieceSuivante = new GrillePiece(partie.getPlateau().getPiecesSuivantes().get(0).getCases(),Color.BLUE,false,30);
-                        grillePiecePieceSuivante.setPadding(new Insets(30));
-                        grille.setLeft(grillePiecePieceSuivante);
                     }
+                   if(partie.isEstFinie())
+                        popupFinPartie.afficherPopup();
+
+                //Mise a jour du score et de la pièce suivante
+                miseAJourJeu();
+
             }
         });
     }
+
+    private void miseAJourJeu() {
+        //Mise à jour du score.
+        score = new Text(Integer.toString(partie.getScore()));
+        score.setFont(Font.font("Helvetica", FontWeight.BOLD, 40));
+        score.setFill(Color.WHITE);
+
+        //Mise a jour de la pièce suivante affichée
+        GrillePiece grillePiecePieceSuivante = new GrillePiece(partie.getPlateau().getPiecesSuivantes().get(0).getCases(),Color.BLUE,false,30);
+        grillePiecePieceSuivante.setPadding(new Insets(15));
+        grillePiecePieceSuivante.setMaxSize(20.0,20.0);
+        grillePiecePieceSuivante.setPrefWidth(210);
+
+        GridPane rightpane = new GridPane();
+        rightpane.add(grillePiecePieceSuivante,0,0);
+        rightpane.add(score,0,1);
+
+        grille.setRight(rightpane);
+        grille.setBottom(null);
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+
 }
