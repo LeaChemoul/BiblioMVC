@@ -39,13 +39,20 @@ public class VueControleurTetris extends Application implements Observer {
 
         this.popupFinPartie = new PopupFinPartie(primaryStage);
         this.popupFinPartie.setTextPopup("GAME OVER");
+
+        grille.setStyle("-fx-background-color: #2f4f4f;\n" +
+                "    -fx-padding: 15;\n" +
+                "    -fx-spacing: 10;");
+
+        grille.getGridP().setGridLinesVisible(false);
+
         //----------------------------------------------------------------
         //TOP
         //----------------------------------------------------------------
 
         Text titre = new Text("--- Tetris ---");
         titre.setFont(Font.font("Helvetica", FontWeight.BOLD, 20));
-        titre.setFill(Color.MEDIUMPURPLE);
+        titre.setFill(Color.YELLOW);
         grille.setAlignment(titre, Pos.CENTER);
         grille.setTop(titre);
         partie = new Partie(grille.getP());
@@ -57,27 +64,20 @@ public class VueControleurTetris extends Application implements Observer {
         Button startButton = new Button();
         DropShadow shadow = new DropShadow();
         startButton.setPadding(new Insets(10));
-        startButton.setStyle("-fx-font: 22 arial; -fx-base: #b6e7c9;");
+        startButton.setStyle("-fx-font: 22 helvetica; -fx-base: #b6e7c9;");
         startButton.setText("Commencer");
-        grille.setMargin(startButton, new Insets(10, 0, 0, 15));
-        grille.setRight(startButton);
 
-        //----------------------------------------------------------------
-        //LEFT
-        //----------------------------------------------------------------
+        grille.setMargin(startButton, new Insets(20, 0, 0, 15));
+        grille.setRight(startButton);
 
         GrillePiece grillePiecePieceSuivante = new GrillePiece(partie.getPlateau().getPiecesSuivantes().get(0).getCases(),Color.BLUE,false,25);
         grillePiecePieceSuivante.setPadding(new Insets(15));
         grillePiecePieceSuivante.setPrefWidth(210);
 
-        //grille.setLeft(grillePiecePieceSuivante);
-
         grille.getGridP().setEffect(shadow);
         grille.getGridP().setPadding(new Insets(20));
         /*grille.getGridP().setBorder(new Border(new BorderStroke(Color.GREY,
                 BorderStrokeStyle.SOLID, new CornerRadii(20), BorderWidths.DEFAULT)));*/
-        grille.getGridP().setHgap(1.0);
-        grille.getGridP().setVgap(1.0);
 
         grille.setPadding(new Insets(20));
         startButton.setOnMouseClicked(new EventHandler<MouseEvent>() {

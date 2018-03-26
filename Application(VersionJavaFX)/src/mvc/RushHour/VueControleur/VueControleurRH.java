@@ -10,6 +10,7 @@ import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.effect.Shadow;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseDragEvent;
@@ -81,6 +82,8 @@ public class VueControleurRH extends Application implements Observer {
         grille.setRight(rightPane);
         grille.setPadding(new Insets(20));
         grille.getGridP().setGridLinesVisible(false);
+
+        grille.setStyle("-fx-background-color: LIGHTGREY;");
 
         //---------------------------------------------------------------------
         //EVENEMENTS
@@ -230,8 +233,8 @@ public class VueControleurRH extends Application implements Observer {
         ArrayList<Vec2d> positions = grille.getP().occurrencesPiecesPlateau( grille.getP().recupererPiece(finalJ,finalI));
         effacerBordures();
         for (Vec2d position : positions) {
-            grille.getP().recupererPiece(finalJ, finalI).setBordure(Color.BLUE);
-            tab[(int) position.y][(int) position.x].setStroke(Color.BLUE);
+            grille.getP().recupererPiece(finalJ, finalI).setBordure(Color.BLACK);
+            tab[(int) position.y][(int) position.x].setStroke(Color.BLACK);
         }
         grille.getP().setPieceCourante(grille.getP().recupererPiece(finalJ,finalI));
     }
