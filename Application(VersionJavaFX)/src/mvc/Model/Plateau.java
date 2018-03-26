@@ -210,16 +210,11 @@ public class Plateau extends Observable {
         pieceCourante.rotation(dir);
         ArrayList<Vec2d> positionsAvant = occurrencesPiecesPlateau(pieceCourante); //Toutes les occurences de notre pièce donnée sur le plateau
         Vec2d min = minimum(positionsAvant);
-        if(pieceCourante != null && peutEtrePosee((int) min.x,(int) min.y,this.piecesPosees.indexOf(this.pieceCourante),0,0,0,0)){
-            effacerPiecePlateau(positionsAvant);
-            if(!this.poserPiecePlateau(pieceCourante,(int) min.x, (int) min.y)){
-                pieceCourante.rotation(dir.opposee());
-                this.poserPiecePlateau(pieceCourante,(int) min.x, (int) min.y);
-            }
-
-        }
-        else
+        effacerPiecePlateau(positionsAvant);
+        if(!this.poserPiecePlateau(pieceCourante,(int) min.x, (int) min.y)){
             pieceCourante.rotation(dir.opposee());
+            this.poserPiecePlateau(pieceCourante,(int) min.x, (int) min.y);
+        }
         setChanged();
         notifyObservers();
     }

@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 public class GenerateurPieces {
-    PieceBuilder pieceBuilder = new PieceBuilder();
+    private PieceBuilder pieceBuilder = new PieceBuilder();
     
     public GenerateurPieces() {
     }
