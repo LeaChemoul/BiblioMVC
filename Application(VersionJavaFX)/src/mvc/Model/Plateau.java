@@ -24,7 +24,7 @@ public class Plateau extends Observable {
     //Liste dans laquelle on va piocher les pièces avec lesquelles on va jouer.
     private Piece[] PoolDePiece;
 
-    //Pas encore implémenté.
+    //Liste des pièces suivantes dans lesquelles on piochera le type de la pièce courante (ex : tetris)
     private ArrayList<Piece> piecesSuivantes = new ArrayList<>();
 
     public Plateau(int h,int l){
