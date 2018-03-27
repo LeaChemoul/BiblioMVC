@@ -37,19 +37,4 @@ public class GrillePiece extends GridPane{
 
     }
 
-    public void enleverColonneVide(){
-
-    }
-
-    public Rectangle[][] getTab() {
-        return tab;
-    }
-
-    public int getLargeur() {
-        return largeur;
-    }
-
-    public int getHauteur() {
-        return hauteur;
-    }
 }

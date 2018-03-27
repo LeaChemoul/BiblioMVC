@@ -59,7 +59,7 @@ public class TestBuilder2 {
 
         System.out.println("    TEST - PIECES BLOKUS");
         builder.clearListePiece();
-        genererPiecesBlokus();
+        //genererPiecesBlokus();
 
 
         builder.getPiece("Piece2-1").afficherPiece();
@@ -106,6 +106,7 @@ public class TestBuilder2 {
         System.out.println("Pivot = " + builder.getPiece(name).getPivot());
     }
 
+    /*
     public static void genererPiecesBlokus() {
 
 
@@ -143,6 +144,6 @@ public class TestBuilder2 {
 
         //DEBUG
         //builder.afficherPieces();
-    }
+    }*/
 
 }

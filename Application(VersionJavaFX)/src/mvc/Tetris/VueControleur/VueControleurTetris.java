@@ -2,6 +2,7 @@ package mvc.Tetris.VueControleur;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.scene.layout.TilePane;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -22,6 +23,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 import mvc.Model.Direction;
+import mvc.Model.Piece;
 import mvc.Tetris.Modele.Partie;
 import mvc.VueControleur.GrillePiece;
 import mvc.VueControleur.PopupFinPartie;
@@ -174,24 +176,25 @@ public class VueControleurTetris extends Application implements Observer {
 
     private void miseAJourJeu() {
         //Mise à jour du score.
-        score = new Text("Score : " + Integer.toString(partie.getScore()));
-        score.setFont(Font.font("Helvetica", FontWeight.BOLD, 40));
+        score = new Text("Score :" + Integer.toString(partie.getScore()));
+        score.setFont(Font.font("Helvetica", FontWeight.BOLD, 20));
         score.setFill(Color.WHITE);
 
         //Mise a jour de la pièce suivante affichée
-        GrillePiece grillePiecePieceSuivante = new GrillePiece(partie.getPlateau().getPiecesSuivantes().get(0).getCases(),Color.BLUE,false,30);
+        Piece piece = partie.getPlateau().getPiecesSuivantes().get(0);
+        GrillePiece grillePiecePieceSuivante = new GrillePiece(piece.getCases(), piece.getCouleur(),false,30);
         grillePiecePieceSuivante.setPadding(new Insets(15));
         grillePiecePieceSuivante.setMaxSize(20.0,20.0);
         grillePiecePieceSuivante.setPrefWidth(210);
 
         Text chrono = new Text(partie.getChronometre().getTemps());
-        chrono.setFont(Font.font("Helvetica", FontWeight.BOLD, 40));
+        chrono.setFont(Font.font("Helvetica", FontWeight.BOLD, 20));
         chrono.setFill(Color.WHITE);
 
-        GridPane rightpane = new GridPane();
-        rightpane.add(grillePiecePieceSuivante,0,0);
-        rightpane.add(score,0,1);
-        rightpane.add(chrono,0,2);
+        TilePane rightpane = new TilePane();
+        rightpane.getChildren().add(grillePiecePieceSuivante);
+        rightpane.getChildren().add(score);
+        rightpane.getChildren().add(chrono);
 
         grille.setRight(rightpane);
         grille.setBottom(null);

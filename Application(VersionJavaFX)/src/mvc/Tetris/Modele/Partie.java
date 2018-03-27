@@ -75,8 +75,10 @@ public class Partie implements Runnable{
                 int ligne = 0;
                 do {
                     ligne = plateau.ligneASupprimer();
-                    if (ligne != -1)
+                    if (ligne != -1) {
+                        score += 40;
                         plateau.supprimerLigne(ligne);
+                    }
                 } while (ligne != -1);
 
                 //Test de fin de partie
