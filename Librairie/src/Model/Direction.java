@@ -1,4 +1,4 @@
-package mvc.Model;
+package Model;
 
 public enum Direction {
     DOWN(1,0),
@@ -14,7 +14,7 @@ public enum Direction {
     }
 
     /**
-     * Renvoie la direction opposée ( UP --> DOWN, RIGHT --> LEFT, ... )
+     * Renvoie la direction opposée ( UP = DOWN, RIGHT = LEFT, ... )
      * @return Direction
      */
     public Direction opposee() {

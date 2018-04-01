@@ -1,6 +1,6 @@
-package mvc.Model;
+package Model;
+
 import com.sun.javafx.geom.Vec2d;
-import javafx.scene.paint.Color;
 
 public class TestBuilder2 {
 

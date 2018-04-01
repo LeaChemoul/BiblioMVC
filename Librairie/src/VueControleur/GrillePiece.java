@@ -1,4 +1,4 @@
-package mvc.VueControleur;
+package VueControleur;
 
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;

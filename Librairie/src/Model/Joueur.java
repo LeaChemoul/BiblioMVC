@@ -1,4 +1,4 @@
-package mvc.Model;
+package Model;
 
 import javafx.scene.paint.Color;
 

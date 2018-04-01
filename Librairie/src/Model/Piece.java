@@ -1,5 +1,4 @@
-package mvc.Model;
-
+package Model;
 
 import com.sun.javafx.geom.Vec2d;
 import javafx.scene.paint.Color;
@@ -47,6 +46,7 @@ public class Piece {
     /**
      * Constructeur par copie de la classe.
      * @param piece piece a copier
+     * @param couleurAleatoire Vrai si on genère une couleur aléatoirement pour la pièce.
      */
     public Piece(Piece piece, boolean couleurAleatoire){
         this.nom = piece.nom;
@@ -62,9 +62,7 @@ public class Piece {
         int length = piece.cases.length;
         this.cases = new int[length][length];
         for (int i = 0; i < length ; i++) {
-            for (int j = 0; j < length; j++) {
-                this.cases[i][j] = piece.cases[i][j];
-            }
+            System.arraycopy(piece.cases[i], 0, this.cases[i], 0, length);
         }
         this.pivot = piece.pivot;
         this.bordure = piece.bordure;
@@ -89,7 +87,7 @@ public class Piece {
     /**
      * Tourne une pièce de 90° degré dans sa matrice locale
      * dans le sens trigonométrique (UP) ou horaire (DOWN, ou par défaut) en fonction de la direction sens
-     * @param sens
+     * @param sens Sens de la rotation.
      */
     public void rotation(Direction sens){
         int[][] m = getCases(); // On récupère la matrice locale de la pièce
@@ -156,6 +154,7 @@ public class Piece {
     /**
      * Renvoie la matrice local de la pièce rognée de ses premières lignes et colonnes vides.
      * Utilisé pour l'affichage des pièces afin qu'il soit en accord avec la pose.
+     * @return Matrice de la pièce rognée des ses lignes et colonnes vides.
      */
     public int[][] croppedPiece() {
         boolean colonneVide = true;
@@ -233,7 +232,7 @@ public class Piece {
 
     /**
      * Prends en paramètre une matrice d'int à 2 dim et l'affiche en console.
-     * Si la case = 0 --> Case vide, sinon on pose une X. On a un rendu de ce style :
+     * Si la case = 0, Case vide, sinon on pose une X. On a un rendu de ce style :
      -------
      |     |
      |  X  |
@@ -252,10 +251,10 @@ public class Piece {
             System.out.print("---");
         System.out.println("-");
 
-        for ( int i = 0; i < hauteur; i++ ) {
+        for (int[] aMat : mat) {
             System.out.print("  |");
             for (int j = 0; j < largeur; j++) {
-                if ( mat[i][j] != 0 )
+                if (aMat[j] != 0)
                     System.out.print(" X ");
                 else
                     System.out.print("   ");
@@ -269,65 +268,6 @@ public class Piece {
             System.out.print("---");
         System.out.println("-");
     }
-
-
-
-    //region mort mais trop complexe pour pas la garder
-    /*
-    /**
-     * Translate toutes les cases de la pièce d'une case dans la matrice locale vers la direction donnée.
-     * @param dir Direction vers laquelle translater la piece
-     */
-    /*
-    public void translater(Direction dir) {
-
-        //Pour chaque case, on décale leur contenu d'une case vers la gauche/droite/haut/bas. En ignorant la première/dernière ligne/colonne
-        // et en partant d'une différente extrémité de la matrice en fonction de la direction.
-        switch (dir) {
-            case LEFT:
-                for(int i = 0; i < cases.length; i++) { //Chaque ligne
-                    for (int j = 0; j < cases[0].length - 1; j++) { //Chaque colonne - la dernière
-                        cases[i][j] = cases[i][j + 1]; //On copie le contenu de la case de droite dans la case actuelle.
-                    }
-                }
-                for ( int i = 0; i < cases.length; i++ )
-                    cases[i][cases[0].length-1] = 0;
-                break;
-            case RIGHT:
-                for(int i = 0; i < cases.length; i++) { //Chaque ligne
-                    for (int j = cases[0].length-1; j > 0 ; j--) { //Chaque colonne sauf la première
-                        cases[i][j] = cases[i][j - 1]; //On copie le contenu de la case de gauche dans la case actuelle.
-                    }
-                }
-                for ( int i = 0; i < cases.length; i++ )
-                    cases[i][0] = 0;
-                break;
-            case UP:
-                for(int i = 0; i < cases.length-1; i++) { //Chaque ligne sauf la dernière
-                    for (int j = 0; j < cases[0].length; j++) { //Chaque colonne
-                        cases[i][j] = cases[i+1][j]; //On copie le contenu de la case en dessous dans celle actuelle.
-                    }
-                }
-                for ( int j = 0; j < cases[0].length; j++ )
-                    cases[cases.length-1][j] = 0;
-                break;
-            case DOWN:
-                for(int i = cases.length-1; i > 0; i--) {
-                    for (int j = 0; j < cases[0].length; j++) {
-                        cases[i][j] = cases[i-1][j];
-                    }
-                }
-                for ( int j = 0; j < cases[0].length; j++ )
-                    cases[0][j] = 0;
-                break;
-        }
-        calculPivotEtTaille();
-    }
-    */
-
-    //endregion
-
-    //Centre la pièce le plus possible sur sa matrice locale en translatant la matrice de façon à centrer le pivot.
 
     /**
      * Centre la pièce le plus possible sur sa matrice locale en réécrivant la matrice de façon à centrer le pivot.

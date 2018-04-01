@@ -1,12 +1,12 @@
-package mvc.VueControleur;
+package VueControleur;
 
 
+import Model.Plateau;
 import javafx.geometry.Insets;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import mvc.Model.Plateau;
 
 public class VuePrincipale extends BorderPane{
 
@@ -26,7 +26,6 @@ public class VuePrincipale extends BorderPane{
         // permet de placer les differents boutons dans une grille
         gridP = new GridPane();
 
-        //TODO : FIX L'INVERSION LARGEUR HAUTEUR
         if (reversed)
             tab = new Rectangle[largeur][hauteur];
         else

@@ -1,4 +1,4 @@
-package mvc.Model;
+package Model;
 
 import com.sun.javafx.geom.Vec2d;
 import javafx.scene.paint.Color;
@@ -75,7 +75,7 @@ public class PieceBuilder {
      * @param name Nom de la Pièce
      * @param tabV Coordonnées des cases qui composent la pièce.
      */
-    public void addPiece (String name, Vec2d[] tabV) {
+    private void addPiece(String name, Vec2d[] tabV) {
         addPiece(name, Color.BLACK, tabV);
     }
 

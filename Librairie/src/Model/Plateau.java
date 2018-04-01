@@ -1,8 +1,7 @@
-package mvc.Model;
+package Model;
 
 import com.sun.javafx.geom.Vec2d;
 import javafx.scene.paint.Color;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Observable;
@@ -45,9 +44,9 @@ public class Plateau extends Observable {
      * @param piece Piece à poser.
      * @param i Ligne où placer la pièce.
      * @param j Colonne où placer la pièce.
-     * @return
+     * @return Renvoie vrai si la pièce a été posée.
      */
-    synchronized public boolean poserPiecePlateau(Piece piece,int i, int j){
+    private boolean poserPiecePlateau(Piece piece, int i, int j){
         //On parcours le plateau de jeu depuis la position (i,j) et les cases de la pièce simultanement.
         //On ajoutera à positionsPlateau les positions de notre plateau à remplir par notre pièce. Evite uen boucle supplémentaire.
         ArrayList<Vec2d> positionsPlateau = new ArrayList<>(); // Les positions (x,y) du plateau où il faudra placer notre pièce
@@ -134,6 +133,7 @@ public class Plateau extends Observable {
 
     /**
      * On crée une nouvelle instance de pièce qu'on pose sur notre plateau de jeu.
+     * @return Vrai si la pèce a bien été créée.
      */
     public boolean newPiece(){
         this.pieceCourante = null;
@@ -159,7 +159,7 @@ public class Plateau extends Observable {
      * @param j Colonne où creer la pièce.
      * @param h Horizontal (vrai) ou vertical (faux)
      * @param couleur Couleur de la pièce que l'on souhaite creer.
-     * @return
+     * @return Renvoie vrai si la pièce a bien été crée.
      */
     public boolean newPiece(Piece piece,int i,int j,boolean h, Color couleur){
         this.pieceCourante = null;
@@ -198,7 +198,7 @@ public class Plateau extends Observable {
     /**
      * Retourne la première coordonnée (x,y) d'une pièce sur le plateau (en partant du haut à gauche)
      * @param arrayList tableau de coordonnées
-     * @return
+     * @return Renvoie un vecteur 2 dimensions contenant les coordonnées de la première occurence de la pièce.
      */
     private Vec2d minimum(ArrayList<Vec2d> arrayList){
         if(arrayList!= null && !arrayList.isEmpty()){
@@ -271,9 +271,9 @@ public class Plateau extends Observable {
     /**
      * Retourne toutes les occurences (i,j) d'une pièce sur le plateau
      * @param piece notre pièce
-     * @return
+     * @return Une array list des occurences (Vect2D)
      */
-    synchronized public ArrayList<Vec2d> occurrencesPiecesPlateau(Piece piece){
+    private ArrayList<Vec2d> occurrencesPiecesPlateau(Piece piece){
         int index = this.piecesPosees.indexOf(piece);
         ArrayList<Vec2d> positions = new ArrayList<>();
         for (int i = 0; i < this.hauteur; i++) {
@@ -346,7 +346,7 @@ public class Plateau extends Observable {
 
     /**
      * Supprime la ligne ii du tableau de jeu, et fais descendre toutes les pièces d'un cran.
-     * @param ii
+     * @param ii La ligne à supprimer.
      */
     public void supprimerLigne(int ii) {
 
@@ -408,7 +408,7 @@ public class Plateau extends Observable {
     /**
      * Renvoie la pièce à qui appartient la case aux coordonnées x,y du plateau.
      */
-    public Piece recupererPiece(int x, int y) {
+    private Piece recupererPiece(int x, int y) {
         if(tableauJeu[x][y] != null && x < tableauJeu.length && y < tableauJeu[0].length)
             return piecesPosees.get(tableauJeu[x][y].getIndex());
         else

@@ -1,4 +1,4 @@
-package mvc.VueControleur;
+package VueControleur;
 
 import javafx.application.Platform;
 import javafx.geometry.Insets;
