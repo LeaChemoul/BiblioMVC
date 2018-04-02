@@ -1,12 +1,10 @@
 package mvc.Model;
 
+import Model.Direction;
+import Model.PieceBuilder;
 import com.sun.javafx.geom.Vec2d;
 import javafx.scene.paint.Color;
-import mvc.Model.Direction;
-import mvc.Model.PieceBuilder;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class PieceTest {
 
