@@ -1,4 +1,4 @@
-package mvc.Tetris.VueControleur;
+package mvc.Tetris.VueControleurTetris;
 
 import Model.Direction;
 import Model.Piece;
@@ -23,7 +23,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import mvc.Tetris.Modele.Partie;
+import mvc.Tetris.ModeleTetris.Partie;
 
 import java.util.Observable;
 import java.util.Observer;

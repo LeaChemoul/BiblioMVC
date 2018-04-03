@@ -1,4 +1,4 @@
-package mvc.RushHour.Modele;
+package mvc.RushHour.ModeleRH;
 
 import Model.PieceBuilder;
 import Model.Piece;

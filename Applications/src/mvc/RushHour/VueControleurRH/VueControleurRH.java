@@ -1,4 +1,4 @@
-package mvc.RushHour.VueControleur;
+package mvc.RushHour.VueControleurRH;
 
 import VueControleur.VuePrincipale;
 import com.sun.javafx.geom.Vec2d;
@@ -24,7 +24,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import mvc.RushHour.Modele.Partie;
+import mvc.RushHour.ModeleRH.Partie;
 
 import java.util.ArrayList;
 import java.util.Observable;

@@ -1,4 +1,4 @@
-package mvc.Tetris.Modele;
+package mvc.Tetris.ModeleTetris;
 
 import Model.Piece;
 import Model.PieceBuilder;

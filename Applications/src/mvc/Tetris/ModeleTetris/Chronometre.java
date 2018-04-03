@@ -1,4 +1,4 @@
-package mvc.Tetris.Modele;
+package mvc.Tetris.ModeleTetris;
 
 
 import java.util.Timer;
